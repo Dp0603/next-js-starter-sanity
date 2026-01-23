@@ -54,6 +54,9 @@ export const page = defineType({
         {type: 'ctaSection'},
         {type: 'callToAction'},
         {type: 'infoSection'},
+        {type: 'aboutHero'},
+        {type: 'locationSection'},
+        {type: 'gallerySection'},
       ],
       options: {
         insertMenu: {

@@ -52,7 +52,7 @@ export default function Footer() {
             <ul className="space-y-6 text-sm text-gray-400">
               <li className="flex gap-3 items-start">
                 <MapPin size={18} className="text-[#cd7d51] shrink-0 mt-0.5" />
-                <span>Phase III, Industrial Area,<br />Jaipur, Rajasthan, India</span>
+                <span>Phase III, Industrial Area,<br />Ahmedabad, Gujarat , India</span>
               </li>
               <li className="flex gap-3 items-center">
                 <Phone size={18} className="text-[#cd7d51] shrink-0" />

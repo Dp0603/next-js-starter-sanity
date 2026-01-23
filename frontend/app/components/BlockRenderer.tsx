@@ -5,8 +5,10 @@ import PhilosophySection from '@/app/components/sections/PhilosophySection';
 import ProductLookbook from '@/app/components/sections/ProductLookbook';
 import ServicesSection from '@/app/components/sections/ServicesSection';
 import CTASection from '@/app/components/sections/CTASection';
+import AboutHero from '@/app/components/sections/AboutHero';
+import LocationSection from '@/app/components/sections/LocationSection';
+import GallerySection from '@/app/components/sections/GallerySection';
 
-// 1. Map Sanity '_type' names to your React Components
 const Blocks: Record<string, React.FC<any>> = {
   hero: HeroSection,
   stats: StatsStrip,
@@ -14,6 +16,9 @@ const Blocks: Record<string, React.FC<any>> = {
   productLookbook: ProductLookbook,
   services: ServicesSection,
   ctaSection: CTASection,
+  aboutHero: AboutHero,
+  locationSection: LocationSection,
+  gallerySection: GallerySection,
 };
 
 // 2. Define the Interface to accept an Array
