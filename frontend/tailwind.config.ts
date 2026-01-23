@@ -12,6 +12,7 @@ export default {
       boxShadow: {
         layer: '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
       },
+      // ... (keeping your existing colors exactly as they are) ...
       colors: {
         black: '#0d0e12',
         white: '#fff',
@@ -94,9 +95,13 @@ export default {
           950: '#14211a',
         },
       },
+      // 👇 FIX: Update Fonts here
       fontFamily: {
-        sans: ['var(--font-inter)'],
+        // "Oswald" first ensures your headings are bold and condensed.
+        // "Inter" is the fallback.
+        sans: ['var(--font-oswald)', 'var(--font-inter)', 'sans-serif'],
         mono: ['var(--font-ibm-plex-mono)'],
+        serif: ['var(--font-inter)', 'serif'],
       },
     },
   },

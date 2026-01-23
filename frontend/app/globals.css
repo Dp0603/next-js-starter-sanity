@@ -1,45 +1,106 @@
 @import 'tailwindcss';
-
 @plugin "@tailwindcss/typography";
 
-@layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-medium tracking-tight;
+/* =========================
+   Design Tokens (Brand)
+   ========================= */
+:root {
+  /* Colors */
+  --navy-800: #1e3252;
+  --navy-900: #14253f;
+
+  --accent-400: #d68f6a;
+  --accent-500: #cd7d51;
+  --accent-600: #b5663e;
+
+  --neutral-50: #fafbfb;
+  --neutral-100: #f5f7f8;
+  --neutral-200: #e2e5e9;
+  --neutral-300: #cbd5e0;
+  --neutral-800: #2d3748;
+  --neutral-900: #1a202c;
+
+  /* Semantic */
+  --background: var(--neutral-50);
+  --foreground: var(--navy-900);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* =========================
+   Tailwind Theme Bridge
+   ========================= */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-navy-800: var(--navy-800);
+  --color-navy-900: var(--navy-900);
+
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+
+  --font-sans: var(--font-sans);
+
+  --tracking-tighter: -0.04em;
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.2em;
+}
+
+/* =========================
+   Base Styles
+   ========================= */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================
+   Utilities
+   ========================= */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* =========================
+   Animations
+   ========================= */
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@utility container {
-  margin: 0 auto;
-  padding: 0 2rem;
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: reveal 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-@theme {
-  --shadow-layer: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
-
-  --color-framework: #000;
-  --color-black: #0b0b0b;
-  --color-white: #fff;
-  --color-brand: #f50;
-  --color-blue: #0052ff;
-  --color-yellow: #cdea19;
-  --color-gray-50: #f6f6f8;
-  --color-gray-100: #eeeef1;
-  --color-gray-200: #e3e4e8;
-  --color-gray-300: #bbbdc9;
-  --color-gray-400: #9499ad;
-  --color-gray-500: #727892;
-  --color-gray-600: #515870;
-  --color-gray-700: #383d51;
-  --color-gray-800: #252837;
-  --color-gray-900: #1b1d27;
-  --color-gray-950: #13141b;
-
-  --default-transition-duration: 250ms;
+/* =========================
+   Layout Guardrail
+   ========================= */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
 }

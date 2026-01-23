@@ -1,58 +1,47 @@
-import React from 'react'
+import React from 'react';
+import HeroSection from '@/app/components/sections/HeroSection';
+import StatsStrip from '@/app/components/sections/StatsStrip';
+import PhilosophySection from '@/app/components/sections/PhilosophySection';
+import ProductLookbook from '@/app/components/sections/ProductLookbook';
+import ServicesSection from '@/app/components/sections/ServicesSection';
+import CTASection from '@/app/components/sections/CTASection';
 
-import Cta from '@/app/components/Cta'
-import Info from '@/app/components/InfoSection'
-import {dataAttr} from '@/sanity/lib/utils'
-import {PageBuilderSection} from '@/sanity/lib/types'
+// 1. Map Sanity '_type' names to your React Components
+const Blocks: Record<string, React.FC<any>> = {
+  hero: HeroSection,
+  stats: StatsStrip,
+  philosophy: PhilosophySection,
+  productLookbook: ProductLookbook,
+  services: ServicesSection,
+  ctaSection: CTASection,
+};
 
-type BlockProps = {
-  index: number
-  block: PageBuilderSection
-  pageId: string
-  pageType: string
+// 2. Define the Interface to accept an Array
+interface BlockRendererProps {
+  blocks?: any[];
 }
 
-type BlocksType = {
-  [key: string]: React.FC<BlockProps>
-}
+// 3. The Component that loops through the array
+const BlockRenderer: React.FC<BlockRendererProps> = ({ blocks }) => {
+  if (!blocks || !Array.isArray(blocks)) return null;
 
-const Blocks = {
-  callToAction: Cta,
-  infoSection: Info,
-} as BlocksType
+  return (
+    <>
+      {blocks.map((block) => {
+        // Find the component that matches the Sanity type
+        const Component = Blocks[block._type];
 
-/**
- * Used by the <PageBuilder>, this component renders a the component that matches the block type.
- */
-export default function BlockRenderer({block, index, pageId, pageType}: BlockProps) {
-  // Block does exist
-  if (typeof Blocks[block._type] !== 'undefined') {
-    return (
-      <div
-        key={block._key}
-        data-sanity={dataAttr({
-          id: pageId,
-          type: pageType,
-          path: `pageBuilder[_key=="${block._key}"]`,
-        }).toString()}
-      >
-        {React.createElement(Blocks[block._type], {
-          key: block._key,
-          block: block,
-          index: index,
-          pageId: pageId,
-          pageType: pageType,
-        })}
-      </div>
-    )
-  }
-  // Block doesn't exist yet
-  return React.createElement(
-    () => (
-      <div className="w-full bg-gray-100 text-center text-gray-500 p-20 rounded">
-        A &ldquo;{block._type}&rdquo; block hasn&apos;t been created
-      </div>
-    ),
-    {key: block._key},
-  )
-}
+        // If you haven't created the component yet, skip it safely
+        if (!Component) {
+          // console.warn(`No component found for block type: ${block._type}`);
+          return null;
+        }
+
+        // Render the component
+        return <Component key={block._key} block={block} />;
+      })}
+    </>
+  );
+};
+
+export default BlockRenderer;

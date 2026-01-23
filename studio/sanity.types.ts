@@ -12,7 +12,114 @@
  * ---------------------------------------------------------------------------------
  */
 
-// Source: ../sanity.schema.json
+// Source: ..\sanity.schema.json
+export type CtaSection = {
+  _type: 'ctaSection'
+  heading?: string
+  description?: string
+  primaryButtonText?: string
+  secondaryButtonText?: string
+}
+
+export type Services = {
+  _type: 'services'
+  heading?: string
+  subheading?: string
+  description?: string
+  serviceItems?: Array<{
+    title?: string
+    description?: string
+    icon?: 'PenTool' | 'Factory' | 'ShieldCheck' | 'Truck'
+    _key: string
+  }>
+}
+
+export type ProductCategoryReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'productCategory'
+}
+
+export type ProductLookbook = {
+  _type: 'productLookbook'
+  heading?: string
+  products?: Array<
+    {
+      _key: string
+    } & ProductCategoryReference
+  >
+}
+
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type ProductCategory = {
+  _id: string
+  _type: 'productCategory'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  description?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  features?: Array<string>
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
+}
+
+export type Philosophy = {
+  _type: 'philosophy'
+  heading?: string
+  subheading?: string
+  description?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  features?: Array<string>
+  ctaText?: string
+  ctaLink?: string
+}
+
+export type Stats = {
+  _type: 'stats'
+  items?: Array<{
+    value?: string
+    label?: string
+    icon?: 'Globe' | 'Award' | 'Factory' | 'Users' | 'Leaf' | 'ShieldCheck'
+    _key: string
+  }>
+}
+
 export type PageReference = {
   _ref: string
   _type: 'reference'
@@ -36,11 +143,20 @@ export type Link = {
   openInNewTab?: boolean
 }
 
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+export type Hero = {
+  _type: 'hero'
+  heading: string
+  subheading?: string
+  backgroundImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  buttonText?: string
+  buttonLink?: string
 }
 
 export type CallToAction = {
@@ -165,22 +281,6 @@ export type Settings = {
   }
 }
 
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x: number
-  y: number
-  height: number
-  width: number
-}
-
 export type Page = {
   _id: string
   _type: 'page'
@@ -192,6 +292,24 @@ export type Page = {
   heading: string
   subheading?: string
   pageBuilder?: Array<
+    | ({
+        _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & Stats)
+    | ({
+        _key: string
+      } & Philosophy)
+    | ({
+        _key: string
+      } & ProductLookbook)
+    | ({
+        _key: string
+      } & Services)
+    | ({
+        _key: string
+      } & CtaSection)
     | ({
         _key: string
       } & CallToAction)
@@ -488,18 +606,26 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | CtaSection
+  | Services
+  | ProductCategoryReference
+  | ProductLookbook
+  | SanityImageAssetReference
+  | ProductCategory
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Philosophy
+  | Stats
   | PageReference
   | PostReference
   | Link
-  | SanityImageAssetReference
+  | Hero
   | CallToAction
   | InfoSection
   | BlockContentTextOnly
   | BlockContent
   | Button
   | Settings
-  | SanityImageCrop
-  | SanityImageHotspot
   | Page
   | PersonReference
   | Post

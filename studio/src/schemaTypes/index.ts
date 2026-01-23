@@ -8,6 +8,13 @@ import {link} from './objects/link'
 import {blockContent} from './objects/blockContent'
 import button from './objects/button'
 import {blockContentTextOnly} from './objects/blockContentTextOnly'
+import {hero} from './objects/hero'
+import {stats} from './objects/stats'
+import {philosophy} from './objects/philosophy'
+import {productCategory} from './documents/productCategory'
+import {productLookbook} from './objects/productLookbook'
+import { services } from './objects/services'
+import { ctaSection } from './objects/ctaSection'
 
 // Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/studio/schema-types
 
@@ -24,5 +31,12 @@ export const schemaTypes = [
   blockContentTextOnly,
   infoSection,
   callToAction,
+  hero,
   link,
+  stats,
+  philosophy,
+  productCategory,
+  productLookbook,
+  services,
+  ctaSection,
 ]

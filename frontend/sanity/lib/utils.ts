@@ -10,9 +10,8 @@ const builder = imageUrlBuilder({
   dataset: dataset || '',
 })
 
-// Create an image URL builder using the client
-// Export a function that can be used to get image URLs
-function urlForImage(source: SanityImageSource) {
+// --- FIX: Added 'export' here ---
+export function urlForImage(source: SanityImageSource) {
   return builder.image(source)
 }
 

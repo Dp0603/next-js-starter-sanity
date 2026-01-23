@@ -53,6 +53,18 @@ export const getPageQuery = defineQuery(`
           }
         }
       },
+      // 👇 THIS IS THE NEW PART
+      _type == "productLookbook" => {
+        ...,
+        // The -> arrow "expands" the reference to get the actual document data
+        products[]->{
+          _id,
+          title,
+          description,
+          image,
+          features
+        }
+      },
     },
   }
 `)
