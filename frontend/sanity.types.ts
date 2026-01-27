@@ -52,6 +52,28 @@ export type BrandsObjectImage = {
   _type: 'image'
 }
 
+export type RichTextSection = {
+  _type: 'richTextSection'
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+    listItem?: 'bullet' | 'number'
+    markDefs?: Array<{
+      href?: string
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+}
+
 export type BrandShowcase = {
   _type: 'brandShowcase'
   subtitle?: string
@@ -479,6 +501,9 @@ export type Page = {
     | ({
         _key: string
       } & BrandShowcase)
+    | ({
+        _key: string
+      } & RichTextSection)
   >
 }
 
@@ -818,6 +843,7 @@ export type AllSanitySchemaTypes =
   | ObjectImage
   | Logo
   | BrandsObjectImage
+  | RichTextSection
   | BrandShowcase
   | ContactSection
   | QualityEthics
@@ -1140,6 +1166,28 @@ export type GetPageQueryResult = {
           title?: string
           description?: string
           icon?: 'clipboard' | 'refresh' | 'shield'
+          _key: string
+        }>
+      }
+    | {
+        _key: string
+        _type: 'richTextSection'
+        content?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
           _key: string
         }>
       }

@@ -5,7 +5,7 @@ type ButtonProps = {
   children: React.ReactNode;
   to?: string;
   type?: "button" | "submit";
-  variant?: "dark" | "light" | "outline" | "outlineWhite"; // Added outlineWhite type
+  variant?: "dark" | "light" | "outline" | "outlineWhite";
   className?: string;
 };
 

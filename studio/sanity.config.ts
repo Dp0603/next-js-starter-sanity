@@ -35,7 +35,7 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
 
 export default defineConfig({
   name: 'default',
-  title: 'Akaame Studio', // Updated Title
+  title: 'Akaame Studio',
 
   projectId,
   dataset,

@@ -3,7 +3,7 @@ import {defineField, defineType} from 'sanity'
 export const productCategory = defineType({
   name: 'productCategory',
   title: 'Product Category',
-  type: 'document', // 👈 It's a document, not an object
+  type: 'document', 
   fields: [
     defineField({
       name: 'title',

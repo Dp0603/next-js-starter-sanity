@@ -39,7 +39,6 @@ export const page = defineType({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',
-      // 👇 I ADDED THE HERO TYPE HERE
       of: [
         {type: 'hero'},
         {type: 'stats'},
@@ -63,7 +62,6 @@ export const page = defineType({
       ],
       options: {
         insertMenu: {
-          // Configure the "Add Item" menu to display a thumbnail preview of the content type. https://www.sanity.io/docs/studio/array-type#efb1fe03459d
           views: [
             {
               name: 'grid',
