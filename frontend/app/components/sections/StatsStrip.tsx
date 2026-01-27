@@ -29,20 +29,20 @@ const StatsStrip: React.FC<StatsProps> = ({ block }) => {
                         >
                             {/* Use IconMapper instead of direct component */}
                             <div className="mb-6">
-                            <IconMapper
-                                name={stat.icon}
-                                // 👇 FIX: Use hex code [#cd7d51] for the accent color
-                                className="text-[#cd7d51] mb-auto opacity-50 group-hover:opacity-100 transition-opacity"
-                                size={24}
-                            />
-                            <div>
-                                <div className="text-4xl font-bold text-white tracking-tighter mb-1">
-                                    {stat.value}
+                                <IconMapper
+                                    name={stat.icon}
+                                    // 👇 FIX: Use hex code [#cd7d51] for the accent color
+                                    className="text-[#cd7d51] mb-auto opacity-50 group-hover:opacity-100 transition-opacity"
+                                    size={40}
+                                />
+                                <div>
+                                    <div className="text-4xl font-bold text-white tracking-tighter mb-1">
+                                        {stat.value}
+                                    </div>
+                                    <div className="text-[10px] uppercase tracking-widest text-neutral-400">
+                                        {stat.label}
+                                    </div>
                                 </div>
-                                <div className="text-[10px] uppercase tracking-widest text-neutral-400">
-                                    {stat.label}
-                                </div>
-                            </div>
                             </div>
                         </div>
                     ))}

@@ -15,6 +15,7 @@ import QualityStandards from '@/app/components/sections/QualityStandards';
 import QualityEthics from '@/app/components/sections/QualityEthics';
 import ContactSection from '@/app/components/sections/ContactSection';
 import BrandShowcase from '@/app/components/sections/BrandShowcase';
+import RichTextSection from '@/app/components/sections/RichTextSection';
 
 const Blocks: Record<string, React.FC<any>> = {
   hero: HeroSection,
@@ -33,6 +34,7 @@ const Blocks: Record<string, React.FC<any>> = {
   qualityEthics: QualityEthics,
   contactSection: ContactSection,
   brandShowcase: BrandShowcase,
+  richTextSection: RichTextSection,
 };
 
 // 2. Define the Interface to accept an Array

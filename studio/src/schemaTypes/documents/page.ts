@@ -59,6 +59,7 @@ export const page = defineType({
         {type: 'qualityEthics'},
         {type: 'contactSection'},
         {type: 'brandShowcase'},
+        {type: 'richTextSection'},
       ],
       options: {
         insertMenu: {
