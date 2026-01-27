@@ -13,6 +13,88 @@
  */
 
 // Source: ..\sanity.schema.json
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type GalleryItemImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "galleryItem.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type InfrastructureSection = {
+  _type: 'infrastructureSection'
+  subtitle?: string
+  heading?: string
+  description?: string
+  cards?: Array<{
+    icon?: 'design' | 'precision' | 'testing'
+    title?: string
+    description?: string
+    _key: string
+  }>
+}
+
+export type WorkflowSection = {
+  _type: 'workflowSection'
+  subtitle?: string
+  heading?: string
+  description?: string
+  steps?: Array<{
+    number?: string
+    title?: string
+    description?: string
+    _key: string
+  }>
+}
+
+export type GallerySection = {
+  _type: 'gallerySection'
+  subtitle?: string
+  heading?: string
+  items?: Array<{
+    image?: GalleryItemImage
+    title?: string
+    description?: string
+    link?: string
+    _type: 'galleryItem'
+    _key: string
+  }>
+}
+
+export type LocationSection = {
+  _type: 'locationSection'
+  locations?: Array<{
+    label?: string
+    city?: string
+    description?: string
+    features?: Array<string>
+    _key: string
+  }>
+}
+
+export type AboutHero = {
+  _type: 'aboutHero'
+  subtitle?: string
+  heading?: string
+  description?: string
+  quote?: string
+  quoteAuthor?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
 export type CtaSection = {
   _type: 'ctaSection'
   heading?: string
@@ -49,13 +131,6 @@ export type ProductLookbook = {
       _key: string
     } & ProductCategoryReference
   >
-}
-
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
 export type ProductCategory = {
@@ -316,6 +391,21 @@ export type Page = {
     | ({
         _key: string
       } & InfoSection)
+    | ({
+        _key: string
+      } & AboutHero)
+    | ({
+        _key: string
+      } & LocationSection)
+    | ({
+        _key: string
+      } & GallerySection)
+    | ({
+        _key: string
+      } & WorkflowSection)
+    | ({
+        _key: string
+      } & InfrastructureSection)
   >
 }
 
@@ -606,11 +696,17 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
+  | GalleryItemImage
+  | InfrastructureSection
+  | WorkflowSection
+  | GallerySection
+  | LocationSection
+  | AboutHero
   | CtaSection
   | Services
   | ProductCategoryReference
   | ProductLookbook
-  | SanityImageAssetReference
   | ProductCategory
   | SanityImageCrop
   | SanityImageHotspot

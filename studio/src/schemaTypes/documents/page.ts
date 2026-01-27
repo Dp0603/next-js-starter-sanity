@@ -57,6 +57,12 @@ export const page = defineType({
         {type: 'aboutHero'},
         {type: 'locationSection'},
         {type: 'gallerySection'},
+        {type: 'workflowSection'},
+        {type: 'infrastructureSection'},
+        {type: 'productShowcase'},
+        {type: 'qualityStandards'},
+        {type: 'qualityEthics'},
+        {type: 'contactSection'},
       ],
       options: {
         insertMenu: {

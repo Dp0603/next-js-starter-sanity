@@ -18,6 +18,12 @@ import {ctaSection} from './objects/ctaSection'
 import {aboutHero} from './objects/aboutHero'
 import {locationSection} from './objects/locationSection'
 import {gallerySection} from './objects/gallerySection'
+import {workflowSection} from './objects/workflowSection'
+import {infrastructureSection} from './objects/infrastructureSection'
+import {productShowcase} from './objects/productShowcase'
+import {qualityStandards} from './objects/qualityStandards'
+import {qualityEthics} from './objects/qualityEthics'
+import {contactSection} from './objects/contactSection'
 
 // Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/studio/schema-types
 
@@ -45,4 +51,10 @@ export const schemaTypes = [
   aboutHero,
   locationSection,
   gallerySection,
+  workflowSection,
+  infrastructureSection,
+  productShowcase,
+  qualityStandards,
+  qualityEthics,
+  contactSection,
 ]

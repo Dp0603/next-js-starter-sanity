@@ -8,6 +8,12 @@ import CTASection from '@/app/components/sections/CTASection';
 import AboutHero from '@/app/components/sections/AboutHero';
 import LocationSection from '@/app/components/sections/LocationSection';
 import GallerySection from '@/app/components/sections/GallerySection';
+import WorkflowSection from '@/app/components/sections/WorkflowSection';
+import InfrastructureSection from '@/app/components/sections/InfrastructureSection';
+import ProductShowcase from '@/app/components/sections/ProductShowcase';
+import QualityStandards from '@/app/components/sections/QualityStandards';
+import QualityEthics from '@/app/components/sections/QualityEthics';
+import ContactSection from '@/app/components/sections/ContactSection';
 
 const Blocks: Record<string, React.FC<any>> = {
   hero: HeroSection,
@@ -19,6 +25,12 @@ const Blocks: Record<string, React.FC<any>> = {
   aboutHero: AboutHero,
   locationSection: LocationSection,
   gallerySection: GallerySection,
+  workflowSection: WorkflowSection,
+  infrastructureSection: InfrastructureSection,
+  productShowcase: ProductShowcase,
+  qualityStandards: QualityStandards,
+  qualityEthics: QualityEthics,
+  contactSection: ContactSection,
 };
 
 // 2. Define the Interface to accept an Array
