@@ -28,6 +28,7 @@ const StatsStrip: React.FC<StatsProps> = ({ block }) => {
                             className="py-12 px-6 flex flex-col justify-between h-40 group hover:bg-white/5 transition-colors"
                         >
                             {/* Use IconMapper instead of direct component */}
+                            <div className="mb-6">
                             <IconMapper
                                 name={stat.icon}
                                 // 👇 FIX: Use hex code [#cd7d51] for the accent color
@@ -41,6 +42,7 @@ const StatsStrip: React.FC<StatsProps> = ({ block }) => {
                                 <div className="text-[10px] uppercase tracking-widest text-neutral-400">
                                     {stat.label}
                                 </div>
+                            </div>
                             </div>
                         </div>
                     ))}

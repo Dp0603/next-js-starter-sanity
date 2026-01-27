@@ -1,6 +1,7 @@
 import {defineQuery} from 'next-sanity'
 
-export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
+// 1. UPDATED: Removed the old 'settings' query to avoid confusion.
+//    We now use SETTINGS_QUERY (at the bottom) for 'siteSettings'.
 
 const postFields = /* groq */ `
   _id,
@@ -24,7 +25,7 @@ const linkFields = /* groq */ `
   link {
       ...,
       ${linkReference}
-      }
+  }
 `
 
 export const getPageQuery = defineQuery(`
@@ -53,10 +54,8 @@ export const getPageQuery = defineQuery(`
           }
         }
       },
-      // 👇 THIS IS THE NEW PART
       _type == "productLookbook" => {
         ...,
-        // The -> arrow "expands" the reference to get the actual document data
         products[]->{
           _id,
           title,
@@ -65,6 +64,9 @@ export const getPageQuery = defineQuery(`
           features
         }
       },
+      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA
+      _type == "brandShowcase" => { ... },
+      _type == "contactSection" => { ... },
     },
   }
 `)
@@ -110,4 +112,19 @@ export const postPagesSlugs = defineQuery(`
 export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
+`)
+
+// 👇 FIXED: Changed 'groq' to 'defineQuery' to match your import at the top
+export const SETTINGS_QUERY = defineQuery(`
+  *[_type == "siteSettings"][0] {
+    headerMenu,
+    footerDescription,
+    contactEmail,
+    locations,
+    socialLinks,
+    "profileUrl": companyProfile.asset->url,
+    copyrightText,
+    legalLinks,
+    certificationsText 
+  }
 `)

@@ -1,13 +1,8 @@
-/**
- * This config is used to configure your Sanity Studio.
- * Learn more: https://www.sanity.io/docs/configuration
- */
-
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './src/schemaTypes'
-import {structure} from './src/structure'
+// 1. REMOVED the old structure import
 import {unsplashImageAsset} from 'sanity-plugin-asset-source-unsplash'
 import {
   presentationTool,
@@ -17,21 +12,15 @@ import {
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
 
-// Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
-
-// URL for preview functionality, defaults to localhost:3000 if not set
 const SANITY_STUDIO_PREVIEW_URL = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
 
-// Define the home location for the presentation tool
 const homeLocation = {
   title: 'Home',
   href: '/',
 } satisfies DocumentLocation
 
-// resolveHref() is a convenience function that resolves the URL
-// path for different document types and used in the presentation tool.
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
     case 'post':
@@ -44,16 +33,14 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
   }
 }
 
-// Main Sanity configuration
 export default defineConfig({
   name: 'default',
-  title: 'Sanity + Next.js Starter Template',
+  title: 'Akaame Studio', // Updated Title
 
   projectId,
   dataset,
 
   plugins: [
-    // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {
         origin: SANITY_STUDIO_PREVIEW_URL,
@@ -62,11 +49,11 @@ export default defineConfig({
         },
       },
       resolve: {
-        // The Main Document Resolver API provides a method of resolving a main document from a given route or route pattern. https://www.sanity.io/docs/visual-editing/presentation-resolver-api#57720a5678d9
         mainDocuments: defineDocuments([
           {
             route: '/',
-            filter: `_type == "settings" && _id == "siteSettings"`,
+            // 2. UPDATED: Changed "settings" to "siteSettings"
+            filter: `_type == "siteSettings" && _id == "siteSettings"`,
           },
           {
             route: '/:slug',
@@ -77,9 +64,9 @@ export default defineConfig({
             filter: `_type == "post" && slug.current == $slug || _id == $slug`,
           },
         ]),
-        // Locations Resolver API allows you to define where data is being used in your application. https://www.sanity.io/docs/visual-editing/presentation-resolver-api#8d8bca7bfcd7
         locations: {
-          settings: defineLocations({
+          // 3. UPDATED: Changed "settings" to "siteSettings"
+          siteSettings: defineLocations({
             locations: [homeLocation],
             message: 'This document is used on all pages',
             tone: 'positive',
@@ -119,16 +106,32 @@ export default defineConfig({
         },
       },
     }),
+
+    // 4. UPDATED: Custom Structure Definition
     structureTool({
-      structure, // Custom studio structure configuration, imported from ./src/structure.ts
+      structure: (S) =>
+        S.list()
+          .title('Content')
+          .items([
+            // Singleton: Site Settings at the top
+            S.listItem()
+              .title('Site Settings')
+              .id('siteSettings')
+              .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+
+            // Visual Divider
+            S.divider(),
+
+            // The rest of your documents (filtering out siteSettings to avoid duplicates)
+            ...S.documentTypeListItems().filter((item) => item.getId() !== 'siteSettings'),
+          ]),
     }),
-    // Additional plugins for enhanced functionality
+
     unsplashImageAsset(),
     assist(),
     visionTool(),
   ],
 
-  // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
   },

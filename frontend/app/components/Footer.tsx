@@ -1,100 +1,171 @@
-import Link from "next/link";
 import React from "react";
-import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
+import Link from "next/link";
+import { Download, Globe, Linkedin, Instagram, Facebook, Twitter, Youtube } from "lucide-react";
 
-export default function Footer() {
+interface FooterProps {
+  settings: any;
+}
+
+const getSocialIcon = (platform: string) => {
+  const p = platform?.toLowerCase() || "";
+  if (p.includes("linkedin")) return <Linkedin size={16} />;
+  if (p.includes("instagram")) return <Instagram size={16} />;
+  if (p.includes("facebook")) return <Facebook size={16} />;
+  if (p.includes("twitter") || p.includes("x")) return <Twitter size={16} />;
+  if (p.includes("youtube")) return <Youtube size={16} />;
+  return <Globe size={16} />;
+};
+
+const Footer: React.FC<FooterProps> = ({ settings }) => {
+  const currentYear = new Date().getFullYear();
+
+  // 👇 FIX 1: We removed "if (!settings) return null"
+  // 👇 FIX 2: We create a safe object so the app never crashes
+  const safeSettings = settings || {};
+
   return (
-    <footer className="bg-[#14253f] text-white pt-20 pb-10 border-t border-white/10">
+    <footer className="bg-[#0f1b2d] text-white pt-24 pb-12 border-t border-white/5">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
 
-          {/* Column 1: Brand */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 mb-24">
+
+          {/* COLUMN 1: Brand & Bio */}
           <div>
-            <h3 className="text-2xl font-bold tracking-tighter uppercase mb-6">
-              Akaame<span className="text-[#cd7d51]">.</span>
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-xs">
-              Your strategic partner for premium footwear and leather goods manufacturing.
-              Bridging artisanal craftsmanship with global industrial standards.
+            <div className="flex flex-col leading-none mb-8">
+              <span className="text-2xl font-black tracking-tighter text-white">
+                AKAAME<span className="text-[#cd7d51]">.</span>
+              </span>
+              <span className="text-[0.6rem] font-bold tracking-[0.2em] uppercase text-gray-500">
+                Exports Pvt. Ltd.
+              </span>
+            </div>
+
+            {/* 👇 FIX 3: Added fallback text */}
+            <p className="text-gray-400 font-light leading-relaxed mb-8">
+              {safeSettings.footerDescription || "Your strategic partner for premium footwear and leather goods manufacturing."}
             </p>
-            <div className="flex gap-4">
-              <SocialIcon icon={<Linkedin size={18} />} />
-              <SocialIcon icon={<Instagram size={18} />} />
-              <SocialIcon icon={<Facebook size={18} />} />
+
+            <div className="flex gap-6">
+              {safeSettings.socialLinks?.map((social: any, idx: number) => (
+                <a
+                  key={idx}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-[#cd7d51] transition-colors flex items-center gap-2"
+                  title={social.platform}
+                >
+                  {getSocialIcon(social.platform)}
+                  <span className="text-[10px] font-bold uppercase tracking-widest hidden lg:inline-block">
+                    {social.platform}
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Column 2: Company */}
+          {/* COLUMN 2: Company Links */}
           <div>
-            <h4 className="font-bold uppercase tracking-widest text-xs mb-6 text-[#cd7d51]">Company</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <FooterLink href="/about">About Us</FooterLink>
-              <FooterLink href="/capabilities">Capabilities</FooterLink>
-              <FooterLink href="/quality">Quality Control</FooterLink>
-              <FooterLink href="/careers">Careers</FooterLink>
+            <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs mb-8">
+              Company
+            </h4>
+            <ul className="space-y-4 text-sm text-gray-400 font-light">
+              {/* 👇 FIX 4: Added fallback menu if Sanity is empty */}
+              {(safeSettings.headerMenu || [
+                { title: "Home", link: "/" },
+                { title: "About", link: "/about" },
+                { title: "Contact", link: "/contact" }
+              ]).map((link: any, idx: number) => (
+                <li key={idx}>
+                  <Link href={link.link || "/"} className="hover:text-white transition-colors">
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Column 3: Products */}
+          {/* COLUMN 3: Resources */}
           <div>
-            <h4 className="font-bold uppercase tracking-widest text-xs mb-6 text-[#cd7d51]">Products</h4>
-            <ul className="space-y-4 text-sm text-gray-400">
-              <FooterLink href="/products">Leather Footwear</FooterLink>
-              <FooterLink href="/products">Luxury Bags</FooterLink>
-              <FooterLink href="/products">Small Leather Goods</FooterLink>
-              <FooterLink href="/accessories">Lifestyle Accessories</FooterLink>
+            <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs mb-8">
+              Resources
+            </h4>
+            <ul className="space-y-4 text-sm text-gray-400 font-light">
+              <li><Link href="/products" className="hover:text-white transition-colors">Products</Link></li>
+              <li><Link href="/quality" className="hover:text-white transition-colors">Compliance</Link></li>
+
+              {safeSettings.profileUrl && (
+                <li className="pt-4">
+                  <a
+                    href={safeSettings.profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-white font-medium hover:text-[#cd7d51] transition-colors"
+                  >
+                    <Download size={14} />
+                    Company Profile
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
-          {/* Column 4: Reach Us */}
+          {/* COLUMN 4: Global Presence */}
           <div>
-            <h4 className="font-bold uppercase tracking-widest text-xs mb-6 text-[#cd7d51]">Reach Us</h4>
-            <ul className="space-y-6 text-sm text-gray-400">
-              <li className="flex gap-3 items-start">
-                <MapPin size={18} className="text-[#cd7d51] shrink-0 mt-0.5" />
-                <span>Phase III, Industrial Area,<br />Ahmedabad, Gujarat , India</span>
-              </li>
-              <li className="flex gap-3 items-center">
-                <Phone size={18} className="text-[#cd7d51] shrink-0" />
-                <span>+91 98765 43210</span>
-              </li>
-              <li className="flex gap-3 items-center">
-                <Mail size={18} className="text-[#cd7d51] shrink-0" />
-                <span>exports@akaame.com</span>
-              </li>
+            <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs mb-8">
+              Global Presence
+            </h4>
+            <ul className="space-y-8 text-sm text-gray-400 font-light">
+              {safeSettings.locations?.map((loc: any, idx: number) => (
+                <li key={idx}>
+                  <strong className="block text-white uppercase text-xs tracking-wider mb-2">
+                    {loc.city}
+                  </strong>
+                  <span className="whitespace-pre-line">{loc.address}</span>
+                </li>
+              ))}
+
+              {safeSettings.contactEmail && (
+                <li>
+                  <a href={`mailto:${safeSettings.contactEmail}`} className="text-[#cd7d51] hover:text-white transition-colors">
+                    {safeSettings.contactEmail}
+                  </a>
+                </li>
+              )}
             </ul>
+          </div>
+
+        </div>
+
+        {/* BOTTOM BAR */}
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600">
+
+          {/* 👇 FIX 5: Fallback for Copyright Text */}
+          <p>
+            © {currentYear} {safeSettings.copyrightText || "Akaame Exports Pvt. Ltd. All rights reserved."}
+          </p>
+
+          <div className="flex gap-8 mt-4 md:mt-0 items-center">
+
+            {/* Dynamic Legal Links */}
+            {safeSettings.legalLinks?.map((link: any, idx: number) => (
+              <Link key={idx} href={link.url || "#"} className="hover:text-gray-400 transition-colors">
+                {link.label}
+              </Link>
+            ))}
+
+            {/* Dynamic Certifications Text */}
+            {safeSettings.certificationsText && (
+              <span className="opacity-100">
+                {safeSettings.certificationsText}
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>© 2026 Akaame Exports Pvt. Ltd. All rights reserved.</p>
-          <div className="flex gap-6">
-            <span>ISO 9001:2015</span>
-            <span>SA8000 Certified</span>
-            <span>Sedex Member</span>
-          </div>
-        </div>
       </div>
     </footer>
   );
-}
+};
 
-// Helper Components
-function FooterLink({ href, children }: { href: string, children: React.ReactNode }) {
-  return (
-    <li>
-      <Link href={href} className="hover:text-white transition-colors">
-        {children}
-      </Link>
-    </li>
-  );
-}
-
-function SocialIcon({ icon }: { icon: React.ReactNode }) {
-  return (
-    <a href="#" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#cd7d51] hover:text-white transition-all">
-      {icon}
-    </a>
-  );
-}
+export default Footer;

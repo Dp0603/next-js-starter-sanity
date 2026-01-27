@@ -28,6 +28,104 @@ export type GalleryItemImage = {
   _type: 'image'
 }
 
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type Logo = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "logo.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type BrandsObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "brands.object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type BrandShowcase = {
+  _type: 'brandShowcase'
+  subtitle?: string
+  heading?: string
+  description?: string
+  brands?: Array<{
+    name?: string
+    logo?: Logo
+    image?: BrandsObjectImage
+    description?: string
+    website?: string
+    color?: string
+    _key: string
+  }>
+}
+
+export type ContactSection = {
+  _type: 'contactSection'
+  subtitle?: string
+  heading?: string
+  description?: string
+  addressHeading?: string
+  address?: string
+  phoneHeading?: string
+  phones?: Array<string>
+  emailHeading?: string
+  email?: string
+}
+
+export type QualityEthics = {
+  _type: 'qualityEthics'
+  subtitle?: string
+  heading?: string
+  description?: string
+  checklist?: Array<string>
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
+export type QualityStandards = {
+  _type: 'qualityStandards'
+  subtitle?: string
+  heading?: string
+  description?: string
+  features?: Array<{
+    title?: string
+    description?: string
+    icon?: 'shield' | 'refresh' | 'clipboard'
+    _key: string
+  }>
+}
+
+export type ProductShowcase = {
+  _type: 'productShowcase'
+  subtitle?: string
+  heading?: string
+  description?: string
+  products?: Array<{
+    number?: string
+    title?: string
+    description?: string
+    features?: Array<string>
+    image?: ObjectImage
+    buttonText?: string
+    buttonLink?: string
+    _key: string
+  }>
+}
+
 export type InfrastructureSection = {
   _type: 'infrastructureSection'
   subtitle?: string
@@ -316,46 +414,6 @@ export type Button = {
   link?: Link
 }
 
-export type Settings = {
-  _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
-      href?: string
-      page?: PageReference
-      post?: PostReference
-      openInNewTab?: boolean
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  ogImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    metadataBase?: string
-    _type: 'image'
-  }
-}
-
 export type Page = {
   _id: string
   _type: 'page'
@@ -406,6 +464,21 @@ export type Page = {
     | ({
         _key: string
       } & InfrastructureSection)
+    | ({
+        _key: string
+      } & ProductShowcase)
+    | ({
+        _key: string
+      } & QualityStandards)
+    | ({
+        _key: string
+      } & QualityEthics)
+    | ({
+        _key: string
+      } & ContactSection)
+    | ({
+        _key: string
+      } & BrandShowcase)
   >
 }
 
@@ -460,6 +533,50 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
+}
+
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type SiteSettings = {
+  _id: string
+  _type: 'siteSettings'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  headerMenu?: Array<{
+    title?: string
+    link?: string
+    _key: string
+  }>
+  footerDescription?: string
+  contactEmail?: string
+  locations?: Array<{
+    city?: string
+    address?: string
+    _key: string
+  }>
+  socialLinks?: Array<{
+    platform?: string
+    url?: string
+    _key: string
+  }>
+  companyProfile?: {
+    asset?: SanityFileAssetReference
+    media?: unknown
+    _type: 'file'
+  }
+  copyrightText?: string
+  legalLinks?: Array<{
+    label?: string
+    url?: string
+    _key: string
+  }>
+  certificationsText?: string
 }
 
 export type SanityAssistInstructionTask = {
@@ -698,6 +815,14 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryItemImage
+  | ObjectImage
+  | Logo
+  | BrandsObjectImage
+  | BrandShowcase
+  | ContactSection
+  | QualityEthics
+  | QualityStandards
+  | ProductShowcase
   | InfrastructureSection
   | WorkflowSection
   | GallerySection
@@ -721,12 +846,13 @@ export type AllSanitySchemaTypes =
   | BlockContentTextOnly
   | BlockContent
   | Button
-  | Settings
   | Page
   | PersonReference
   | Post
   | Person
   | Slug
+  | SanityFileAssetReference
+  | SiteSettings
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations

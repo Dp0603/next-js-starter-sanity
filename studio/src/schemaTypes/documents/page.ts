@@ -1,11 +1,6 @@
 import {defineField, defineType} from 'sanity'
 import {DocumentIcon} from '@sanity/icons'
 
-/**
- * Page schema.  Define and edit the fields for the 'page' content type.
- * Learn more: https://www.sanity.io/docs/studio/schema-types
- */
-
 export const page = defineType({
   name: 'page',
   title: 'Page',
@@ -63,6 +58,7 @@ export const page = defineType({
         {type: 'qualityStandards'},
         {type: 'qualityEthics'},
         {type: 'contactSection'},
+        {type: 'brandShowcase'},
       ],
       options: {
         insertMenu: {

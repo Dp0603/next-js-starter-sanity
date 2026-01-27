@@ -1,100 +1,73 @@
-import './globals.css'
+import type { Metadata } from "next";
+import "./globals.css";
 
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import type { Metadata } from 'next'
-import { Inter, IBM_Plex_Mono, Oswald } from 'next/font/google'
-import { draftMode } from 'next/headers'
-import { toPlainText } from 'next-sanity'
-import { VisualEditing } from 'next-sanity/visual-editing'
-import { Toaster } from 'sonner'
+import { Inter, IBM_Plex_Mono, Oswald } from 'next/font/google';
 
-import DraftModeToast from '@/app/components/DraftModeToast'
-import Footer from '@/app/components/Footer'
-import Header from '@/app/components/Header'
-import * as demo from '@/sanity/lib/demo'
-import { sanityFetch, SanityLive } from '@/sanity/lib/live'
-import { settingsQuery } from '@/sanity/lib/queries'
-import { resolveOpenGraphImage } from '@/sanity/lib/utils'
-import { handleError } from '@/app/client-utils'
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
-/**
- * Generate metadata for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
- */
-export async function generateMetadata(): Promise<Metadata> {
-  const { data: settings } = await sanityFetch({
-    query: settingsQuery,
-    // Metadata should never contain stega
-    stega: false,
-  })
-  const title = settings?.title || demo.title
-  const description = settings?.description || demo.description
+import { SETTINGS_QUERY } from "@/sanity/lib/queries";
 
-  const ogImage = resolveOpenGraphImage(settings?.ogImage)
-  let metadataBase: URL | undefined = undefined
-  try {
-    metadataBase = settings?.ogImage?.metadataBase
-      ? new URL(settings.ogImage.metadataBase)
-      : undefined
-  } catch {
-    // ignore
-  }
-  return {
-    metadataBase,
-    title: {
-      template: `%s | ${title}`,
-      default: title,
-    },
-    description: toPlainText(description),
-    openGraph: {
-      images: ogImage ? [ogImage] : [],
-    },
-  }
-}
+import { SanityLive, sanityFetch } from "@/sanity/lib/live";
 
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: '--font-ibm-plex-mono',
   weight: ['400'],
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
-// 👇 2. Configure Oswald Font
 const oswald = Oswald({
   variable: '--font-oswald',
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled: isDraftMode } = await draftMode()
+export const metadata: Metadata = {
+  title: "Akaame Exports Pvt. Ltd.",
+  description: "Premium Footwear & Leather Goods Manufacturer",
+};
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+
+  // 👇 FIXED: Use sanityFetch instead of client.fetch
+  // This enables "Live Mode" so you don't have to restart the server
+  const { data: settings } = await sanityFetch({
+    query: SETTINGS_QUERY,
+  });
+
+  // Fallback for Menu Items
+  const menuItems = settings?.headerMenu || [];
 
   return (
-    // 👇 3. Add oswald.variable to the class list
-    <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable} bg-white text-black`}>
-      <body>
-        <Toaster />
+    <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable}`}>
+      <body className="antialiased font-sans bg-white text-[#14253f]">
 
-        <section className="min-h-screen">
-          {isDraftMode && (
-            <>
-              <DraftModeToast />
-              <VisualEditing />
-            </>
-          )}
-          <SanityLive onError={handleError} />
-          <Header />
-          <main className="">{children}</main>
-          <Footer />
-        </section>
-        <SpeedInsights />
+        {/* Pass Dynamic Menu to Header */}
+        <Header menuItems={menuItems} />
+
+        {/* Main Content Area */}
+        <main className="min-h-screen">
+          {children}
+        </main>
+
+        {/* Pass Dynamic Settings to Footer */}
+        <Footer settings={settings} />
+
+        {/* Enable Real-time Preview */}
+        <SanityLive />
+
       </body>
     </html>
-  )
+  );
 }

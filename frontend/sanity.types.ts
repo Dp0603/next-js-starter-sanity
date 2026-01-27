@@ -28,6 +28,104 @@ export type GalleryItemImage = {
   _type: 'image'
 }
 
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type Logo = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "logo.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type BrandsObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "brands.object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type BrandShowcase = {
+  _type: 'brandShowcase'
+  subtitle?: string
+  heading?: string
+  description?: string
+  brands?: Array<{
+    name?: string
+    logo?: Logo
+    image?: BrandsObjectImage
+    description?: string
+    website?: string
+    color?: string
+    _key: string
+  }>
+}
+
+export type ContactSection = {
+  _type: 'contactSection'
+  subtitle?: string
+  heading?: string
+  description?: string
+  addressHeading?: string
+  address?: string
+  phoneHeading?: string
+  phones?: Array<string>
+  emailHeading?: string
+  email?: string
+}
+
+export type QualityEthics = {
+  _type: 'qualityEthics'
+  subtitle?: string
+  heading?: string
+  description?: string
+  checklist?: Array<string>
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
+export type QualityStandards = {
+  _type: 'qualityStandards'
+  subtitle?: string
+  heading?: string
+  description?: string
+  features?: Array<{
+    title?: string
+    description?: string
+    icon?: 'shield' | 'refresh' | 'clipboard'
+    _key: string
+  }>
+}
+
+export type ProductShowcase = {
+  _type: 'productShowcase'
+  subtitle?: string
+  heading?: string
+  description?: string
+  products?: Array<{
+    number?: string
+    title?: string
+    description?: string
+    features?: Array<string>
+    image?: ObjectImage
+    buttonText?: string
+    buttonLink?: string
+    _key: string
+  }>
+}
+
 export type InfrastructureSection = {
   _type: 'infrastructureSection'
   subtitle?: string
@@ -316,46 +414,6 @@ export type Button = {
   link?: Link
 }
 
-export type Settings = {
-  _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
-      href?: string
-      page?: PageReference
-      post?: PostReference
-      openInNewTab?: boolean
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  ogImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    metadataBase?: string
-    _type: 'image'
-  }
-}
-
 export type Page = {
   _id: string
   _type: 'page'
@@ -406,6 +464,21 @@ export type Page = {
     | ({
         _key: string
       } & InfrastructureSection)
+    | ({
+        _key: string
+      } & ProductShowcase)
+    | ({
+        _key: string
+      } & QualityStandards)
+    | ({
+        _key: string
+      } & QualityEthics)
+    | ({
+        _key: string
+      } & ContactSection)
+    | ({
+        _key: string
+      } & BrandShowcase)
   >
 }
 
@@ -460,6 +533,50 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
+}
+
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type SiteSettings = {
+  _id: string
+  _type: 'siteSettings'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  headerMenu?: Array<{
+    title?: string
+    link?: string
+    _key: string
+  }>
+  footerDescription?: string
+  contactEmail?: string
+  locations?: Array<{
+    city?: string
+    address?: string
+    _key: string
+  }>
+  socialLinks?: Array<{
+    platform?: string
+    url?: string
+    _key: string
+  }>
+  companyProfile?: {
+    asset?: SanityFileAssetReference
+    media?: unknown
+    _type: 'file'
+  }
+  copyrightText?: string
+  legalLinks?: Array<{
+    label?: string
+    url?: string
+    _key: string
+  }>
+  certificationsText?: string
 }
 
 export type SanityAssistInstructionTask = {
@@ -698,6 +815,14 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryItemImage
+  | ObjectImage
+  | Logo
+  | BrandsObjectImage
+  | BrandShowcase
+  | ContactSection
+  | QualityEthics
+  | QualityStandards
+  | ProductShowcase
   | InfrastructureSection
   | WorkflowSection
   | GallerySection
@@ -721,12 +846,13 @@ export type AllSanitySchemaTypes =
   | BlockContentTextOnly
   | BlockContent
   | Button
-  | Settings
   | Page
   | PersonReference
   | Post
   | Person
   | Slug
+  | SanityFileAssetReference
+  | SiteSettings
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -752,51 +878,8 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity\lib\queries.ts
-// Variable: settingsQuery
-// Query: *[_type == "settings"][0]
-export type SettingsQueryResult = {
-  _id: string
-  _type: 'settings'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
-      href?: string
-      page?: PageReference
-      post?: PostReference
-      openInNewTab?: boolean
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  ogImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    metadataBase?: string
-    _type: 'image'
-  }
-} | null
-
-// Source: sanity\lib\queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      // 👇 THIS IS THE NEW PART      _type == "productLookbook" => {        ...,        // The -> arrow "expands" the reference to get the actual document data        products[]->{          _id,          title,          description,          image,          features        }      },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA      _type == "brandShowcase" => { ... },      _type == "contactSection" => { ... },    },  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -820,6 +903,22 @@ export type GetPageQueryResult = {
           crop?: SanityImageCrop
           _type: 'image'
         }
+      }
+    | {
+        _key: string
+        _type: 'brandShowcase'
+        subtitle?: string
+        heading?: string
+        description?: string
+        brands?: Array<{
+          name?: string
+          logo?: Logo
+          image?: BrandsObjectImage
+          description?: string
+          website?: string
+          color?: string
+          _key: string
+        }>
       }
     | {
         _key: string
@@ -848,6 +947,19 @@ export type GetPageQueryResult = {
         }
         theme?: 'dark' | 'light'
         contentAlignment?: 'imageFirst' | 'textFirst'
+      }
+    | {
+        _key: string
+        _type: 'contactSection'
+        subtitle?: string
+        heading?: string
+        description?: string
+        addressHeading?: string
+        address?: string
+        phoneHeading?: string
+        phones?: Array<string>
+        emailHeading?: string
+        email?: string
       }
     | {
         _key: string
@@ -985,6 +1097,51 @@ export type GetPageQueryResult = {
           } | null
           features: Array<string> | null
         }> | null
+      }
+    | {
+        _key: string
+        _type: 'productShowcase'
+        subtitle?: string
+        heading?: string
+        description?: string
+        products?: Array<{
+          number?: string
+          title?: string
+          description?: string
+          features?: Array<string>
+          image?: ObjectImage
+          buttonText?: string
+          buttonLink?: string
+          _key: string
+        }>
+      }
+    | {
+        _key: string
+        _type: 'qualityEthics'
+        subtitle?: string
+        heading?: string
+        description?: string
+        checklist?: Array<string>
+        image?: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
+      }
+    | {
+        _key: string
+        _type: 'qualityStandards'
+        subtitle?: string
+        heading?: string
+        description?: string
+        features?: Array<{
+          title?: string
+          description?: string
+          icon?: 'clipboard' | 'refresh' | 'shield'
+          _key: string
+        }>
       }
     | {
         _key: string
@@ -1184,17 +1341,48 @@ export type PagesSlugsResult = Array<{
   slug: string
 }>
 
+// Source: sanity\lib\queries.ts
+// Variable: SETTINGS_QUERY
+// Query: *[_type == "siteSettings"][0] {    headerMenu,    footerDescription,    contactEmail,    locations,    socialLinks,    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
+export type SETTINGS_QUERY_RESULT = {
+  headerMenu: Array<{
+    title?: string
+    link?: string
+    _key: string
+  }> | null
+  footerDescription: string | null
+  contactEmail: string | null
+  locations: Array<{
+    city?: string
+    address?: string
+    _key: string
+  }> | null
+  socialLinks: Array<{
+    platform?: string
+    url?: string
+    _key: string
+  }> | null
+  profileUrl: string | null
+  copyrightText: string | null
+  legalLinks: Array<{
+    label?: string
+    url?: string
+    _key: string
+  }> | null
+  certificationsText: string | null
+} | null
+
 // Query TypeMap
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[_type == "settings"][0]': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      // \uD83D\uDC47 THIS IS THE NEW PART\n      _type == "productLookbook" => {\n        ...,\n        // The -> arrow "expands" the reference to get the actual document data\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      // \uD83D\uDC47 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA\n      _type == "brandShowcase" => { ... },\n      _type == "contactSection" => { ... },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
     '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
+    '\n  *[_type == "siteSettings"][0] {\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    socialLinks,\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
   }
 }

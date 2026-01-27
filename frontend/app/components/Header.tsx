@@ -5,15 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "./ui/Button";
 
-const Header = () => {
+// 👇 FIX: Added '?' to make these optional to satisfy TypeScript
+interface HeaderProps {
+  menuItems: {
+    title?: string;
+    link?: string;
+    _key?: string; // Sanity often sends a key
+  }[];
+}
+
+const Header: React.FC<HeaderProps> = ({ menuItems }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
-  // 1. Logic: Transparent only on Home Page top
   const isHome = pathname === "/";
   const isTransparent = isHome && !isScrolled;
 
-  // 2. Colors based on state
   const textColor = isTransparent ? "text-white" : "text-[#14253f]";
   const logoColor = isTransparent ? "text-white" : "text-[#14253f]";
   const subLogoColor = isTransparent ? "text-neutral-400" : "text-neutral-500";
@@ -26,15 +33,6 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "HOME", path: "/" },
-    { name: "ABOUT", path: "/about" },
-    { name: "CAPABILITIES", path: "/capabilities" },
-    { name: "PRODUCTS", path: "/products" },
-    { name: "QUALITY", path: "/quality" },
-    { name: "CONTACT", path: "/contact" },
-  ];
-
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isTransparent ? "bg-transparent py-8" : "bg-white/95 backdrop-blur-md shadow-sm py-4"
@@ -42,12 +40,12 @@ const Header = () => {
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
 
-        {/* LOGO SECTION */}
+        {/* LOGO */}
         <Link href="/" className="group">
           <div className="flex flex-col leading-none">
             <span className={`text-2xl font-black tracking-tighter ${logoColor} transition-colors`}>
               AKAAME
-              <span className="text-[#cd7d51]"></span>
+              <span className="text-[#cd7d51]">.</span>
             </span>
             <span className={`text-[0.6rem] font-bold tracking-[0.2em] uppercase ${subLogoColor} transition-colors`}>
               Exports Pvt. Ltd.
@@ -55,18 +53,22 @@ const Header = () => {
           </div>
         </Link>
 
-        {/* NAVIGATION LINKS */}
+        {/* NAVIGATION */}
         <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.path;
+          {menuItems?.map((link, idx) => {
+            // 👇 FIX: Safely handle potentially undefined links
+            const safeLink = link.link || "/";
+            const safeTitle = link.title || "Untitled";
+            const isActive = pathname === safeLink;
+
             return (
               <Link
-                key={link.name}
-                href={link.path}
+                key={link._key || idx}
+                href={safeLink}
                 className={`text-xs font-bold tracking-widest uppercase transition-colors duration-300 hover:text-[#cd7d51] ${isActive ? "text-[#cd7d51]" : textColor
                   }`}
               >
-                {link.name}
+                {safeTitle}
               </Link>
             );
           })}
@@ -84,7 +86,6 @@ const Header = () => {
         </div>
 
         {/* MOBILE MENU TOGGLE */}
-        {/* 👇 FIX: Added type="button" and aria-label for accessibility */}
         <button
           type="button"
           aria-label="Toggle mobile menu"
@@ -97,7 +98,7 @@ const Header = () => {
             strokeWidth={1.5}
             stroke="currentColor"
             className="w-8 h-8"
-            aria-hidden="true" // Hides the SVG itself from screen readers since the button has a label
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
