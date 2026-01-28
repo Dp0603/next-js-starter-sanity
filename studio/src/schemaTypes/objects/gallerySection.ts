@@ -1,23 +1,29 @@
 import {defineField, defineType} from 'sanity'
+import {ImagesIcon} from '@sanity/icons'
 
 export const gallerySection = defineType({
   name: 'gallerySection',
-  title: 'Gallery Section',
+  title: 'Gallery Grid',
   type: 'object',
+  icon: ImagesIcon,
   fields: [
     defineField({
-      name: 'subtitle',
-      title: 'Subtitle',
-      type: 'string',
+        name: 'subtitle', 
+        title: 'Subtitle', 
+        type: 'string', 
+        initialValue: 'GALLERY',
+        validation: (Rule) => Rule.required()
     }),
     defineField({
-      name: 'heading',
-      title: 'Heading',
-      type: 'string',
+        name: 'heading', 
+        title: 'Heading', 
+        type: 'string', 
+        initialValue: 'INSIDE AKAAME.',
+        validation: (Rule) => Rule.required()
     }),
     defineField({
       name: 'items',
-      title: 'Gallery Items',
+      title: 'Gallery Images',
       type: 'array',
       of: [
         {
@@ -25,35 +31,30 @@ export const gallerySection = defineType({
           name: 'galleryItem',
           fields: [
             defineField({
-              name: 'image',
-              title: 'Image',
-              type: 'image',
-              options: {hotspot: true},
+                name: 'image', 
+                title: 'Image', 
+                type: 'image', 
+                options: {hotspot: true},
+                validation: (Rule) => Rule.required()
             }),
+            defineField({name: 'title', title: 'Title', type: 'string'}),
             defineField({
-              name: 'title',
-              title: 'Title', // e.g. "VELARA"
-              type: 'string',
+                name: 'description', 
+                title: 'Short Description', 
+                type: 'text', 
+                rows: 2,
+                description: 'Appears on hover. Keep strictly under 15 words.'
             }),
-            // 👇 This is the new field for the paragraph text
-            defineField({
-              name: 'description',
-              title: 'Description', // e.g. "Contemporary leather footwear..."
-              type: 'text',
-              rows: 2,
-            }),
-            defineField({
-              name: 'link',
-              title: 'Link (Optional)',
-              type: 'string',
-            }),
+            defineField({name: 'link', title: 'Link (Optional)', type: 'url'}),
           ],
-          preview: {
-            select: {title: 'title', media: 'image'},
-          },
         },
       ],
-      validation: (Rule) => Rule.max(2),
     }),
   ],
+  preview: {
+    select: {title: 'heading'},
+    prepare({title}) {
+      return {title: title || 'Gallery', media: ImagesIcon}
+    },
+  },
 })

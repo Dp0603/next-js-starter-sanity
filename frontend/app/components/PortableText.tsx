@@ -1,13 +1,3 @@
-/**
- * This component uses Portable Text to render a post body.
- *
- * You can learn more about Portable Text on:
- * https://www.sanity.io/docs/block-content
- * https://github.com/portabletext/react-portabletext
- * https://portabletext.org/
- *
- */
-
 import {PortableText, type PortableTextComponents, type PortableTextBlock} from 'next-sanity'
 import ResolvedLink from '@/app/components/ResolvedLink'
 import Image from '@/app/components/SanityImage'

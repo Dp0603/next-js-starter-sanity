@@ -1,12 +1,12 @@
 import React from 'react';
 import HeroSection from '@/app/components/sections/HeroSection';
 import StatsStrip from '@/app/components/sections/StatsStrip';
-import PhilosophySection from '@/app/components/sections/PhilosophySection';
 import ProductLookbook from '@/app/components/sections/ProductLookbook';
 import ServicesSection from '@/app/components/sections/ServicesSection';
 import CTASection from '@/app/components/sections/CTASection';
 import AboutHero from '@/app/components/sections/AboutHero';
 import LocationSection from '@/app/components/sections/LocationSection';
+import PhilosophySection from '@/app/components/sections/PhilosophySection';
 import GallerySection from '@/app/components/sections/GallerySection';
 import WorkflowSection from '@/app/components/sections/WorkflowSection';
 import InfrastructureSection from '@/app/components/sections/InfrastructureSection';
@@ -20,12 +20,12 @@ import RichTextSection from '@/app/components/sections/RichTextSection';
 const Blocks: Record<string, React.FC<any>> = {
   hero: HeroSection,
   stats: StatsStrip,
-  philosophy: PhilosophySection,
   productLookbook: ProductLookbook,
   services: ServicesSection,
   ctaSection: CTASection,
   aboutHero: AboutHero,
   locationSection: LocationSection,
+  philosophy: PhilosophySection,
   gallerySection: GallerySection,
   workflowSection: WorkflowSection,
   infrastructureSection: InfrastructureSection,
