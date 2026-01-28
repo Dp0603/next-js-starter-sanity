@@ -26,6 +26,7 @@ import {qualityEthics} from './objects/qualityEthics'
 import {contactSection} from './objects/contactSection'
 import {brandShowcase} from './objects/brandShowcase'
 import {richTextSection} from './objects/richTextSection'
+import {location} from './documents/location'
 
 // Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/studio/schema-types
 
@@ -59,4 +60,5 @@ export const schemaTypes = [
   contactSection,
   brandShowcase,
   richTextSection,
+  location,
 ]

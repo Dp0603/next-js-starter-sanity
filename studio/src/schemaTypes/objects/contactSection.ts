@@ -1,46 +1,147 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
+import { EnvelopeIcon } from '@sanity/icons'
 
 export const contactSection = defineType({
   name: 'contactSection',
   title: 'Contact Section',
   type: 'object',
+  icon: EnvelopeIcon,
+  fieldsets: [
+    { name: 'header', title: 'Header Content', options: { collapsible: true, collapsed: false } },
+    { name: 'details', title: 'Contact Information', options: { collapsible: true, collapsed: false } },
+    { name: 'form', title: 'Form Settings', options: { collapsible: true, collapsed: false } }, // New Group
+  ],
   fields: [
-    // Header Info
-    defineField({name: 'subtitle', title: 'Subtitle', type: 'string', initialValue: 'PARTNERSHIP'}),
+    // --- HEADER ---
+    defineField({
+      name: 'subtitle',
+      title: 'Subtitle',
+      type: 'string',
+      fieldset: 'header',
+      initialValue: 'PARTNERSHIP',
+      validation: (Rule) => Rule.required(),
+    }),
     defineField({
       name: 'heading',
       title: 'Heading',
       type: 'string',
+      fieldset: 'header',
       initialValue: 'INITIATE DIALOGUE.',
+      validation: (Rule) => Rule.required(),
     }),
-    defineField({name: 'description', title: 'Description', type: 'text'}),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 3,
+      fieldset: 'header',
+      description: 'Brief inviting message displayed below the heading.',
+    }),
 
-    // Contact Details
+    // --- CONTACT DETAILS ---
     defineField({
       name: 'addressHeading',
       title: 'Address Label',
       type: 'string',
+      fieldset: 'details',
       initialValue: 'HEADQUARTERS',
     }),
-    defineField({name: 'address', title: 'Address', type: 'text'}),
-
+    defineField({
+      name: 'address',
+      title: 'Physical Address',
+      type: 'text',
+      rows: 3,
+      fieldset: 'details',
+    }),
+    defineField({
+      name: 'googleMapsLink',
+      title: 'Google Maps Link',
+      type: 'url',
+      description: 'The URL opened when the user clicks the address or map.',
+      fieldset: 'details',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+    }),
+    defineField({
+      name: 'mapImage',
+      title: 'Map Preview Image',
+      type: 'image',
+      description: 'Upload a screenshot of the map location (recommended 600x300px).',
+      fieldset: 'details',
+      options: { hotspot: true },
+    }),
+    
     defineField({
       name: 'phoneHeading',
       title: 'Phone Label',
       type: 'string',
+      fieldset: 'details',
       initialValue: 'DIRECT LINE',
     }),
-    defineField({name: 'phones', title: 'Phone Numbers', type: 'array', of: [{type: 'string'}]}),
-
+    defineField({
+      name: 'phones',
+      title: 'Phone Numbers',
+      type: 'array',
+      description: 'Add numbers with country code (e.g. +91 9876543210).',
+      fieldset: 'details',
+      of: [{ 
+        type: 'string',
+        validation: (Rule) => Rule.regex(/^\+?[0-9\s]+$/, { name: 'phone', invert: false }).error('Must be a valid phone number')
+      }],
+    }),
+    
     defineField({
       name: 'emailHeading',
       title: 'Email Label',
       type: 'string',
+      fieldset: 'details',
       initialValue: 'EXPORT DIVISION',
     }),
-    defineField({name: 'email', title: 'Email Address', type: 'string'}),
+    defineField({
+      name: 'email',
+      title: 'Email Address',
+      type: 'string',
+      fieldset: 'details',
+      validation: (Rule) => Rule.email(),
+    }),
+
+    defineField({
+      name: 'hoursHeading',
+      title: 'Business Hours Label',
+      type: 'string',
+      fieldset: 'details',
+      initialValue: 'BUSINESS HOURS',
+    }),
+    defineField({
+      name: 'hours',
+      title: 'Hours Details',
+      type: 'text',
+      rows: 2,
+      fieldset: 'details',
+      placeholder: 'e.g. Mon - Sat: 9:00 AM - 7:00 PM IST',
+    }),
+
+    // --- FORM SETTINGS (Dynamic Dropdowns) ---
+    defineField({
+      name: 'productCategories',
+      title: 'Form: Product Categories',
+      description: 'The options shown in the "Product Category" dropdown.',
+      fieldset: 'form',
+      type: 'array',
+      of: [{ type: 'string' }],
+      initialValue: ['Footwear', 'Bags', 'Accessories', 'Private Label'],
+    }),
   ],
   preview: {
-    select: {title: 'heading'},
+    select: {
+      title: 'heading',
+      subtitle: 'subtitle',
+    },
+    prepare({ title, subtitle }) {
+      return {
+        title: title || 'Contact Section',
+        subtitle: subtitle || 'Contact Form',
+        media: EnvelopeIcon,
+      }
+    },
   },
 })

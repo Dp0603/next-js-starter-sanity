@@ -52,6 +52,24 @@ export type BrandsObjectImage = {
   _type: 'image'
 }
 
+export type Location = {
+  _id: string
+  _type: 'location'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name: string
+  type?: 'source' | 'target'
+  coordinates?: Geopoint
+}
+
+export type Geopoint = {
+  _type: 'geopoint'
+  lat?: number
+  lng?: number
+  alt?: number
+}
+
 export type RichTextSection = {
   _type: 'richTextSection'
   content?: Array<{
@@ -830,19 +848,14 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData
 }
 
-export type Geopoint = {
-  _type: 'geopoint'
-  lat?: number
-  lng?: number
-  alt?: number
-}
-
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | GalleryItemImage
   | ObjectImage
   | Logo
   | BrandsObjectImage
+  | Location
+  | Geopoint
   | RichTextSection
   | BrandShowcase
   | ContactSection
@@ -899,7 +912,6 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
 
 export declare const internalGroqTypeReferenceTo: unique symbol
 
