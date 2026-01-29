@@ -525,6 +525,7 @@ export type Page = {
   slug: Slug
   heading: string
   subheading?: string
+  legalType?: 'privacy' | 'terms'
   pageBuilder?: Array<
     | ({
         _key: string

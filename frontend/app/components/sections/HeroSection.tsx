@@ -17,8 +17,7 @@ const HeroSection: React.FC<HeroProps> = ({ block }) => {
     const lastPart = headingParts.slice(Math.ceil(headingParts.length / 2)).join(" ");
 
     return (
-        <section className="relative min-h-[90vh] flex items-end pb-16 md:pb-24 lg:pb-32 bg-[#14253f] overflow-hidden">
-
+        <section className="relative min-h-screen flex items-center pt-32 pb-16 md:pb-24 lg:pb-32 bg-[#14253f] overflow-hidden">
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 {block.backgroundImage && (
@@ -36,8 +35,7 @@ const HeroSection: React.FC<HeroProps> = ({ block }) => {
 
                     {/* Main Heading */}
                     <div className="mb-8">
-                        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-bold uppercase tracking-tighter leading-[0.9]">
-                            <span className="block text-white">{firstPart}</span>
+                        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-[9rem] font-bold uppercase tracking-tighter leading-[1.1] lg:leading-[0.9]">                            <span className="block text-white">{firstPart}</span>
                             <span className="block text-[#cd7d51]">{lastPart}.</span>
                         </h1>
                     </div>

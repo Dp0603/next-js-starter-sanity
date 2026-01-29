@@ -3506,6 +3506,23 @@
         },
         "optional": true
       },
+      "legalType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "privacy"
+            },
+            {
+              "type": "string",
+              "value": "terms"
+            }
+          ]
+        },
+        "optional": true
+      },
       "pageBuilder": {
         "type": "objectAttribute",
         "value": {

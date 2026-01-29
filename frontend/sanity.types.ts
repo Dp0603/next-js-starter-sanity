@@ -525,6 +525,7 @@ export type Page = {
   slug: Slug
   heading: string
   subheading?: string
+  legalType?: 'privacy' | 'terms'
   pageBuilder?: Array<
     | ({
         _key: string
@@ -979,7 +980,7 @@ export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity\lib\queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA      _type == "brandShowcase" => { ... },      _type == "contactSection" => { ... },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    legalType,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA      _type == "brandShowcase" => { ... },      _type == "contactSection" => { ... },    },  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -987,6 +988,7 @@ export type GetPageQueryResult = {
   slug: Slug
   heading: string
   subheading: string | null
+  legalType: 'privacy' | 'terms' | null
   pageBuilder: Array<
     | {
         _key: string
@@ -1544,7 +1546,7 @@ export type SETTINGS_QUERY_RESULT = {
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      // \uD83D\uDC47 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA\n      _type == "brandShowcase" => { ... },\n      _type == "contactSection" => { ... },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    legalType,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      // \uD83D\uDC47 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA\n      _type == "brandShowcase" => { ... },\n      _type == "contactSection" => { ... },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult

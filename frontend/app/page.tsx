@@ -3,11 +3,10 @@ import { notFound } from 'next/navigation'
 import { sanityFetch } from '@/sanity/lib/live'
 import { getPageQuery } from '@/sanity/lib/queries'
 import BlockRenderer from '@/app/components/BlockRenderer'
-// import InteractiveGlobe from "./components/sections/InteractiveGlobe";
-import LogisticsGlobe from "./components/sections/LogisticsGlobe";
+import LogisticsGlobe from './components/sections/LogisticsGlobe'
 
-// 1. Define Query
 const LOCATIONS_QUERY = `*[_type == "location"]{
+  _id,
   name,
   type,
   "lat": coordinates.lat,
@@ -21,35 +20,37 @@ export async function generateMetadata(): Promise<Metadata> {
     params: { slug: '/' },
     stega: false,
   })
+
   return {
-    title: data?.name,
-    description: data?.heading,
+    title: data?.name ?? 'Home',
+    description: data?.heading ?? '',
   }
 }
 
 export default async function Page() {
-  // 2. Fetch Page Content
   const { data } = await sanityFetch({
     query: getPageQuery,
     params: { slug: '/' },
   })
 
-  // 3. Fetch Globe Locations ( 👇 THIS WAS MISSING )
   const { data: locationData } = await sanityFetch({
     query: LOCATIONS_QUERY,
-    params: {},
   })
 
   if (!data) {
-    return notFound()
+    notFound()
   }
 
   return (
     <div className="min-h-screen">
-      {data.pageBuilder ? <BlockRenderer blocks={data.pageBuilder} /> : null}
+      <BlockRenderer
+        // Guard against null for the array
+        blocks={data.pageBuilder ?? []}
+        // This will now pass the build because the prop accepts 'null'
+        legalType={data.legalType}
+      />
 
-      {/* <InteractiveGlobe /> */}
-      <LogisticsGlobe locations={locationData} />
+      <LogisticsGlobe locations={locationData ?? []} />
     </div>
   )
 }
