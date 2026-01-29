@@ -36,6 +36,19 @@ export const page = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'legalType',
+      title: 'Legal Page Type',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Privacy Policy', value: 'privacy'},
+          {title: 'Terms of Service', value: 'terms'},
+        ],
+        layout: 'radio',
+      },
+    }),
+
+    defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',

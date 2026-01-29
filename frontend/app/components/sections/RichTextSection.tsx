@@ -1,49 +1,123 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useEffect, useRef, useState } from "react";
 import { PortableText } from "@portabletext/react";
-import { Plus, Minus, Download } from "lucide-react";
+import { Download } from "lucide-react";
 
 interface RichTextSectionProps {
     block: {
         title?: string;
         lastUpdated?: string;
         introduction?: string;
+        legalType: "privacy" | "terms";
         legalSections?: Array<{
             heading: string;
             content: any[];
             _key: string;
         }>;
-        content?: any[]; // Legacy support
+        content?: any[];
     };
 }
 
-const RichTextSection: React.FC<RichTextSectionProps> = ({ block }) => {
-    // State to track which section is open (optional: allow multiple open)
-    const [openSection, setOpenSection] = useState<string | null>(null);
+/* ------------------ PortableText Styles ------------------ */
 
-    const toggleSection = (key: string) => {
-        setOpenSection(openSection === key ? null : key);
+const components = {
+    block: {
+        h3: ({ children }: any) => (
+            <h3 className="text-lg font-bold mt-8 mb-4 text-[#14253f] uppercase tracking-wide">
+                {children}
+            </h3>
+        ),
+        normal: ({ children }: any) => (
+            <p className="mb-6 text-gray-500 leading-relaxed font-light">
+                {children}
+            </p>
+        ),
+    },
+    list: {
+        bullet: ({ children }: any) => (
+            <ul className="list-disc pl-6 mb-6 text-gray-500 space-y-2 marker:text-[#cd7d51]">
+                {children}
+            </ul>
+        ),
+        number: ({ children }: any) => (
+            <ol className="list-decimal pl-6 mb-6 text-gray-500 space-y-2 marker:font-bold">
+                {children}
+            </ol>
+        ),
+    },
+};
+
+/* ------------------ Component ------------------ */
+
+const RichTextSection: React.FC<RichTextSectionProps> = ({ block }) => {
+    if (!block) return null;
+
+    const [activeSection, setActiveSection] = useState<string | null>(null);
+    const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+
+    const getSectionId = (key: string) => `section-${key}`;
+
+    /* ------------------ Scroll Spy ------------------ */
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const key = entry.target.id.replace("section-", "");
+                        setActiveSection(key);
+                    }
+                });
+            },
+            {
+                rootMargin: "-40% 0px -55% 0px",
+                threshold: 0,
+            }
+        );
+
+        Object.values(sectionRefs.current).forEach((section) => {
+            if (section) observer.observe(section);
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
+    /* ------------------ Scroll on Click ------------------ */
+
+    const scrollToSection = (e: React.MouseEvent, key: string) => {
+        e.preventDefault();
+        const element = document.getElementById(getSectionId(key));
+        if (!element) return;
+
+        setActiveSection(key);
+
+        const y =
+            element.getBoundingClientRect().top + window.scrollY - 120;
+
+        window.scrollTo({
+            top: y,
+            behavior: "smooth",
+        });
     };
 
-    if (!block) return null;
+    /* ------------------ Render ------------------ */
 
     return (
         <section className="py-24 lg:py-32 bg-[#fafafa] relative">
-
-            {/* Background Pattern for Texture */}
+            {/* Background Texture */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
-            <div className="max-w-[1000px] mx-auto px-6 lg:px-12 relative z-10">
-
-                {/* --- HEADER --- */}
-                <div className="text-center mb-16">
+            <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
+                {/* Header */}
+                <div className="text-center max-w-4xl mx-auto mb-24">
                     {block.lastUpdated && (
                         <div className="flex items-center justify-center gap-3 mb-6">
-                            <span className="w-8 h-[1px] bg-[#cd7d51]"></span>
+                            <span className="w-8 h-[1px] bg-[#cd7d51]" />
                             <p className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs">
                                 Last Updated: {block.lastUpdated}
                             </p>
-                            <span className="w-8 h-[1px] bg-[#cd7d51]"></span>
+                            <span className="w-8 h-[1px] bg-[#cd7d51]" />
                         </div>
                     )}
 
@@ -54,72 +128,104 @@ const RichTextSection: React.FC<RichTextSectionProps> = ({ block }) => {
                     )}
 
                     {block.introduction && (
-                        <p className="text-xl text-gray-500 font-light max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-xl md:text-2xl text-gray-500 font-light leading-relaxed max-w-none">
                             {block.introduction}
                         </p>
                     )}
                 </div>
 
-                {/* --- INTERACTIVE LEGAL GRID --- */}
-                {block.legalSections ? (
-                    <div className="space-y-4">
-                        {block.legalSections.map((section, index) => {
-                            const isOpen = openSection === section._key;
-
-                            return (
-                                <div
+                {/* Layout */}
+                <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-start">
+                    {/* Sidebar */}
+                    <aside className="hidden lg:block w-1/4 sticky top-32">
+                        <nav className="border-l border-gray-200">
+                            {block.legalSections?.map((section, index) => (
+                                <a
                                     key={section._key}
-                                    className={`group bg-white rounded-sm border transition-all duration-300 overflow-hidden ${isOpen ? 'border-[#cd7d51] shadow-lg' : 'border-gray-200 hover:border-[#cd7d51]/50'}`}
+                                    href={`#${getSectionId(section._key)}`}
+                                    onClick={(e) =>
+                                        scrollToSection(e, section._key)
+                                    }
+                                    className={`group block pl-6 py-3 text-sm transition-all border-l-2
+                    ${activeSection === section._key
+                                            ? "text-[#14253f] border-[#cd7d51] -ml-[2px] bg-[#cd7d51]/5"
+                                            : "text-gray-400 border-transparent hover:text-[#14253f] hover:border-[#cd7d51] hover:-ml-[2px]"
+                                        }
+                  `}
                                 >
-                                    {/* The Clickable Header */}
-                                    <button
-                                        onClick={() => toggleSection(section._key)}
-                                        className="w-full flex items-center justify-between p-6 lg:p-8 text-left focus:outline-none"
+                                    <span
+                                        className={`block text-[10px] font-bold uppercase tracking-widest mb-1
+                      ${activeSection === section._key
+                                                ? "text-[#cd7d51]"
+                                                : "text-[#cd7d51]/50 group-hover:text-[#cd7d51]"
+                                            }
+                    `}
                                     >
-                                        <div className="flex items-center gap-6">
-                                            <span className="text-[#cd7d51]/30 text-3xl font-black font-sans w-12 text-right hidden sm:block">
-                                                {String(index + 1).padStart(2, '0')}
+                                        Section {String(index + 1).padStart(2, "0")}
+                                    </span>
+
+                                    <span className="font-medium uppercase tracking-tight">
+                                        {section.heading}
+                                    </span>
+                                </a>
+                            ))}
+                        </nav>
+
+                        <div className="mt-12 pl-6">
+                            <button
+                                onClick={() => {
+                                    window.location.href = `/api/legal-pdf?type=${block.legalType}`;
+                                }}
+                                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#14253f] hover:text-[#cd7d51] transition-colors opacity-50 hover:opacity-100"
+                            >
+                                <Download size={14} />
+                                Download PDF
+                            </button>
+
+                        </div>
+                    </aside>
+
+                    {/* Content */}
+                    <div className="lg:w-3/4 w-full">
+                        {block.legalSections ? (
+                            <div className="space-y-20">
+                                {block.legalSections.map((section, index) => (
+                                    <div
+                                        key={section._key}
+                                        id={getSectionId(section._key)}
+                                        ref={(el) => {
+                                            sectionRefs.current[section._key] = el;
+                                        }}
+                                        className="scroll-mt-32 border-b border-gray-100 pb-16 last:border-0"
+                                    >
+                                        <div className="flex items-baseline gap-4 mb-8">
+                                            <span className="text-2xl font-black text-[#cd7d51]/30 font-mono">
+                                                {String(index + 1).padStart(2, "0")}
                                             </span>
-                                            <h2 className={`text-xl md:text-2xl font-bold uppercase tracking-tight transition-colors ${isOpen ? 'text-[#14253f]' : 'text-[#14253f]/80 group-hover:text-[#14253f]'}`}>
+                                            <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight text-[#14253f]">
                                                 {section.heading}
                                             </h2>
                                         </div>
 
-                                        {/* Icon */}
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-[#cd7d51] text-white rotate-180' : 'bg-gray-50 text-[#14253f] group-hover:bg-[#14253f] group-hover:text-white'}`}>
-                                            {isOpen ? <Minus size={18} /> : <Plus size={18} />}
-                                        </div>
-                                    </button>
-
-                                    {/* The Content (Animated Height) */}
-                                    <div
-                                        className={`transition-all duration-500 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
-                                    >
-                                        <div className="p-6 lg:p-8 pt-0 lg:pt-0 pl-6 sm:pl-28 prose prose-lg max-w-none text-gray-500 font-light leading-relaxed">
-                                            <PortableText value={section.content} />
+                                        <div className="prose prose-lg max-w-none text-gray-500 font-light leading-relaxed pl-10 md:pl-12">
+                                            <PortableText
+                                                value={section.content}
+                                                components={components}
+                                            />
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="prose prose-lg max-w-none text-gray-500 font-light mx-auto">
+                                <PortableText
+                                    value={block.content || []}
+                                    components={components}
+                                />
+                            </div>
+                        )}
                     </div>
-                ) : (
-                    // Fallback for Legacy Content (Single Block)
-                    <div className="bg-white p-8 md:p-16 border border-gray-100 shadow-sm rounded-sm">
-                        <div className="prose prose-lg max-w-none text-gray-500 font-light">
-                            <PortableText value={block.content || []} />
-                        </div>
-                    </div>
-                )}
-
-                {/* --- DOWNLOAD BUTTON --- */}
-                <div className="mt-16 text-center">
-                    <button className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#14253f] hover:text-[#cd7d51] transition-colors border-b border-[#14253f]/20 pb-1 hover:border-[#cd7d51]">
-                        <Download size={16} />
-                        Download PDF Version
-                    </button>
                 </div>
-
             </div>
         </section>
     );

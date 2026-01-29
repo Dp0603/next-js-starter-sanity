@@ -36,6 +36,7 @@ export const getPageQuery = defineQuery(`
     slug,
     heading,
     subheading,
+    legalType,
     "pageBuilder": pageBuilder[]{
       ...,
       _type == "callToAction" => {

@@ -37,28 +37,32 @@ const Blocks: Record<string, React.FC<any>> = {
   richTextSection: RichTextSection,
 };
 
-// 2. Define the Interface to accept an Array
 interface BlockRendererProps {
   blocks?: any[];
+  legalType?: 'privacy' | 'terms';
 }
 
-// 3. The Component that loops through the array
-const BlockRenderer: React.FC<BlockRendererProps> = ({ blocks }) => {
+const BlockRenderer: React.FC<BlockRendererProps> = ({ blocks, legalType }) => {
   if (!blocks || !Array.isArray(blocks)) return null;
 
   return (
     <>
       {blocks.map((block) => {
-        // Find the component that matches the Sanity type
         const Component = Blocks[block._type];
+        if (!Component) return null;
 
-        // If you haven't created the component yet, skip it safely
-        if (!Component) {
-          // console.warn(`No component found for block type: ${block._type}`);
-          return null;
+        if (block._type === 'richTextSection') {
+          return (
+            <Component
+              key={block._key}
+              block={{
+                ...block,
+                legalType,
+              }}
+            />
+          );
         }
 
-        // Render the component
         return <Component key={block._key} block={block} />;
       })}
     </>

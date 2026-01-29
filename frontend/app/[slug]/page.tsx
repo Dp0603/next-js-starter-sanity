@@ -35,7 +35,10 @@ export default async function Page({ params }: Props) {
   return (
 
     <div className="min-h-screen">
-      {data.pageBuilder ? <BlockRenderer blocks={data.pageBuilder} /> : null}
+      <BlockRenderer
+        blocks={data.pageBuilder}
+        legalType={data.legalType}
+      />
     </div>
   )
 }

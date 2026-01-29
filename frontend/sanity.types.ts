@@ -20,6 +20,14 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
 export type GalleryItemImage = {
   asset?: SanityImageAssetReference
   media?: unknown // Unable to locate the referenced type "galleryItem.image.media" in schema
@@ -28,9 +36,9 @@ export type GalleryItemImage = {
   _type: 'image'
 }
 
-export type ObjectImage = {
+export type ProductsObjectImage = {
   asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  media?: unknown // Unable to locate the referenced type "products.object.image.media" in schema
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   _type: 'image'
@@ -60,6 +68,13 @@ export type Location = {
   _rev: string
   name: string
   type?: 'source' | 'target'
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
   coordinates?: Geopoint
 }
 
@@ -70,8 +85,49 @@ export type Geopoint = {
   alt?: number
 }
 
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
+}
+
 export type RichTextSection = {
   _type: 'richTextSection'
+  title?: string
+  lastUpdated?: string
+  introduction?: string
+  legalSections?: Array<{
+    heading?: string
+    content?: Array<{
+      children?: Array<{
+        marks?: Array<string>
+        text?: string
+        _type: 'span'
+        _key: string
+      }>
+      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+      listItem?: 'bullet' | 'number'
+      markDefs?: Array<{
+        href?: string
+        _type: 'link'
+        _key: string
+      }>
+      level?: number
+      _type: 'block'
+      _key: string
+    }>
+    _key: string
+  }>
   content?: Array<{
     children?: Array<{
       marks?: Array<string>
@@ -94,13 +150,13 @@ export type RichTextSection = {
 
 export type BrandShowcase = {
   _type: 'brandShowcase'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   brands?: Array<{
-    name?: string
-    logo?: Logo
-    image?: BrandsObjectImage
+    name: string
+    logo: Logo
+    image: BrandsObjectImage
     description?: string
     website?: string
     color?: string
@@ -110,24 +166,36 @@ export type BrandShowcase = {
 
 export type ContactSection = {
   _type: 'contactSection'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   addressHeading?: string
   address?: string
+  googleMapsLink?: string
+  mapImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
   phoneHeading?: string
   phones?: Array<string>
   emailHeading?: string
   email?: string
+  hoursHeading?: string
+  hours?: string
+  productCategories?: Array<string>
 }
 
 export type QualityEthics = {
   _type: 'qualityEthics'
+  layout?: 'left' | 'right'
   subtitle?: string
-  heading?: string
+  heading: string
   description?: string
   checklist?: Array<string>
-  image?: {
+  image: {
     asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
@@ -138,28 +206,30 @@ export type QualityEthics = {
 
 export type QualityStandards = {
   _type: 'qualityStandards'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   features?: Array<{
-    title?: string
+    title: string
     description?: string
-    icon?: 'shield' | 'refresh' | 'clipboard'
+    icon?: 'shield' | 'refresh' | 'clipboard' | 'scale' | 'zap'
     _key: string
   }>
 }
 
 export type ProductShowcase = {
   _type: 'productShowcase'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   products?: Array<{
-    number?: string
-    title?: string
-    description?: string
+    number: string
+    title: string
+    description: string
+    moq?: string
+    leadTime?: string
     features?: Array<string>
-    image?: ObjectImage
+    image: ProductsObjectImage
     buttonText?: string
     buttonLink?: string
     _key: string
@@ -181,12 +251,12 @@ export type InfrastructureSection = {
 
 export type WorkflowSection = {
   _type: 'workflowSection'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   steps?: Array<{
-    number?: string
-    title?: string
+    number: string
+    title: string
     description?: string
     _key: string
   }>
@@ -194,10 +264,10 @@ export type WorkflowSection = {
 
 export type GallerySection = {
   _type: 'gallerySection'
-  subtitle?: string
-  heading?: string
+  subtitle: string
+  heading: string
   items?: Array<{
-    image?: GalleryItemImage
+    image: GalleryItemImage
     title?: string
     description?: string
     link?: string
@@ -209,9 +279,10 @@ export type GallerySection = {
 export type LocationSection = {
   _type: 'locationSection'
   locations?: Array<{
-    label?: string
-    city?: string
+    label: string
+    city: string
     description?: string
+    image?: ObjectImage
     features?: Array<string>
     _key: string
   }>
@@ -219,26 +290,32 @@ export type LocationSection = {
 
 export type AboutHero = {
   _type: 'aboutHero'
-  subtitle?: string
-  heading?: string
+  layout?: 'left' | 'right'
+  subtitle: string
+  heading: string
   description?: string
   quote?: string
   quoteAuthor?: string
-  image?: {
+  image: {
     asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     _type: 'image'
   }
+  statNumber?: string
+  statLabel?: string
 }
 
 export type CtaSection = {
   _type: 'ctaSection'
-  heading?: string
+  subtitle: string
+  heading: string
   description?: string
   primaryButtonText?: string
+  primaryButtonLink?: string
   secondaryButtonText?: string
+  secondaryButtonLink?: string
 }
 
 export type Services = {
@@ -287,22 +364,6 @@ export type ProductCategory = {
     _type: 'image'
   }
   features?: Array<string>
-}
-
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x: number
-  y: number
-  height: number
-  width: number
 }
 
 export type Philosophy = {
@@ -850,12 +911,15 @@ export type SanityImageAsset = {
 
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
-  | GalleryItemImage
   | ObjectImage
+  | GalleryItemImage
+  | ProductsObjectImage
   | Logo
   | BrandsObjectImage
   | Location
   | Geopoint
+  | SanityImageCrop
+  | SanityImageHotspot
   | RichTextSection
   | BrandShowcase
   | ContactSection
@@ -872,8 +936,6 @@ export type AllSanitySchemaTypes =
   | ProductCategoryReference
   | ProductLookbook
   | ProductCategory
-  | SanityImageCrop
-  | SanityImageHotspot
   | Philosophy
   | Stats
   | PageReference
@@ -929,29 +991,32 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'aboutHero'
-        subtitle?: string
-        heading?: string
+        layout?: 'left' | 'right'
+        subtitle: string
+        heading: string
         description?: string
         quote?: string
         quoteAuthor?: string
-        image?: {
+        image: {
           asset?: SanityImageAssetReference
           media?: unknown
           hotspot?: SanityImageHotspot
           crop?: SanityImageCrop
           _type: 'image'
         }
+        statNumber?: string
+        statLabel?: string
       }
     | {
         _key: string
         _type: 'brandShowcase'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         brands?: Array<{
-          name?: string
-          logo?: Logo
-          image?: BrandsObjectImage
+          name: string
+          logo: Logo
+          image: BrandsObjectImage
           description?: string
           website?: string
           color?: string
@@ -989,31 +1054,45 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'contactSection'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         addressHeading?: string
         address?: string
+        googleMapsLink?: string
+        mapImage?: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
         phoneHeading?: string
         phones?: Array<string>
         emailHeading?: string
         email?: string
+        hoursHeading?: string
+        hours?: string
+        productCategories?: Array<string>
       }
     | {
         _key: string
         _type: 'ctaSection'
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         primaryButtonText?: string
+        primaryButtonLink?: string
         secondaryButtonText?: string
+        secondaryButtonLink?: string
       }
     | {
         _key: string
         _type: 'gallerySection'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         items?: Array<{
-          image?: GalleryItemImage
+          image: GalleryItemImage
           title?: string
           description?: string
           link?: string
@@ -1093,9 +1172,10 @@ export type GetPageQueryResult = {
         _key: string
         _type: 'locationSection'
         locations?: Array<{
-          label?: string
-          city?: string
+          label: string
+          city: string
           description?: string
+          image?: ObjectImage
           features?: Array<string>
           _key: string
         }>
@@ -1139,15 +1219,17 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'productShowcase'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         products?: Array<{
-          number?: string
-          title?: string
-          description?: string
+          number: string
+          title: string
+          description: string
+          moq?: string
+          leadTime?: string
           features?: Array<string>
-          image?: ObjectImage
+          image: ProductsObjectImage
           buttonText?: string
           buttonLink?: string
           _key: string
@@ -1156,11 +1238,12 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'qualityEthics'
+        layout?: 'left' | 'right'
         subtitle?: string
-        heading?: string
+        heading: string
         description?: string
         checklist?: Array<string>
-        image?: {
+        image: {
           asset?: SanityImageAssetReference
           media?: unknown
           hotspot?: SanityImageHotspot
@@ -1171,19 +1254,44 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'qualityStandards'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         features?: Array<{
-          title?: string
+          title: string
           description?: string
-          icon?: 'clipboard' | 'refresh' | 'shield'
+          icon?: 'clipboard' | 'refresh' | 'scale' | 'shield' | 'zap'
           _key: string
         }>
       }
     | {
         _key: string
         _type: 'richTextSection'
+        title?: string
+        lastUpdated?: string
+        introduction?: string
+        legalSections?: Array<{
+          heading?: string
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          _key: string
+        }>
         content?: Array<{
           children?: Array<{
             marks?: Array<string>
@@ -1229,12 +1337,12 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'workflowSection'
-        subtitle?: string
-        heading?: string
+        subtitle: string
+        heading: string
         description?: string
         steps?: Array<{
-          number?: string
-          title?: string
+          number: string
+          title: string
           description?: string
           _key: string
         }>
