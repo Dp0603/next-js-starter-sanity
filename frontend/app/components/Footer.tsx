@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Download, Globe, Linkedin, Instagram, Facebook, Twitter, Youtube } from "lucide-react";
+import { Download, Globe, Linkedin, Instagram, Facebook, Twitter, Youtube, Mail } from "lucide-react";
 
 interface FooterProps {
   settings: any;
@@ -8,12 +8,12 @@ interface FooterProps {
 
 const getSocialIcon = (platform: string) => {
   const p = platform?.toLowerCase() || "";
-  if (p.includes("linkedin")) return <Linkedin size={16} />;
-  if (p.includes("instagram")) return <Instagram size={16} />;
-  if (p.includes("facebook")) return <Facebook size={16} />;
-  if (p.includes("twitter") || p.includes("x")) return <Twitter size={16} />;
-  if (p.includes("youtube")) return <Youtube size={16} />;
-  return <Globe size={16} />;
+  if (p.includes("linkedin")) return <Linkedin size={20} />;
+  if (p.includes("instagram")) return <Instagram size={20} />;
+  if (p.includes("facebook")) return <Facebook size={20} />;
+  if (p.includes("twitter") || p.includes("x")) return <Twitter size={20} />;
+  if (p.includes("youtube")) return <Youtube size={20} />;
+  return <Globe size={20} />;
 };
 
 const Footer: React.FC<FooterProps> = ({ settings }) => {
@@ -21,7 +21,6 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
   const safeSettings = settings || {};
 
   return (
-    // 👇 FIX: Use brand Navy [#14253f] for consistency
     <footer className="bg-[#14253f] text-white pt-24 pb-12 border-t border-white/10">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
 
@@ -42,20 +41,18 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
               {safeSettings.footerDescription || "Your strategic partner for premium footwear and leather goods manufacturing."}
             </p>
 
-            <div className="flex gap-6">
+            {/* 👇 FIX 1: Only Logos, No Text */}
+            <div className="flex gap-4">
               {safeSettings.socialLinks?.map((social: any, idx: number) => (
                 <a
                   key={idx}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-[#cd7d51] transition-colors flex items-center gap-2"
-                  title={social.platform}
+                  className="text-gray-400 hover:text-[#cd7d51] transition-colors p-2 -ml-2 hover:bg-white/5 rounded-full"
+                  title={social.platform} // Tooltip still shows the name on hover
                 >
                   {getSocialIcon(social.platform)}
-                  <span className="text-[10px] font-bold uppercase tracking-widest hidden lg:inline-block">
-                    {social.platform}
-                  </span>
                 </a>
               ))}
             </div>
@@ -98,7 +95,7 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-white font-medium hover:text-[#cd7d51] transition-colors"
                   >
-                    <Download size={14} />
+                    <Download size={16} />
                     Company Profile
                   </a>
                 </li>
@@ -121,9 +118,14 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
                 </li>
               ))}
 
+              {/* 👇 FIX 2: Added Mail Icon */}
               {safeSettings.contactEmail && (
                 <li>
-                  <a href={`mailto:${safeSettings.contactEmail}`} className="text-[#cd7d51] hover:text-white transition-colors">
+                  <a
+                    href={`mailto:${safeSettings.contactEmail}`}
+                    className="inline-flex items-center gap-2 text-[#cd7d51] hover:text-white transition-colors font-medium"
+                  >
+                    <Mail size={16} />
                     {safeSettings.contactEmail}
                   </a>
                 </li>

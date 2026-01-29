@@ -15,9 +15,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     params: { slug },
     stega: false,
   })
+
+  if (!data) return { title: 'Page Not Found' }
+
+  const title = data.seo?.metaTitle || `${data.name} | Akaame Exports`;
+
+  const description = data.seo?.metaDescription || data.heading || "Global leaders in premium export quality products.";
+
   return {
-    title: data?.name,
-    description: data?.heading,
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      // If you uploaded a share image, use it.
+      images: data.seo?.openGraphImage?.asset?.url
+        ? [{ url: data.seo.openGraphImage.asset.url }]
+        : [],
+    },
   }
 }
 
@@ -33,7 +48,6 @@ export default async function Page({ params }: Props) {
   }
 
   return (
-
     <div className="min-h-screen">
       <BlockRenderer
         blocks={data.pageBuilder}

@@ -9,13 +9,13 @@ interface BrandProps {
 }
 
 const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
-    if (!block) return null;
+    if (!block || !block.brands) return null; // Safety check for the block itself
 
     return (
         <section className="py-24 lg:py-32 bg-white overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
 
-                {/* --- HEADER (Matches Product Showcase) --- */}
+                {/* --- HEADER --- */}
                 <div className="text-center max-w-4xl mx-auto mb-24">
                     <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-[10px] lg:text-xs mb-4 lg:mb-6 flex items-center justify-center gap-3">
                         <span className="w-4 lg:w-8 h-[1px] bg-[#cd7d51]"></span>
@@ -32,27 +32,28 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
 
                 {/* --- BRAND LIST --- */}
                 <div className="space-y-32">
-                    {block.brands?.map((brand: any, index: number) => {
+                    {block.brands.map((brand: any, index: number) => {
+                        // 👇 FIX: SAFETY CHECK
+                        // If 'brand' is null (broken reference), skip it immediately.
+                        if (!brand) return null;
+
                         const isEven = index % 2 === 0;
 
                         return (
-                            <div key={index} className={`flex flex-col lg:flex-row gap-16 lg:gap-24 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}>
+                            <div key={brand._id || index} className={`flex flex-col lg:flex-row gap-16 lg:gap-24 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}>
 
                                 {/* IMAGE SIDE */}
                                 <div className="w-full lg:w-1/2 relative group">
-
-                                    {/* Decorative Border Box (The Premium Touch) */}
                                     <div className={`absolute inset-0 border-2 border-[#14253f]/10 z-0 hidden lg:block transition-transform duration-500 group-hover:scale-105 ${isEven ? "-left-6 top-6" : "-right-6 top-6"}`} />
 
                                     <div className="aspect-[4/5] overflow-hidden bg-gray-100 rounded-sm relative z-10 shadow-lg">
                                         {brand.image && (
                                             <img
                                                 src={urlForImage(brand.image).url()}
-                                                alt={brand.name}
+                                                alt={brand.name || "Brand Image"}
                                                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                             />
                                         )}
-                                        {/* Dark Gradient Overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#14253f]/40 to-transparent" />
                                     </div>
 
@@ -70,8 +71,6 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
 
                                 {/* CONTENT SIDE */}
                                 <div className="w-full lg:w-1/2">
-
-                                    {/* Brand Name (Uses dynamic color or Navy) */}
                                     <h3
                                         className="text-4xl lg:text-6xl font-black mb-6 tracking-tighter uppercase"
                                         style={{ color: brand.color || '#14253f' }}
@@ -79,7 +78,6 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
                                         {brand.name}
                                     </h3>
 
-                                    {/* Divider */}
                                     <div className="w-12 h-1 bg-[#cd7d51] mb-8" />
 
                                     <p className="text-lg text-gray-500 font-light leading-relaxed mb-10 whitespace-pre-line max-w-lg">

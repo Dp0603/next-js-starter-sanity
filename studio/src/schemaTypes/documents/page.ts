@@ -6,11 +6,18 @@ export const page = defineType({
   title: 'Page',
   type: 'document',
   icon: DocumentIcon,
+
+  groups: [
+    {name: 'content', title: 'Content', default: true},
+    {name: 'seo', title: 'SEO'},
+  ],
+
   fields: [
     defineField({
       name: 'name',
       title: 'Name',
       type: 'string',
+      group: 'content',
       validation: (Rule) => Rule.required(),
     }),
 
@@ -18,6 +25,7 @@ export const page = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      group: 'content',
       validation: (Rule) => Rule.required(),
       options: {
         source: 'name',
@@ -28,17 +36,21 @@ export const page = defineType({
       name: 'heading',
       title: 'Heading',
       type: 'string',
+      group: 'content',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'subheading',
       title: 'Subheading',
       type: 'string',
+      group: 'content',
     }),
+
     defineField({
       name: 'legalType',
       title: 'Legal Page Type',
       type: 'string',
+      group: 'content',
       options: {
         list: [
           {title: 'Privacy Policy', value: 'privacy'},
@@ -46,12 +58,25 @@ export const page = defineType({
         ],
         layout: 'radio',
       },
+      hidden: ({document}) => {
+        const slug = (document?.slug as any)?.current
+        if (!slug) return true 
+        return !['privacy', 'privacy-policy', 'terms', 'terms-of-service'].includes(slug)
+      },
+    }),
+
+    defineField({
+      name: 'seo',
+      title: 'SEO Settings',
+      type: 'seo',
+      group: 'seo',
     }),
 
     defineField({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',
+      group: 'content',
       of: [
         {type: 'hero'},
         {type: 'stats'},

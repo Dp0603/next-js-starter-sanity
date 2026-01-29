@@ -1,8 +1,5 @@
 import {defineQuery} from 'next-sanity'
 
-// 1. UPDATED: Removed the old 'settings' query to avoid confusion.
-//    We now use SETTINGS_QUERY (at the bottom) for 'siteSettings'.
-
 const postFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -37,6 +34,18 @@ export const getPageQuery = defineQuery(`
     heading,
     subheading,
     legalType,
+    
+    // 👇 1. SEO BLOCK (Critical for Tab Title & Google)
+    seo {
+      metaTitle,
+      metaDescription,
+      openGraphImage {
+        asset->{
+          url
+        }
+      }
+    },
+
     "pageBuilder": pageBuilder[]{
       ...,
       _type == "callToAction" => {
@@ -65,9 +74,35 @@ export const getPageQuery = defineQuery(`
           features
         }
       },
-      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA
-      _type == "brandShowcase" => { ... },
-      _type == "contactSection" => { ... },
+      
+      // 👇 2. GLOBE DATA (Critical for the 3D Map)
+      _type == "locationSection" => {
+        ...,
+        locations[]{
+          ...,
+          image {
+            asset->{url} 
+          }
+        }
+      },
+
+      // 👇 3. BRAND SHOWCASE (Critical Fix: The arrow -> fetches actual data)
+      _type == "brandShowcase" => { 
+        ...,
+        brands[]{
+          _id,
+          name,
+          description,
+          website,
+          color,
+          image { asset->{url} },
+          logo { asset->{url} }
+        }
+      },
+
+      _type == "contactSection" => { 
+        ... 
+      },
     },
   }
 `)
@@ -115,14 +150,17 @@ export const pagesSlugs = defineQuery(`
   {"slug": slug.current}
 `)
 
-// 👇 FIXED: Changed 'groq' to 'defineQuery' to match your import at the top
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {
     headerMenu,
     footerDescription,
     contactEmail,
     locations,
-    socialLinks,
+    // 👇 Explicitly fetching platform so Footer icons work
+    socialLinks[]{
+      platform,
+      url
+    },
     "profileUrl": companyProfile.asset->url,
     copyrightText,
     legalLinks,
