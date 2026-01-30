@@ -258,8 +258,10 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { RefreshCw } from "lucide-react";
 
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
-
+const Globe = dynamic(
+  () => import("react-globe.gl"),
+  { ssr: false }
+);
 // --- CONFIGURABLE CONSTANTS ---
 const GLOBAL_SCALE = 2.0;             // 1️⃣ Global scale multiplier
 const LAPTOP_REDUCTION = 0.55;        // 1️⃣ Scale reduction for laptops (1024px-1440px)
