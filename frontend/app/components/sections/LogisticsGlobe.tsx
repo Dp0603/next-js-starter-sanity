@@ -260,7 +260,8 @@ import { RefreshCw } from "lucide-react";
 const Globe = dynamic(
   () => Promise.resolve(require("react-globe.gl")),
   { ssr: false }
-);
+) as any;
+
 
 
 // --- CONFIGURABLE CONSTANTS ---
