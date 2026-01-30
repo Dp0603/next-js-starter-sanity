@@ -86,7 +86,7 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // 👇 3. BRAND SHOWCASE (Critical Fix: The arrow -> fetches actual data)
+      // 👇 3. BRAND SHOWCASE
       _type == "brandShowcase" => { 
         ...,
         brands[]{
@@ -100,8 +100,10 @@ export const getPageQuery = defineQuery(`
         }
       },
 
+      // 👇 4. CONTACT SECTION 
       _type == "contactSection" => { 
-        ... 
+        ...,
+        mapEmbedUrl //
       },
     },
   }

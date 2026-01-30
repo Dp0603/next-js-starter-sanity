@@ -60,6 +60,19 @@ export type BrandsObjectImage = {
   _type: 'image'
 }
 
+export type Seo = {
+  _type: 'seo'
+  metaTitle?: string
+  metaDescription?: string
+  openGraphImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
 export type Location = {
   _id: string
   _type: 'location'
@@ -526,6 +539,7 @@ export type Page = {
   heading: string
   subheading?: string
   legalType?: 'privacy' | 'terms'
+  seo?: Seo
   pageBuilder?: Array<
     | ({
         _key: string
@@ -917,6 +931,7 @@ export type AllSanitySchemaTypes =
   | ProductsObjectImage
   | Logo
   | BrandsObjectImage
+  | Seo
   | Location
   | Geopoint
   | SanityImageCrop
@@ -980,7 +995,7 @@ export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity\lib\queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    legalType,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },      // 👇 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA      _type == "brandShowcase" => { ... },      _type == "contactSection" => { ... },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    legalType,        // 👇 1. SEO BLOCK (Critical for Tab Title & Google)    seo {      metaTitle,      metaDescription,      openGraphImage {        asset->{          url        }      }    },    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },            // 👇 2. GLOBE DATA (Critical for the 3D Map)      _type == "locationSection" => {        ...,        locations[]{          ...,          image {            asset->{url}           }        }      },      // 👇 3. BRAND SHOWCASE (Critical Fix: The arrow -> fetches actual data)      _type == "brandShowcase" => {         ...,        brands[]{          _id,          name,          description,          website,          color,          image { asset->{url} },          logo { asset->{url} }        }      },      _type == "contactSection" => {         ...       },    },  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -989,6 +1004,15 @@ export type GetPageQueryResult = {
   heading: string
   subheading: string | null
   legalType: 'privacy' | 'terms' | null
+  seo: {
+    metaTitle: string | null
+    metaDescription: string | null
+    openGraphImage: {
+      asset: {
+        url: string | null
+      } | null
+    } | null
+  } | null
   pageBuilder: Array<
     | {
         _key: string
@@ -1015,15 +1039,23 @@ export type GetPageQueryResult = {
         subtitle: string
         heading: string
         description?: string
-        brands?: Array<{
+        brands: Array<{
+          _id: null
           name: string
-          logo: Logo
-          image: BrandsObjectImage
-          description?: string
-          website?: string
-          color?: string
-          _key: string
-        }>
+          description: string | null
+          website: string | null
+          color: string | null
+          image: {
+            asset: {
+              url: string | null
+            } | null
+          }
+          logo: {
+            asset: {
+              url: string | null
+            } | null
+          }
+        }> | null
       }
     | {
         _key: string
@@ -1173,14 +1205,18 @@ export type GetPageQueryResult = {
     | {
         _key: string
         _type: 'locationSection'
-        locations?: Array<{
+        locations: Array<{
           label: string
           city: string
           description?: string
-          image?: ObjectImage
+          image: {
+            asset: {
+              url: string | null
+            } | null
+          } | null
           features?: Array<string>
           _key: string
-        }>
+        }> | null
       }
     | {
         _key: string
@@ -1513,7 +1549,7 @@ export type PagesSlugsResult = Array<{
 
 // Source: sanity\lib\queries.ts
 // Variable: SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0] {    headerMenu,    footerDescription,    contactEmail,    locations,    socialLinks,    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
+// Query: *[_type == "siteSettings"][0] {    headerMenu,    footerDescription,    contactEmail,    locations,    // 👇 Explicitly fetching platform so Footer icons work    socialLinks[]{      platform,      url    },    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
 export type SETTINGS_QUERY_RESULT = {
   headerMenu: Array<{
     title?: string
@@ -1528,9 +1564,8 @@ export type SETTINGS_QUERY_RESULT = {
     _key: string
   }> | null
   socialLinks: Array<{
-    platform?: string
-    url?: string
-    _key: string
+    platform: string | null
+    url: string | null
   }> | null
   profileUrl: string | null
   copyrightText: string | null
@@ -1546,13 +1581,13 @@ export type SETTINGS_QUERY_RESULT = {
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    legalType,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      // \uD83D\uDC47 ADD YOUR NEW BLOCKS HERE IF NEEDED TO FETCH DATA\n      _type == "brandShowcase" => { ... },\n      _type == "contactSection" => { ... },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    legalType,\n    \n    // \uD83D\uDC47 1. SEO BLOCK (Critical for Tab Title & Google)\n    seo {\n      metaTitle,\n      metaDescription,\n      openGraphImage {\n        asset->{\n          url\n        }\n      }\n    },\n\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      \n      // \uD83D\uDC47 2. GLOBE DATA (Critical for the 3D Map)\n      _type == "locationSection" => {\n        ...,\n        locations[]{\n          ...,\n          image {\n            asset->{url} \n          }\n        }\n      },\n\n      // \uD83D\uDC47 3. BRAND SHOWCASE (Critical Fix: The arrow -> fetches actual data)\n      _type == "brandShowcase" => { \n        ...,\n        brands[]{\n          _id,\n          name,\n          description,\n          website,\n          color,\n          image { asset->{url} },\n          logo { asset->{url} }\n        }\n      },\n\n      _type == "contactSection" => { \n        ... \n      },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
     '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
-    '\n  *[_type == "siteSettings"][0] {\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    socialLinks,\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
+    '\n  *[_type == "siteSettings"][0] {\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    // \uD83D\uDC47 Explicitly fetching platform so Footer icons work\n    socialLinks[]{\n      platform,\n      url\n    },\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
   }
 }

@@ -1,5 +1,5 @@
-import { defineField, defineType } from 'sanity'
-import { EnvelopeIcon } from '@sanity/icons'
+import {defineField, defineType} from 'sanity'
+import {EnvelopeIcon} from '@sanity/icons'
 
 export const contactSection = defineType({
   name: 'contactSection',
@@ -7,9 +7,9 @@ export const contactSection = defineType({
   type: 'object',
   icon: EnvelopeIcon,
   fieldsets: [
-    { name: 'header', title: 'Header Content', options: { collapsible: true, collapsed: false } },
-    { name: 'details', title: 'Contact Information', options: { collapsible: true, collapsed: false } },
-    { name: 'form', title: 'Form Settings', options: { collapsible: true, collapsed: false } }, // New Group
+    {name: 'header', title: 'Header Content', options: {collapsible: true, collapsed: false}},
+    {name: 'details', title: 'Contact Information', options: {collapsible: true, collapsed: false}},
+    {name: 'form', title: 'Form Settings', options: {collapsible: true, collapsed: false}},
   ],
   fields: [
     // --- HEADER ---
@@ -53,13 +53,26 @@ export const contactSection = defineType({
       rows: 3,
       fieldset: 'details',
     }),
+
+    // 👇 NEW FIELD: Paste your Google Maps Embed Link here
+    defineField({
+      name: 'mapEmbedUrl',
+      title: 'Google Maps Embed URL',
+      type: 'text',
+      rows: 3,
+      fieldset: 'details',
+      description:
+        'Go to Google Maps -> Share -> Embed a map -> Copy ONLY the link inside src="..." and paste it here.',
+      placeholder: 'https://www.google.com/maps/embed?...',
+    }),
+
     defineField({
       name: 'googleMapsLink',
-      title: 'Google Maps Link',
+      title: 'Google Maps Link (External)',
       type: 'url',
-      description: 'The URL opened when the user clicks the address or map.',
+      description: 'Fallback link if the map fails, or for "Get Directions".',
       fieldset: 'details',
-      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      validation: (Rule) => Rule.uri({scheme: ['http', 'https']}),
     }),
     defineField({
       name: 'mapImage',
@@ -67,9 +80,9 @@ export const contactSection = defineType({
       type: 'image',
       description: 'Upload a screenshot of the map location (recommended 600x300px).',
       fieldset: 'details',
-      options: { hotspot: true },
+      options: {hotspot: true},
     }),
-    
+
     defineField({
       name: 'phoneHeading',
       title: 'Phone Label',
@@ -83,12 +96,17 @@ export const contactSection = defineType({
       type: 'array',
       description: 'Add numbers with country code (e.g. +91 9876543210).',
       fieldset: 'details',
-      of: [{ 
-        type: 'string',
-        validation: (Rule) => Rule.regex(/^\+?[0-9\s]+$/, { name: 'phone', invert: false }).error('Must be a valid phone number')
-      }],
+      of: [
+        {
+          type: 'string',
+          validation: (Rule) =>
+            Rule.regex(/^\+?[0-9\s]+$/, {name: 'phone', invert: false}).error(
+              'Must be a valid phone number',
+            ),
+        },
+      ],
     }),
-    
+
     defineField({
       name: 'emailHeading',
       title: 'Email Label',
@@ -127,7 +145,7 @@ export const contactSection = defineType({
       description: 'The options shown in the "Product Category" dropdown.',
       fieldset: 'form',
       type: 'array',
-      of: [{ type: 'string' }],
+      of: [{type: 'string'}],
       initialValue: ['Footwear', 'Bags', 'Accessories', 'Private Label'],
     }),
   ],
@@ -136,7 +154,7 @@ export const contactSection = defineType({
       title: 'heading',
       subtitle: 'subtitle',
     },
-    prepare({ title, subtitle }) {
+    prepare({title, subtitle}) {
       return {
         title: title || 'Contact Section',
         subtitle: subtitle || 'Contact Form',

@@ -60,6 +60,19 @@ export type BrandsObjectImage = {
   _type: 'image'
 }
 
+export type Seo = {
+  _type: 'seo'
+  metaTitle?: string
+  metaDescription?: string
+  openGraphImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
 export type Location = {
   _id: string
   _type: 'location'
@@ -526,6 +539,7 @@ export type Page = {
   heading: string
   subheading?: string
   legalType?: 'privacy' | 'terms'
+  seo?: Seo
   pageBuilder?: Array<
     | ({
         _key: string
@@ -917,6 +931,7 @@ export type AllSanitySchemaTypes =
   | ProductsObjectImage
   | Logo
   | BrandsObjectImage
+  | Seo
   | Location
   | Geopoint
   | SanityImageCrop

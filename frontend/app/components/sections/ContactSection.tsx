@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { MapPin, Phone, Mail, Send, ChevronDown, Clock, UploadCloud, Globe, ArrowUpRight } from "lucide-react";
-import { urlFor } from "@/sanity/lib/image";
+import { MapPin, Phone, Mail, Send, ChevronDown, Clock, UploadCloud, Globe } from "lucide-react";
 
 interface ContactProps {
     block: any;
@@ -11,7 +10,6 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
     if (!block) return null;
 
     return (
-        // 1. FIXED: Changed 'py-16' to 'pt-32 pb-16' on mobile to prevent Navbar overlap
         <section className="pt-32 pb-16 md:py-24 lg:py-32 bg-[#fafafa] min-h-screen relative overflow-hidden">
 
             {/* Background Decor */}
@@ -19,8 +17,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
 
             <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
 
-                {/* Layout: Stack on Mobile, Side-by-Side on Desktop */}
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+                <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 item-stretch">
 
                     {/* LEFT COLUMN: Context & Info */}
                     <div className="w-full lg:w-4/12 flex flex-col justify-between h-full order-2 lg:order-1">
@@ -42,7 +39,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                         {/* Contact Details */}
                         <div className="space-y-8 lg:space-y-10 mb-10 lg:mb-16">
 
-                            {/* Address with Map */}
+                            {/* Address with DYNAMIC MAP */}
                             <div className="group">
                                 <div className="flex gap-4 mb-4">
                                     <div className="text-[#cd7d51] mt-1 shrink-0">
@@ -58,27 +55,54 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                     </div>
                                 </div>
 
-                                <a
-                                    href={block.googleMapsLink || "#"}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block ml-0 lg:ml-10 w-full h-32 bg-gray-200 rounded-sm overflow-hidden relative group-hover:shadow-lg transition-all duration-300"
-                                >
-                                    <img
-                                        src={block.mapImage ? urlFor(block.mapImage).width(600).height(300).url() : "https://placehold.co/600x300/e5e7eb/a3a3a3?text=View+Location+Map"}
-                                        alt="Location Map"
-                                        className="w-full h-full object-cover opacity-80 grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                                    />
-                                    <div className="absolute inset-0 flex items-center justify-center bg-[#14253f]/0 group-hover:bg-[#14253f]/10 transition-colors">
-                                        <span className="bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[#14253f] shadow-sm flex items-center gap-2">
-                                            Open Map <ArrowUpRight size={10} />
-                                        </span>
-                                    </div>
-                                </a>
+                                {/* MAP / FALLBACK */}
+                                <div className="ml-0 lg:ml-10 w-full h-52 bg-gray-200 rounded-sm overflow-hidden relative shadow-md border border-gray-200">
+
+                                    {block.mapEmbedUrl ? (
+                                        <iframe
+                                            src={block.mapEmbedUrl}
+                                            width="100%"
+                                            height="100%"
+                                            style={{ border: 0 }}
+                                            allowFullScreen
+                                            loading="lazy"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            className="w-full h-full"
+                                            title="Google Map Location"
+                                            onError={(e) => {
+                                                const target = e.currentTarget;
+                                                target.style.display = 'none';
+                                            }}
+                                        />
+                                    ) : null}
+
+                                    {/* FALLBACK */}
+                                    {!block.mapEmbedUrl && (
+                                        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-center p-4">
+                                            <MapPin size={24} className="mb-3 text-[#cd7d51]" />
+                                            <p className="text-gray-500 text-xs mb-3 whitespace-pre-line">
+                                                {block.address}
+                                            </p>
+
+                                            {block.googleMapsLink && (
+                                                <a
+                                                    href={block.googleMapsLink}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-[10px] uppercase tracking-widest font-bold text-[#cd7d51] hover:underline"
+                                                >
+                                                    View on Google Maps
+                                                </a>
+                                            )}
+                                        </div>
+                                    )}
+
+                                </div>
+
                             </div>
 
                             {/* Communication Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 lg:gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8">
                                 {/* Phone */}
                                 <div className="flex gap-4 group">
                                     <div className="text-[#cd7d51] mt-1 shrink-0">
@@ -122,8 +146,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                         <h5 className="text-[#14253f] font-bold uppercase tracking-widest text-xs mb-2">
                                             {block.hoursHeading}
                                         </h5>
-                                        <p className="text-gray-500 font-light text-sm whitespace-pre-line">
-                                            {block.hours}
+                                        <p className="text-gray-500 font-light text-sm truncate">                                            {block.hours}
                                         </p>
                                     </div>
                                 </div>
@@ -133,7 +156,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                     </div>
 
                     {/* RIGHT COLUMN: The Form */}
-                    <div className="w-full lg:w-8/12 order-1 lg:order-2">
+                    <div className="w-full lg:w-8/12 order-1 lg:order-2 ">
                         <div className="bg-white p-6 md:p-8 lg:p-12 rounded-sm border border-gray-100 shadow-[0_20px_40px_rgba(0,0,0,0.06)] relative overflow-hidden">
 
                             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#14253f] via-[#cd7d51] to-transparent"></div>
@@ -145,20 +168,28 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                 {/* Identity */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Full Name *
                                         </label>
-                                        <input required type="text" placeholder="e.g. John Doe"
+                                        <input
+                                            id="fullName"
+                                            required
+                                            type="text"
+                                            placeholder="e.g. John Doe"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
                                     </div>
 
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Business Email *
                                         </label>
-                                        <input required type="email" placeholder="name@company.com"
+                                        <input
+                                            id="email"
+                                            required
+                                            type="email"
+                                            placeholder="name@company.com"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
@@ -168,20 +199,28 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                 {/* Company & Market */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="company" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Company / Brand *
                                         </label>
-                                        <input required type="text"
+                                        <input
+                                            id="company"
+                                            required
+                                            type="text"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
                                     </div>
+
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="targetMarket" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Target Market
                                         </label>
                                         <div className="relative">
-                                            <input required type="text" placeholder="e.g. UAE, UK, USA"
+                                            <input
+                                                id="targetMarket"
+                                                required
+                                                type="text"
+                                                placeholder="e.g. UAE, UK, USA"
                                                 className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                             />
                                             <Globe size={16} className="absolute right-0 top-3 text-gray-300 group-focus-within:text-[#cd7d51] transition-colors" />
@@ -192,14 +231,17 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
 
                                 {/* Specifics */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                                    {/* DYNAMIC Category Dropdown */}
+                                    {/* Category Dropdown */}
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-[#cd7d51] mb-2 block">
+                                        <label htmlFor="productCategory" className="text-[10px] font-bold uppercase tracking-widest text-[#cd7d51] mb-2 block">
                                             Product Category *
                                         </label>
                                         <div className="relative">
-                                            {/* 2. FIXED: Added 'pr-10 truncate' to prevent text cutting/overlap */}
-                                            <select className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium bg-transparent appearance-none rounded-none outline-none cursor-pointer pr-10 truncate">
+                                            <select
+                                                id="productCategory"
+                                                aria-label="Select Product Category"
+                                                className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium bg-transparent appearance-none rounded-none outline-none cursor-pointer pr-10 truncate"
+                                            >
                                                 <option value="">Select Category</option>
                                                 {block.productCategories?.map((cat: string, idx: number) => (
                                                     <option key={idx} value={cat}>{cat}</option>
@@ -211,20 +253,26 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                     </div>
 
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="quantity" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Approx Quantity
                                         </label>
-                                        <input type="text" placeholder="e.g. 500 units"
+                                        <input
+                                            id="quantity"
+                                            type="text"
+                                            placeholder="e.g. 500 units"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
                                     </div>
 
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="timeline" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Required Timeline
                                         </label>
-                                        <input type="text" placeholder="e.g. 8-10 weeks"
+                                        <input
+                                            id="timeline"
+                                            type="text"
+                                            placeholder="e.g. 8-10 weeks"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
@@ -234,33 +282,39 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                 {/* Advanced Info */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                     <div className="group relative">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                        <label htmlFor="priceRange" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                             Target Price Range
                                         </label>
-                                        <input type="text" placeholder="e.g. $15 - $25 USD FOB"
+                                        <input
+                                            id="priceRange"
+                                            type="text"
+                                            placeholder="e.g. $15 - $25 USD FOB"
                                             className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent placeholder-gray-300 relative z-10"
                                         />
                                         <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
                                     </div>
 
                                     <div className="group">
-                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-hover:text-[#cd7d51] transition-colors">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-hover:text-[#cd7d51] transition-colors">
                                             Upload Tech Pack / Images
-                                        </label>
-                                        <div className="border border-dashed border-gray-300 rounded-sm p-4 flex items-center justify-center gap-3 text-gray-400 hover:border-[#cd7d51] hover:text-[#cd7d51] hover:bg-[#cd7d51]/5 transition-all cursor-pointer bg-gray-50/50">
+                                        </span>
+                                        <button type="button" aria-label="Upload Tech Pack or Images" className="w-full border border-dashed border-gray-300 rounded-sm p-4 flex items-center justify-center gap-3 text-gray-400 hover:border-[#cd7d51] hover:text-[#cd7d51] hover:bg-[#cd7d51]/5 transition-all cursor-pointer bg-gray-50/50">
                                             <UploadCloud size={20} />
                                             <span className="text-xs uppercase tracking-wide font-bold">Click to upload</span>
                                             <span className="text-[10px] opacity-60">(PDF/JPG)</span>
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
 
                                 {/* Details */}
                                 <div className="group relative">
-                                    <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
+                                    <label htmlFor="details" className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block group-focus-within:text-[#cd7d51] transition-colors">
                                         Additional Details
                                     </label>
-                                    <textarea rows={3} placeholder="Tell us more about your materials, quality standards, or specific requirements..."
+                                    <textarea
+                                        id="details"
+                                        rows={3}
+                                        placeholder="Tell us more about your materials, quality standards, or specific requirements..."
                                         className="w-full border-b border-gray-200 py-3 text-[#14253f] font-medium focus:outline-none bg-transparent resize-none placeholder-gray-300 relative z-10"
                                     />
                                     <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#cd7d51] group-focus-within:w-full transition-all duration-500"></div>
