@@ -2,6 +2,7 @@
 import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 interface GalleryProps {
     block: any;
@@ -31,12 +32,14 @@ const GallerySection: React.FC<GalleryProps> = ({ block }) => {
                     {block.items?.map((item: any, index: number) => (
                         <div key={index} className="group relative aspect-[4/3] overflow-hidden rounded-sm cursor-pointer bg-[#0f1b2d] shadow-md hover:shadow-2xl transition-shadow duration-500">
 
-                            {/* 1. Image: Zoom Effect */}
+                            {/* 1. Image: Zoom Effect (Optimized) */}
                             {item.image && (
-                                <img
+                                <Image
                                     src={urlForImage(item.image).url()}
                                     alt={item.title || "Gallery Image"}
-                                    className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 opacity-100 group-hover:opacity-40"
+                                    fill // 👈 Fills the aspect-ratio container
+                                    sizes="(max-width: 768px) 100vw, 50vw" // 👈 Critical for mobile speed
+                                    className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110 opacity-100 group-hover:opacity-40"
                                 />
                             )}
 
@@ -44,7 +47,7 @@ const GallerySection: React.FC<GalleryProps> = ({ block }) => {
                             <div className="absolute inset-0 bg-[#14253f]/90 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                             {/* 3. Content on Hover */}
-                            <div className="absolute inset-0 p-10 flex flex-col justify-end items-start">
+                            <div className="absolute inset-0 p-10 flex flex-col justify-end items-start z-10">
 
                                 {/* Title */}
                                 <h3 className="text-2xl lg:text-4xl font-bold uppercase tracking-tight text-white mb-4 translate-y-8 opacity-0 transition-all duration-500 delay-100 group-hover:translate-y-0 group-hover:opacity-100">

@@ -12,6 +12,16 @@ export default {
       boxShadow: {
         layer: '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
       },
+      // 👇 NEW: Animation for Loading Skeletons
+      animation: {
+        shimmer: 'shimmer 2s infinite linear',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': {transform: 'translateX(-100%) skewX(-12deg)'},
+          '100%': {transform: 'translateX(200%) skewX(-12deg)'},
+        },
+      },
       // ... (keeping your existing colors exactly as they are) ...
       colors: {
         black: '#0d0e12',
@@ -95,10 +105,7 @@ export default {
           950: '#14211a',
         },
       },
-      // 👇 FIX: Update Fonts here
       fontFamily: {
-        // "Oswald" first ensures your headings are bold and condensed.
-        // "Inter" is the fallback.
         sans: ['var(--font-oswald)', 'var(--font-inter)', 'sans-serif'],
         mono: ['var(--font-ibm-plex-mono)'],
         serif: ['var(--font-inter)', 'serif'],

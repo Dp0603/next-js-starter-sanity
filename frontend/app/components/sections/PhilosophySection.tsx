@@ -3,6 +3,7 @@ import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image"; // 👈 IMPORT THIS
 
 interface PhilosophyProps {
     block: any;
@@ -31,7 +32,6 @@ const PhilosophySection: React.FC<PhilosophyProps> = ({ block }) => {
                             {block.description}
                         </p>
 
-                        {/* Feature List (Matches the style of Quality/Capabilities) */}
                         <ul className="space-y-4 mb-10">
                             {block.features?.map((feature: string, idx: number) => (
                                 <li key={idx} className="flex items-center gap-3 text-[#14253f] font-bold uppercase tracking-widest text-xs">
@@ -56,18 +56,19 @@ const PhilosophySection: React.FC<PhilosophyProps> = ({ block }) => {
                     {/* --- IMAGE SIDE (Right) --- */}
                     <div className="w-full lg:w-1/2 order-1 lg:order-2 relative group">
 
-                        {/* Decorative Border Box (The Premium Touch) */}
+                        {/* Decorative Border Box */}
                         <div className="absolute inset-0 border-2 border-[#14253f]/10 z-0 hidden lg:block transition-transform duration-500 group-hover:scale-105 -right-6 top-6" />
 
                         <div className="relative z-10 aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl rounded-sm">
                             {block.image && (
-                                <img
+                                <Image
                                     src={urlForImage(block.image).url()}
                                     alt={block.heading}
-                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    fill // 👈 Uses optimized Next.js Image
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    sizes="(max-width: 1024px) 100vw, 50vw" // 👈 Helps mobile load smaller versions
                                 />
                             )}
-                            {/* Dark Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-[#14253f]/20 to-transparent" />
                         </div>
                     </div>

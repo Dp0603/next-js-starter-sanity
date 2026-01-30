@@ -29,38 +29,66 @@ import {richTextSection} from './objects/richTextSection'
 import {location} from './documents/location'
 import {seo} from './objects/seo'
 
-// Export an array of all the schema types.  This is used in the Sanity Studio configuration. https://www.sanity.io/docs/studio/schema-types
 
 export const schemaTypes = [
   // Singletons
+  //Home page
+  hero,
+  stats,
+  brandShowcase,
+  philosophy,
+  ctaSection,
+  
+  
+  //About page
+  aboutHero,
+  richTextSection,
+  locationSection,
+  gallerySection,
+  
+  
+  
+  //Capabilities page
+  workflowSection,
+  services,
+  infrastructureSection,
+
+
+  //Products page
+  productCategory,
+  productLookbook,
+  productShowcase,
+  
+  
+  //Brands
+
+
+
+  //Quality & Compliance page
+  qualityStandards,
+  qualityEthics,
+  
+  
+  
+  //Contact page
+  contactSection,
+
+
   siteSettings,
+
+
   page,
   post,
   person,
   button,
   blockContent,
   blockContentTextOnly,
-  infoSection,
   callToAction,
-  hero,
   link,
-  stats,
-  philosophy,
-  productCategory,
-  productLookbook,
-  services,
-  ctaSection,
-  aboutHero,
-  locationSection,
-  gallerySection,
-  workflowSection,
-  infrastructureSection,
-  productShowcase,
-  qualityStandards,
-  qualityEthics,
-  contactSection,
-  brandShowcase,
-  richTextSection,
+  infoSection,
   location,
   seo,
 ]
+
+
+

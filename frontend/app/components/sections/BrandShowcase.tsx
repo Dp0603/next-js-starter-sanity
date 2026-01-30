@@ -3,13 +3,14 @@ import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface BrandProps {
     block: any;
 }
 
 const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
-    if (!block || !block.brands) return null; 
+    if (!block || !block.brands) return null;
 
     return (
         <section className="py-24 lg:py-32 bg-white overflow-hidden">
@@ -33,8 +34,6 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
                 {/* --- BRAND LIST --- */}
                 <div className="space-y-32">
                     {block.brands.map((brand: any, index: number) => {
-                        // 👇 FIX: SAFETY CHECK
-                        // If 'brand' is null (broken reference), skip it immediately.
                         if (!brand) return null;
 
                         const isEven = index % 2 === 0;
@@ -48,10 +47,13 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
 
                                     <div className="aspect-[4/5] overflow-hidden bg-gray-100 rounded-sm relative z-10 shadow-lg">
                                         {brand.image && (
-                                            <img
+                                            // 👇 OPTIMIZED IMAGE
+                                            <Image
                                                 src={urlForImage(brand.image).url()}
                                                 alt={brand.name || "Brand Image"}
-                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                             />
                                         )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#14253f]/40 to-transparent" />
@@ -60,10 +62,13 @@ const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
                                     {/* Floating Logo Badge */}
                                     {brand.logo && (
                                         <div className={`absolute -bottom-8 ${isEven ? 'right-8' : 'left-8'} z-20 w-24 h-24 bg-white p-4 shadow-[0_20px_40px_rgba(0,0,0,0.1)] flex items-center justify-center rounded-sm border border-gray-100`}>
-                                            <img
+                                            {/* 👇 OPTIMIZED LOGO */}
+                                            <Image
                                                 src={urlForImage(brand.logo).url()}
                                                 alt={`${brand.name} Logo`}
-                                                className="max-w-full max-h-full object-contain"
+                                                width={80}
+                                                height={80}
+                                                className="w-auto h-auto object-contain max-w-full max-h-full"
                                             />
                                         </div>
                                     )}

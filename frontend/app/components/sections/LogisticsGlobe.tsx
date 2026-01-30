@@ -255,6 +255,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image"; // 👈 IMPORT THIS
 import { RefreshCw } from "lucide-react";
 
 const Globe = dynamic(
@@ -262,14 +263,12 @@ const Globe = dynamic(
   { ssr: false }
 ) as any;
 
-
-
 // --- CONFIGURABLE CONSTANTS ---
-const GLOBAL_SCALE = 2.0;             // 1️⃣ Global scale multiplier
-const LAPTOP_REDUCTION = 0.55;        // 1️⃣ Scale reduction for laptops (1024px-1440px)
-const GLOBE_LIMITS = { min: 350, max: 900 }; // 1️⃣ Hard min/max pixel limits
-const ZOOM_ALTITUDE = 1.8;            // 2️⃣ Zoom level on click (Lower = Closer)
-const RESET_ALTITUDE = 2.5;           // 3️⃣ Default global zoom level
+const GLOBAL_SCALE = 2.0;
+const LAPTOP_REDUCTION = 0.55;
+const GLOBE_LIMITS = { min: 350, max: 900 };
+const ZOOM_ALTITUDE = 1.8;
+const RESET_ALTITUDE = 2.5;
 // ------------------------------
 
 interface Location {
@@ -303,7 +302,6 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
   const [activeHub, setActiveHub] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // 1️⃣ Responsive Logic using ResizeObserver
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -312,17 +310,15 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
         const { width: containerWidth } = entry.contentRect;
         const windowWidth = window.innerWidth;
 
-        // Apply laptop-specific reduction
         const isLaptop = windowWidth >= 1024 && windowWidth <= 1440;
         const multiplier = isLaptop ? (GLOBAL_SCALE * LAPTOP_REDUCTION) : GLOBAL_SCALE;
 
-        // Apply scale and clamp to limits
         let calculatedSize = containerWidth * multiplier;
         calculatedSize = Math.max(GLOBE_LIMITS.min, Math.min(calculatedSize, GLOBE_LIMITS.max));
 
         setDimensions({
           width: calculatedSize,
-          height: calculatedSize * 0.9 // Proportional (not a perfect square)
+          height: calculatedSize * 0.9
         });
       }
     });
@@ -362,14 +358,8 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
       globeEl.current.pointOfView({
         lat: loc.lat,
         lng: loc.lng,
-        altitude: ZOOM_ALTITUDE // 2️⃣ Using configurable altitude
+        altitude: ZOOM_ALTITUDE
       }, 2000);
-    }
-
-    const nextImg = getBackgroundImage(loc.name);
-    if (nextImg) {
-      const img = new Image();
-      img.src = nextImg;
     }
 
     setTimeout(() => {
@@ -381,7 +371,6 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
   const resetView = () => {
     setIsTransitioning(true);
     if (globeEl.current) {
-      // 3️⃣ Using configurable reset altitude
       globeEl.current.pointOfView({ lat: 20, lng: 0, altitude: RESET_ALTITUDE }, 2000);
       setTimeout(() => {
         setActiveHub(null);
@@ -410,13 +399,19 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
 
       {/* IMAGE LAYER */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* 4️⃣ Background Overlay for Readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0f1b2d]/95 via-[#0f1b2d]/85 to-transparent z-10 backdrop-blur-[2px]" />
 
-        <div
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${!isTransitioning && activeHub ? 'opacity-40' : 'opacity-0'}`}
-          style={{ backgroundImage: bgImage ? `url(${bgImage})` : 'none' }}
-        />
+        {/* 👇 OPTIMIZED BACKGROUND IMAGE */}
+        {bgImage && (
+          <Image
+            src={bgImage}
+            alt="Hub Background"
+            fill
+            className={`object-cover transition-opacity duration-1000 ${!isTransitioning && activeHub ? 'opacity-40' : 'opacity-0'}`}
+            sizes="100vw"
+            priority={false} // Lazy load since it's background
+          />
+        )}
       </div>
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">

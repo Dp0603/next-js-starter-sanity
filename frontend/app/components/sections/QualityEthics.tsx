@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
-import { Check } from "lucide-react"; // Removed Shield icon
+import { Check } from "lucide-react";
+import Image from "next/image"; // 👈 IMPORT THIS
 
 interface EthicsProps {
     block: any;
@@ -15,7 +16,7 @@ const QualityEthics: React.FC<EthicsProps> = ({ block }) => {
     return (
         <section className="py-24 lg:py-32 bg-[#fafafa] relative overflow-hidden">
 
-            {/* Background Decor (Matches Contact Page) */}
+            {/* Background Decor */}
             <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-gray-200/40 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 -translate-x-1/4" />
 
             <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
@@ -24,10 +25,12 @@ const QualityEthics: React.FC<EthicsProps> = ({ block }) => {
                     {/* IMAGE SIDE */}
                     <div className="w-full lg:w-1/2 relative min-h-[400px] lg:h-[600px] rounded-sm overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)] group">
                         {block.image && (
-                            <img
+                            <Image
                                 src={urlForImage(block.image).url()}
                                 alt={block.heading}
-                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                fill // 👈 Fills the container
+                                className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                                sizes="(max-width: 1024px) 100vw, 50vw" // 👈 Speed Fix
                             />
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#14253f]/40 to-transparent" />
@@ -36,9 +39,8 @@ const QualityEthics: React.FC<EthicsProps> = ({ block }) => {
                     {/* CONTENT SIDE */}
                     <div className="w-full lg:w-1/2">
 
-                        {/* --- UPDATED SUBTITLE STYLE (DASH instead of Icon) --- */}
+                        {/* Subtitle */}
                         <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                            {/* The Orange Dash Line */}
                             <span className="w-8 h-[1px] bg-[#cd7d51]"></span>
                             {block.subtitle}
                         </h4>

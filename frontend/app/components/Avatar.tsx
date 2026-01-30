@@ -1,37 +1,30 @@
-import Image from '@/app/components/SanityImage'
+import Image from 'next/image' // 👈 Use Next.js Image
 import DateComponent from '@/app/components/Date'
+import { urlForImage } from '@/sanity/lib/utils'
 
 type Props = {
   person: {
     firstName: string | null
     lastName: string | null
-    picture?: {
-      asset?: {_ref: string}
-      hotspot?: {x: number; y: number}
-      crop?: {top: number; bottom: number; left: number; right: number}
-      alt?: string
-    }
+    picture?: any
   }
   date?: string
   small?: boolean
 }
 
-export default function Avatar({person, date, small = false}: Props) {
-  const {firstName, lastName, picture} = person
+export default function Avatar({ person, date, small = false }: Props) {
+  const { firstName, lastName, picture } = person
 
   return (
     <div className="flex items-center font-mono">
       {picture?.asset?._ref ? (
-        <div className={`${small ? 'h-6 w-6 mr-2' : 'h-9 w-9 mr-4'}`}>
+        <div className={`relative overflow-hidden rounded-full ${small ? 'h-6 w-6 mr-2' : 'h-9 w-9 mr-4'}`}>
           <Image
-            id={picture.asset._ref}
-            alt={picture?.alt || ''}
-            className="h-full rounded-full"
-            height={small ? 32 : 48}
-            width={small ? 32 : 48}
-            hotspot={picture.hotspot}
-            crop={picture.crop}
-            mode="cover"
+            src={urlForImage(picture).height(96).width(96).fit('crop').url()} // Optimized for small avatar
+            alt={picture?.alt || 'Author Avatar'}
+            fill
+            className="object-cover rounded-full"
+            sizes="48px"
           />
         </div>
       ) : (

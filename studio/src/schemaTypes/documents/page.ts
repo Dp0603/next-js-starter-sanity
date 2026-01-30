@@ -78,25 +78,35 @@ export const page = defineType({
       type: 'array',
       group: 'content',
       of: [
+        // Home page
         {type: 'hero'},
         {type: 'stats'},
+        {type: 'brandShowcase'},
         {type: 'philosophy'},
-        {type: 'productLookbook'},
         {type: 'services'},
         {type: 'ctaSection'},
-        {type: 'callToAction'},
+        {type: 'productLookbook'},
+        
         {type: 'infoSection'},
+        
+        // About page
         {type: 'aboutHero'},
         {type: 'locationSection'},
         {type: 'gallerySection'},
+        
+        
+        // Capabilities page
         {type: 'workflowSection'},
         {type: 'infrastructureSection'},
+        
+        
+        // Products page
         {type: 'productShowcase'},
         {type: 'qualityStandards'},
         {type: 'qualityEthics'},
         {type: 'contactSection'},
-        {type: 'brandShowcase'},
         {type: 'richTextSection'},
+        {type: 'callToAction'},
       ],
       options: {
         insertMenu: {

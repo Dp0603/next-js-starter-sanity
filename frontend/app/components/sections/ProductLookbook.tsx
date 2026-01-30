@@ -3,6 +3,7 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { urlForImage } from "@/sanity/lib/utils";
+import Image from "next/image"; // 👈 IMPORT THIS
 
 interface ProductLookbookProps {
     block: any;
@@ -40,13 +41,15 @@ const ProductLookbook: React.FC<ProductLookbookProps> = ({ block }) => {
                     {block.products?.map((product: any, idx: number) => (
                         <Link key={product._id} href="/products" className="group block relative h-[500px] border-r border-b border-gray-100 overflow-hidden">
 
-                            {/* Image */}
+                            {/* Optimized Image */}
                             {product.image && (
                                 <div className="absolute inset-0 z-0">
-                                    <img
+                                    <Image
                                         src={urlForImage(product.image).url()}
-                                        alt={product.title}
-                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                        alt={product.title || "Category Image"}
+                                        fill // 👈 Fills the container (h-[500px])
+                                        sizes="(max-width: 768px) 100vw, 25vw" // 👈 CRITICAL SPEED FIX: Downloads small image on mobile, 1/4 width on desktop
+                                        className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
                                     />
                                     <div className="absolute inset-0 bg-[#14253f]/20 group-hover:bg-transparent transition-colors duration-500" />
                                 </div>

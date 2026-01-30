@@ -1,5 +1,4 @@
 import { type Metadata } from 'next'
-import { notFound } from 'next/navigation'
 import { sanityFetch } from '@/sanity/lib/live'
 import { getPageQuery } from '@/sanity/lib/queries'
 import BlockRenderer from '@/app/components/BlockRenderer'
@@ -40,14 +39,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const { data } = await sanityFetch({
-    query: getPageQuery,
-    params: { slug: HOME_SLUG },
-  })
+  // 🚀 OPTIMIZATION: Fetch Page Data and Locations in Parallel
+  // This makes the homepage load faster by not waiting for one request to finish before starting the next.
+  const [pageResponse, locationsResponse] = await Promise.all([
+    sanityFetch({ query: getPageQuery, params: { slug: HOME_SLUG } }),
+    sanityFetch({ query: LOCATIONS_QUERY }),
+  ]);
 
-  const { data: locationData } = await sanityFetch({
-    query: LOCATIONS_QUERY,
-  })
+  const data = pageResponse.data;
+  const locationData = locationsResponse.data;
 
   if (!data) {
     return (
@@ -62,11 +62,14 @@ export default async function Page() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
+      {/* 1. CMS Content (Hero, Stats, etc.) */}
       <BlockRenderer
         blocks={data.pageBuilder ?? []}
         legalType={data.legalType}
       />
+
+      {/* 2. Global Logistics Map (Hardcoded at bottom for now) */}
       <LogisticsGlobe locations={locationData ?? []} />
     </div>
   )

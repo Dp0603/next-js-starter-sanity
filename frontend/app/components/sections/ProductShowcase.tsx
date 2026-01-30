@@ -3,6 +3,7 @@ import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
 import Link from "next/link";
 import { ArrowRight, Clock, Package } from "lucide-react";
+import Image from "next/image"; // 👈 IMPORT THIS
 
 interface ProductShowcaseProps {
     block: any;
@@ -30,7 +31,7 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({ block }) => {
                         {block.heading}
                     </h1>
 
-                    {/* Centered Description (Removed left border) */}
+                    {/* Centered Description */}
                     <p className="text-xl text-gray-500 font-light leading-relaxed max-w-2xl mx-auto">
                         {block.description}
                     </p>
@@ -53,10 +54,12 @@ const ProductShowcase: React.FC<ProductShowcaseProps> = ({ block }) => {
                                     {/* The Image */}
                                     <div className="relative z-10 aspect-[4/3] bg-gray-200 overflow-hidden shadow-lg">
                                         {item.image && (
-                                            <img
+                                            <Image
                                                 src={urlForImage(item.image).url()}
                                                 alt={item.title}
-                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                fill // 👈 Fills container
+                                                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                                sizes="(max-width: 768px) 100vw, 50vw" // 👈 Critical for mobile speed
                                             />
                                         )}
                                         {/* Overlay Gradient */}

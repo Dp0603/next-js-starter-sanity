@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { PortableText } from "@portabletext/react";
+import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { Download } from "lucide-react";
+import { urlForImage } from "@/sanity/lib/utils";
+import Image from "next/image"; // 👈 IMPORT THIS
 
 interface RichTextSectionProps {
     block: {
@@ -21,7 +23,7 @@ interface RichTextSectionProps {
 
 /* ------------------ PortableText Styles ------------------ */
 
-const components = {
+const components: PortableTextComponents = {
     block: {
         h3: ({ children }: any) => (
             <h3 className="text-lg font-bold mt-8 mb-4 text-[#14253f] uppercase tracking-wide">
@@ -45,6 +47,22 @@ const components = {
                 {children}
             </ol>
         ),
+    },
+    // 👇 NEW: Handle images inside text blocks efficiently
+    types: {
+        image: ({ value }: any) => {
+            return (
+                <div className="relative w-full h-64 md:h-96 my-8 rounded-sm overflow-hidden bg-gray-100">
+                    <Image
+                        src={urlForImage(value).url()}
+                        alt={value.alt || "Illustration"}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                </div>
+            );
+        },
     },
 };
 
