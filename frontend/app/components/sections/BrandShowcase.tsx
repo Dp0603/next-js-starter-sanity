@@ -9,7 +9,7 @@ interface BrandProps {
 }
 
 const BrandShowcase: React.FC<BrandProps> = ({ block }) => {
-    if (!block || !block.brands) return null; // Safety check for the block itself
+    if (!block || !block.brands) return null; 
 
     return (
         <section className="py-24 lg:py-32 bg-white overflow-hidden">
