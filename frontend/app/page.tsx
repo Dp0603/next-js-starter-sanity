@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { sanityFetch } from '@/sanity/lib/live'
 import { getPageQuery } from '@/sanity/lib/queries'
 import BlockRenderer from '@/app/components/BlockRenderer'
-// import LogisticsGlobe from './components/sections/LogisticsGlobe'
+import LogisticsGlobe from './components/sections/LogisticsGlobe'
 
 const HOME_SLUG = '/';
 
@@ -67,7 +67,7 @@ export default async function Page() {
         blocks={data.pageBuilder ?? []}
         legalType={data.legalType}
       />
-      {/* <LogisticsGlobe locations={locationData ?? []} /> */}
+      <LogisticsGlobe locations={locationData ?? []} />
     </div>
   )
 }

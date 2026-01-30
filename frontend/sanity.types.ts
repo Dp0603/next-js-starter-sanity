@@ -184,6 +184,7 @@ export type ContactSection = {
   description?: string
   addressHeading?: string
   address?: string
+  mapEmbedUrl?: string
   googleMapsLink?: string
   mapImage?: {
     asset?: SanityImageAssetReference
@@ -1093,6 +1094,7 @@ export type GetPageQueryResult = {
         description?: string
         addressHeading?: string
         address?: string
+        mapEmbedUrl: string | null
         googleMapsLink?: string
         mapImage?: {
           asset?: SanityImageAssetReference
@@ -1108,7 +1110,6 @@ export type GetPageQueryResult = {
         hoursHeading?: string
         hours?: string
         productCategories?: Array<string>
-        mapEmbedUrl: null
       }
     | {
         _key: string

@@ -1164,6 +1164,13 @@
           },
           "optional": true
         },
+        "mapEmbedUrl": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
         "googleMapsLink": {
           "type": "objectAttribute",
           "value": {

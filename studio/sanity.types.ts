@@ -184,6 +184,7 @@ export type ContactSection = {
   description?: string
   addressHeading?: string
   address?: string
+  mapEmbedUrl?: string
   googleMapsLink?: string
   mapImage?: {
     asset?: SanityImageAssetReference
