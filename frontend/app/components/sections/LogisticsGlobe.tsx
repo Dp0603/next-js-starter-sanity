@@ -257,11 +257,11 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { RefreshCw } from "lucide-react";
 
-// @ts-expect-error -- react-globe.gl has no TypeScript types
 const Globe = dynamic(
-  () => import("react-globe.gl"),
+  () => Promise.resolve(require("react-globe.gl")),
   { ssr: false }
 );
+
 
 // --- CONFIGURABLE CONSTANTS ---
 const GLOBAL_SCALE = 2.0;             // 1️⃣ Global scale multiplier
