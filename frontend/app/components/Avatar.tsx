@@ -1,6 +1,6 @@
-import Image from 'next/image' // 👈 Use Next.js Image
+import { urlForImage } from "@/sanity/lib/utils";
 import DateComponent from '@/app/components/Date'
-import { urlForImage } from '@/sanity/lib/utils'
+import Image from 'next/image'
 
 type Props = {
   person: {
@@ -20,8 +20,8 @@ export default function Avatar({ person, date, small = false }: Props) {
       {picture?.asset?._ref ? (
         <div className={`relative overflow-hidden rounded-full ${small ? 'h-6 w-6 mr-2' : 'h-9 w-9 mr-4'}`}>
           <Image
-            src={urlForImage(picture).height(96).width(96).fit('crop').url()} // Optimized for small avatar
-            alt={picture?.alt || 'Author Avatar'}
+            src={urlForImage(picture).height(96).width(96).fit('crop').url()}
+            alt={picture?.alt || 'Avatar'}
             fill
             className="object-cover rounded-full"
             sizes="48px"

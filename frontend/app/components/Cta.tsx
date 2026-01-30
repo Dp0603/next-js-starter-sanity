@@ -66,7 +66,6 @@ export default function CTA({ block }: CtaProps) {
             <div className="relative h-64 lg:h-96 w-full rounded-sm overflow-hidden shadow-lg">
               <Image
                 src={urlForImage(image).url()}
-                // 👇 FIX: Cast to any to access 'alt' safely
                 alt={(image as any).alt || "CTA Image"}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
