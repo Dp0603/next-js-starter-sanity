@@ -104,3 +104,57 @@ body {
   max-width: 100%;
   overflow-x: hidden;
 }
+
+/* =========================
+   Magic UI Utilities
+   ========================= */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Horizontal Scroll Fade Mask */
+.mask-gradient-right {
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+/* Globe Scanner Animation */
+@keyframes scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+.animate-scan {
+  animation: scan 4s linear infinite;
+}
+
+/* Bottom Sheet Entry Animation */
+@keyframes slideInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Simulating tailwindcss-animate class */
+.animate-in.slide-in-from-bottom-10 {
+  animation: slideInBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

@@ -28,28 +28,34 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20); // 👈 Lower threshold for faster reaction
     };
+
+    // run on mount to catch refresh-at-bottom
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]); // Re-run on path change to check scroll pos
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMobileOpen ? "bg-white/95 backdrop-blur-md shadow-sm py-4" : "bg-transparent py-8"
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out border-b ${isScrolled || isMobileOpen
+            ? "bg-white/95 backdrop-blur-md shadow-sm py-4 border-neutral-200/50"
+            : "bg-transparent py-6 border-transparent"
           }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
 
           {/* LOGO */}
-          <Link href="/" className="group z-50" onClick={() => setIsMobileOpen(false)}>
+          <Link href="/" className="group z-[100]" onClick={() => setIsMobileOpen(false)}>
             <div className="flex flex-col leading-none">
-              <span className={`text-2xl font-black tracking-tighter transition-colors ${isMobileOpen ? "text-[#14253f]" : textColor}`}>
+              <span className={`text-2xl font-black tracking-tighter transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}>
                 AKAAME
                 <span className="text-[#cd7d51]">.</span>
               </span>
-              <span className={`text-[0.6rem] font-bold tracking-[0.2em] uppercase transition-colors ${isMobileOpen ? "text-neutral-500" : subLogoColor}`}>
+              <span className={`text-[0.6rem] font-bold tracking-[0.2em] uppercase transition-colors duration-500 ${isMobileOpen ? "text-neutral-500" : subLogoColor}`}>
                 Exports Pvt. Ltd.
               </span>
             </div>
@@ -79,8 +85,8 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
             <Link
               href="/contact"
               className={`group inline-flex items-center gap-2 px-6 py-3 text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${isTransparent
-                  ? "border-white text-white hover:bg-white hover:text-[#14253f]"
-                  : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
+                ? "border-white text-white hover:bg-white hover:text-[#14253f]"
+                : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
                 }`}
             >
               Partner With Us
@@ -91,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
           {/* MOBILE MENU TOGGLE */}
           <button
             type="button"
-            className={`lg:hidden z-50 transition-colors ${isMobileOpen ? "text-[#14253f]" : textColor}`}
+            className={`lg:hidden z-[100] transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}
             onClick={() => setIsMobileOpen(!isMobileOpen)}
           >
             {isMobileOpen ? <X size={32} /> : <Menu size={32} />}
@@ -101,7 +107,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
 
       {/* MOBILE MENU OVERLAY (The Fix) */}
       <div
-        className={`fixed inset-0 bg-white z-40 flex flex-col items-center justify-center transition-all duration-500 ease-in-out lg:hidden ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center transition-all duration-500 ease-in-out lg:hidden ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
           }`}
       >
         <nav className="flex flex-col items-center gap-8 text-center">
@@ -130,5 +136,6 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
     </>
   );
 };
+
 
 export default Header;
