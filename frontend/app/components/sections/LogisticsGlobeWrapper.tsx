@@ -1,0 +1,15 @@
+'use client';
+
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+// 🚀 OPTIMIZATION: Lazy load the heavy 3D Globe component
+// We must do this in a Client Component to use { ssr: false }
+const LogisticsGlobe = dynamic(() => import('./LogisticsGlobe'), {
+    ssr: false,
+    loading: () => <div className="h-[800px] bg-[#0f1b2d] border-y border-white/10 animate-pulse" />
+});
+
+export default function LogisticsGlobeWrapper(props: any) {
+    return <LogisticsGlobe {...props} />;
+}
