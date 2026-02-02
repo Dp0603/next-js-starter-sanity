@@ -48,7 +48,7 @@ export default async function RootLayout({
 
   // Fallbacks for data to prevent runtime errors
   const menuItems = settings?.headerMenu || [];
-  const logoSettings = settings?.logo;
+  const logoSettings = settings?.logo || undefined;
 
   return (
     <html
