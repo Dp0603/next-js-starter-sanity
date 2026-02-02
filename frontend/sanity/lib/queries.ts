@@ -148,24 +148,22 @@ export const pagesSlugs = defineQuery(`
   {"slug": slug.current}
 `)
 
-// --- UPDATED SETTINGS QUERY ---
+
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {
-    // 1. Fetching the new Logo Object
     logo {
       useCustomUrl,
       logoUrl,
       logoImage,
+      logoMobileUrl,
+      logoMobileImage,
       alt
     },
     headerMenu,
     footerDescription,
     contactEmail,
     locations,
-    socialLinks[]{
-      platform,
-      url
-    },
+    socialLinks[]{ platform, url },
     "profileUrl": companyProfile.asset->url,
     copyrightText,
     legalLinks,
