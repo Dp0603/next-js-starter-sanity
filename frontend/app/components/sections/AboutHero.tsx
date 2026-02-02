@@ -2,8 +2,7 @@
 import React from "react";
 import { urlForImage } from "@/sanity/lib/utils";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
-import Image from "next/image"; // 👈 IMPORT THIS
-
+import Image from "next/image";
 interface AboutHeroProps {
     block: any;
 }
