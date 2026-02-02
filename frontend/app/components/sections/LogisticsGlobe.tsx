@@ -131,9 +131,15 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (globeEl.current && !activeHub) {
-        globeEl.current.controls().autoRotate = true;
-        globeEl.current.controls().autoRotateSpeed = 0.6;
+      if (globeEl.current) {
+        // 🚀 INTERACTION: Disable manual zoom and rotate to prevent scroll-jacking
+        globeEl.current.controls().enableZoom = false;
+        globeEl.current.controls().enableRotate = false;
+
+        if (!activeHub) {
+          globeEl.current.controls().autoRotate = true;
+          globeEl.current.controls().autoRotateSpeed = 0.6;
+        }
       }
     }, 1000);
   }, [activeHub]);

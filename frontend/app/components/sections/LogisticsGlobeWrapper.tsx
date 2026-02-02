@@ -22,7 +22,7 @@ export default function LogisticsGlobeWrapper(props: any) {
                     observer.disconnect();
                 }
             },
-            { rootMargin: '200px' } // Start loading 200px before it comes into view
+            { threshold: 0.5 } // 🚀 LOAD STRATEGY: Only load when 50% of the globe section is visible
         );
 
         if (containerRef.current) {

@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'], // 🚀 OPTIMIZATION: Prefer AVIF (smaller than WebP)
   },
 }
 
