@@ -5,6 +5,43 @@ export const siteSettings = defineType({
   title: 'Site Settings',
   type: 'document',
   fields: [
+    // --- LOGO SECTION ---
+    defineField({
+      name: 'logo',
+      title: 'Company Logo',
+      type: 'object',
+      description: 'Manage how your logo appears in the header.',
+      fields: [
+        {
+          name: 'useCustomUrl',
+          title: 'Use External URL instead of Upload?',
+          type: 'boolean',
+          initialValue: false,
+        },
+        {
+          name: 'logoImage',
+          title: 'Logo Image (Upload)',
+          type: 'image',
+          options: {hotspot: true},
+          hidden: ({parent}) => parent?.useCustomUrl === true,
+        },
+        {
+          name: 'logoUrl',
+          title: 'External Logo URL',
+          type: 'url',
+          description: 'Paste a direct image link (e.g., https://site.com/logo.png)',
+          hidden: ({parent}) => parent?.useCustomUrl !== true,
+        },
+        {
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description: 'Important for SEO and accessibility.',
+          initialValue: 'Akaame Exports Logo',
+        },
+      ],
+    }),
+
     // --- HEADER SECTION ---
     defineField({
       name: 'headerMenu',

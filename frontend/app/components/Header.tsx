@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { urlFor } from "@/sanity/lib/image";
 
 interface HeaderProps {
   menuItems: {
@@ -11,9 +12,15 @@ interface HeaderProps {
     link?: string;
     _key?: string;
   }[];
+  logo?: {
+    useCustomUrl?: boolean;
+    logoUrl?: string;
+    logoImage?: any;
+    alt?: string;
+  };
 }
 
-const Header: React.FC<HeaderProps> = ({ menuItems }) => {
+const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -22,21 +29,52 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
   const isHome = pathname === "/";
   const isTransparent = isHome && !isScrolled && !isMobileOpen;
 
-  // Colors based on state
+  // Colors for text/icons based on transparency
   const textColor = isTransparent ? "text-white" : "text-[#14253f]";
-  const subLogoColor = isTransparent ? "text-neutral-300" : "text-neutral-500";
+
+  // LOGO RESOLUTION LOGIC
+  const getLogoSrc = () => {
+    if (!logo) return null;
+
+    // 1. Check if the toggle is set to use External URL
+    if (logo.useCustomUrl && logo.logoUrl) {
+      return logo.logoUrl;
+    }
+
+    // 2. Check for Sanity Image Upload
+    if (logo.logoImage?.asset) {
+      try {
+        return urlFor(logo.logoImage).url();
+      } catch (e) {
+        console.error("Sanity URL transformation error:", e);
+        return null;
+      }
+    }
+
+    return null;
+  };
+
+  const logoSrc = getLogoSrc();
+  const logoAlt = logo?.alt || "Akaame Exports Logo";
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20); // 👈 Lower threshold for faster reaction
+      setIsScrolled(window.scrollY > 20);
     };
 
-    // run on mount to catch refresh-at-bottom
     handleScroll();
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]); // Re-run on path change to check scroll pos
+  }, [pathname]);
+
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMobileOpen]);
 
   return (
     <>
@@ -48,17 +86,28 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
 
-          {/* LOGO */}
-          <Link href="/" className="group z-[100]" onClick={() => setIsMobileOpen(false)}>
-            <div className="flex flex-col leading-none">
-              <span className={`text-2xl font-black tracking-tighter transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}>
-                AKAAME
-                <span className="text-[#cd7d51]">.</span>
-              </span>
-              <span className={`text-[0.6rem] font-bold tracking-[0.2em] uppercase transition-colors duration-500 ${isMobileOpen ? "text-neutral-500" : subLogoColor}`}>
-                Exports Pvt. Ltd.
-              </span>
-            </div>
+          {/* DYNAMIC LOGO */}
+          <Link href="/" className="z-[100]" onClick={() => setIsMobileOpen(false)}>
+            {logoSrc ? (
+              <div className="relative h-10 w-40 flex items-center">
+                <img
+                  src={logoSrc}
+                  alt={logoAlt}
+                  className={`h-full w-auto object-contain transition-all duration-500 ${isTransparent ? "brightness-0 invert" : ""
+                    }`}
+                />
+              </div>
+            ) : (
+              /* Fallback to Text Logo if no logo source is found */
+              <div className="flex flex-col leading-none">
+                <span className={`text-2xl font-black tracking-tighter transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}>
+                  AKAAME<span className="text-[#cd7d51]">.</span>
+                </span>
+                <span className={`text-[0.6rem] font-bold tracking-[0.2em] uppercase transition-colors duration-500 ${isMobileOpen ? "text-neutral-500" : isTransparent ? "text-neutral-300" : "text-neutral-500"}`}>
+                  Exports Pvt. Ltd.
+                </span>
+              </div>
+            )}
           </Link>
 
           {/* DESKTOP NAVIGATION */}
@@ -85,8 +134,8 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
             <Link
               href="/contact"
               className={`group inline-flex items-center gap-2 px-6 py-3 text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${isTransparent
-                ? "border-white text-white hover:bg-white hover:text-[#14253f]"
-                : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
+                  ? "border-white text-white hover:bg-white hover:text-[#14253f]"
+                  : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
                 }`}
             >
               Partner With Us
@@ -97,7 +146,8 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
           {/* MOBILE MENU TOGGLE */}
           <button
             type="button"
-            className={`lg:hidden z-[100] transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}
+            className={`lg:hidden z-[100] transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor
+              }`}
             onClick={() => setIsMobileOpen(!isMobileOpen)}
           >
             {isMobileOpen ? <X size={32} /> : <Menu size={32} />}
@@ -105,7 +155,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
         </div>
       </header>
 
-      {/* MOBILE MENU OVERLAY (The Fix) */}
+      {/* MOBILE MENU OVERLAY */}
       <div
         className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center transition-all duration-500 ease-in-out lg:hidden ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
           }`}
@@ -116,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
               key={idx}
               href={link.link || "/"}
               onClick={() => setIsMobileOpen(false)}
-              className="text-2xl font-black text-[#14253f] uppercase tracking-tighter hover:text-[#cd7d51] transition-colors"
+              className="text-3xl font-black text-[#14253f] uppercase tracking-tighter hover:text-[#cd7d51] transition-colors"
             >
               {link.title}
             </Link>
@@ -127,7 +177,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
           <Link
             href="/contact"
             onClick={() => setIsMobileOpen(false)}
-            className="text-sm font-bold text-[#cd7d51] uppercase tracking-widest border-b border-[#cd7d51] pb-1"
+            className="text-sm font-bold text-[#cd7d51] uppercase tracking-widest border-b-2 border-[#cd7d51] pb-1"
           >
             Start a Project
           </Link>
@@ -136,6 +186,5 @@ const Header: React.FC<HeaderProps> = ({ menuItems }) => {
     </>
   );
 };
-
 
 export default Header;

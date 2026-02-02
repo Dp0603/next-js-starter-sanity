@@ -35,7 +35,6 @@ export const getPageQuery = defineQuery(`
     subheading,
     legalType,
     
-    // 👇 1. SEO BLOCK (Critical for Tab Title & Google)
     seo {
       metaTitle,
       metaDescription,
@@ -75,7 +74,6 @@ export const getPageQuery = defineQuery(`
         }
       },
       
-      // 👇 2. GLOBE DATA (Critical for the 3D Map)
       _type == "locationSection" => {
         ...,
         locations[]{
@@ -86,7 +84,6 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // 👇 3. BRAND SHOWCASE
       _type == "brandShowcase" => { 
         ...,
         brands[]{
@@ -100,10 +97,9 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // 👇 4. CONTACT SECTION 
       _type == "contactSection" => { 
         ...,
-        mapEmbedUrl //
+        mapEmbedUrl 
       },
     },
   }
@@ -152,13 +148,20 @@ export const pagesSlugs = defineQuery(`
   {"slug": slug.current}
 `)
 
+// --- UPDATED SETTINGS QUERY ---
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {
+    // 1. Fetching the new Logo Object
+    logo {
+      useCustomUrl,
+      logoUrl,
+      logoImage,
+      alt
+    },
     headerMenu,
     footerDescription,
     contactEmail,
     locations,
-    // 👇 Explicitly fetching platform so Footer icons work
     socialLinks[]{
       platform,
       url

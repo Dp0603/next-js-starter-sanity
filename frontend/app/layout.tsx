@@ -7,9 +7,9 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 import { SETTINGS_QUERY } from "@/sanity/lib/queries";
-
 import { SanityLive, sanityFetch } from "@/sanity/lib/live";
 
+// --- Font Configuration ---
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
@@ -29,6 +29,7 @@ const oswald = Oswald({
   display: 'swap',
 });
 
+// --- Metadata Configuration ---
 export const metadata: Metadata = {
   title: "Akaame Exports Pvt. Ltd.",
   description: "Premium Footwear & Leather Goods Manufacturer",
@@ -40,31 +41,48 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // 👇 FIXED: Use sanityFetch instead of client.fetch
-  // This enables "Live Mode" so you don't have to restart the server
+  // Fetching site settings with Sanity Live support
   const { data: settings } = await sanityFetch({
     query: SETTINGS_QUERY,
   });
 
-  // Fallback for Menu Items
+  // Fallbacks for data to prevent runtime errors
   const menuItems = settings?.headerMenu || [];
+  const logoSettings = settings?.logo;
 
   return (
-    <html lang="en" className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable}`}>
-      <body className="antialiased font-sans bg-white text-[#14253f]">
+    <html
+      lang="en"
+      className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable} scroll-smooth`}
+    >
+      <body className="antialiased font-sans bg-white text-[#14253f] min-h-screen flex flex-col">
 
-        {/* Pass Dynamic Menu to Header */}
-        <Header menuItems={menuItems} />
+        {/* UPDATED: Header now receives both the menu array 
+          and the logo object fetched from SETTINGS_QUERY 
+        */}
+        <Header
+          menuItems={menuItems}
+          logo={logoSettings}
+        />
 
-        {/* Main Content Area */}
-        <main className="min-h-screen">
+        {/* MAIN CONTENT AREA 
+          'flex-grow' ensures that the footer is pushed to the bottom 
+          of the screen even on pages with very little content.
+        */}
+        <main className="flex-grow">
           {children}
         </main>
 
-        {/* Pass Dynamic Settings to Footer */}
+        {/* FOOTER
+          Passes the full settings object for dynamic contact info,
+          social links, and legal text.
+        */}
         <Footer settings={settings} />
 
-        {/* Enable Real-time Preview */}
+        {/* SANITY LIVE
+          Enables real-time visual editing and content updates
+          without requiring a manual browser refresh.
+        */}
         <SanityLive />
 
       </body>
