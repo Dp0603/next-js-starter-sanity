@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   env: {
     SC_DISABLE_SPEEDY: 'false',
   },
+  compress: true, // 🚀 OPTIMIZATION: Enable gzip/brotli compression
   images: {
     remotePatterns: [
       {

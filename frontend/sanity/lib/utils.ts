@@ -12,7 +12,7 @@ const builder = imageUrlBuilder({
 
 // --- FIX: Added 'export' here ---
 export function urlForImage(source: SanityImageSource) {
-  return builder.image(source)
+  return builder.image(source).auto('format').fit('max')
 }
 
 export function resolveOpenGraphImage(

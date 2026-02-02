@@ -20,7 +20,23 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
+export type Logo = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "logo.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
 export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type LocationsObjectImage = {
   asset?: SanityImageAssetReference
   media?: unknown // Unable to locate the referenced type "object.image.media" in schema
   hotspot?: SanityImageHotspot
@@ -39,22 +55,6 @@ export type GalleryItemImage = {
 export type ProductsObjectImage = {
   asset?: SanityImageAssetReference
   media?: unknown // Unable to locate the referenced type "products.object.image.media" in schema
-  hotspot?: SanityImageHotspot
-  crop?: SanityImageCrop
-  _type: 'image'
-}
-
-export type Logo = {
-  asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "logo.media" in schema
-  hotspot?: SanityImageHotspot
-  crop?: SanityImageCrop
-  _type: 'image'
-}
-
-export type BrandsObjectImage = {
-  asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "brands.object.image.media" in schema
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   _type: 'image'
@@ -114,298 +114,11 @@ export type SanityImageHotspot = {
   width: number
 }
 
-export type RichTextSection = {
-  _type: 'richTextSection'
-  title?: string
-  lastUpdated?: string
-  introduction?: string
-  legalSections?: Array<{
-    heading?: string
-    content?: Array<{
-      children?: Array<{
-        marks?: Array<string>
-        text?: string
-        _type: 'span'
-        _key: string
-      }>
-      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-      listItem?: 'bullet' | 'number'
-      markDefs?: Array<{
-        href?: string
-        _type: 'link'
-        _key: string
-      }>
-      level?: number
-      _type: 'block'
-      _key: string
-    }>
-    _key: string
-  }>
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-    listItem?: 'bullet' | 'number'
-    markDefs?: Array<{
-      href?: string
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-}
-
-export type BrandShowcase = {
-  _type: 'brandShowcase'
-  subtitle: string
-  heading: string
-  description?: string
-  brands?: Array<{
-    name: string
-    logo: Logo
-    image: BrandsObjectImage
-    description?: string
-    website?: string
-    color?: string
-    _key: string
-  }>
-}
-
-export type ContactSection = {
-  _type: 'contactSection'
-  subtitle: string
-  heading: string
-  description?: string
-  addressHeading?: string
-  address?: string
-  mapEmbedUrl?: string
-  googleMapsLink?: string
-  mapImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  phoneHeading?: string
-  phones?: Array<string>
-  emailHeading?: string
-  email?: string
-  hoursHeading?: string
-  hours?: string
-  productCategories?: Array<string>
-}
-
-export type QualityEthics = {
-  _type: 'qualityEthics'
-  layout?: 'left' | 'right'
-  subtitle?: string
-  heading: string
-  description?: string
-  checklist?: Array<string>
-  image: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-}
-
-export type QualityStandards = {
-  _type: 'qualityStandards'
-  subtitle: string
-  heading: string
-  description?: string
-  features?: Array<{
-    title: string
-    description?: string
-    icon?: 'shield' | 'refresh' | 'clipboard' | 'scale' | 'zap'
-    _key: string
-  }>
-}
-
-export type ProductShowcase = {
-  _type: 'productShowcase'
-  subtitle: string
-  heading: string
-  description?: string
-  products?: Array<{
-    number: string
-    title: string
-    description: string
-    moq?: string
-    leadTime?: string
-    features?: Array<string>
-    image: ProductsObjectImage
-    buttonText?: string
-    buttonLink?: string
-    _key: string
-  }>
-}
-
-export type InfrastructureSection = {
-  _type: 'infrastructureSection'
-  subtitle?: string
-  heading?: string
-  description?: string
-  cards?: Array<{
-    icon?: 'design' | 'precision' | 'testing'
-    title?: string
-    description?: string
-    _key: string
-  }>
-}
-
-export type WorkflowSection = {
-  _type: 'workflowSection'
-  subtitle: string
-  heading: string
-  description?: string
-  steps?: Array<{
-    number: string
-    title: string
-    description?: string
-    _key: string
-  }>
-}
-
-export type GallerySection = {
-  _type: 'gallerySection'
-  subtitle: string
-  heading: string
-  items?: Array<{
-    image: GalleryItemImage
-    title?: string
-    description?: string
-    link?: string
-    _type: 'galleryItem'
-    _key: string
-  }>
-}
-
-export type LocationSection = {
-  _type: 'locationSection'
-  locations?: Array<{
-    label: string
-    city: string
-    description?: string
-    image?: ObjectImage
-    features?: Array<string>
-    _key: string
-  }>
-}
-
-export type AboutHero = {
-  _type: 'aboutHero'
-  layout?: 'left' | 'right'
-  subtitle: string
-  heading: string
-  description?: string
-  quote?: string
-  quoteAuthor?: string
-  image: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  statNumber?: string
-  statLabel?: string
-}
-
-export type CtaSection = {
-  _type: 'ctaSection'
-  subtitle: string
-  heading: string
-  description?: string
-  primaryButtonText?: string
-  primaryButtonLink?: string
-  secondaryButtonText?: string
-  secondaryButtonLink?: string
-}
-
-export type Services = {
-  _type: 'services'
+export type InfoSection = {
+  _type: 'infoSection'
   heading?: string
   subheading?: string
-  description?: string
-  serviceItems?: Array<{
-    title?: string
-    description?: string
-    icon?: 'PenTool' | 'Factory' | 'ShieldCheck' | 'Truck'
-    _key: string
-  }>
-}
-
-export type ProductCategoryReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'productCategory'
-}
-
-export type ProductLookbook = {
-  _type: 'productLookbook'
-  heading?: string
-  products?: Array<
-    {
-      _key: string
-    } & ProductCategoryReference
-  >
-}
-
-export type ProductCategory = {
-  _id: string
-  _type: 'productCategory'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title?: string
-  description?: string
-  image?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  features?: Array<string>
-}
-
-export type Philosophy = {
-  _type: 'philosophy'
-  heading?: string
-  subheading?: string
-  description?: string
-  image?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
-  }
-  features?: Array<string>
-  ctaText?: string
-  ctaLink?: string
-}
-
-export type Stats = {
-  _type: 'stats'
-  items?: Array<{
-    value?: string
-    label?: string
-    icon?: 'Globe' | 'Award' | 'Factory' | 'Users' | 'Leaf' | 'ShieldCheck'
-    _key: string
-  }>
+  content?: BlockContent
 }
 
 export type PageReference = {
@@ -431,22 +144,6 @@ export type Link = {
   openInNewTab?: boolean
 }
 
-export type Hero = {
-  _type: 'hero'
-  heading: string
-  subheading?: string
-  backgroundImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
-  }
-  buttonText?: string
-  buttonLink?: string
-}
-
 export type CallToAction = {
   _type: 'callToAction'
   eyebrow?: string
@@ -462,13 +159,6 @@ export type CallToAction = {
   }
   theme?: 'light' | 'dark'
   contentAlignment?: 'textFirst' | 'imageFirst'
-}
-
-export type InfoSection = {
-  _type: 'infoSection'
-  heading?: string
-  subheading?: string
-  content?: BlockContent
 }
 
 export type BlockContentTextOnly = Array<{
@@ -550,10 +240,10 @@ export type Page = {
       } & Stats)
     | ({
         _key: string
-      } & Philosophy)
+      } & BrandShowcase)
     | ({
         _key: string
-      } & ProductLookbook)
+      } & Philosophy)
     | ({
         _key: string
       } & Services)
@@ -562,7 +252,7 @@ export type Page = {
       } & CtaSection)
     | ({
         _key: string
-      } & CallToAction)
+      } & ProductLookbook)
     | ({
         _key: string
       } & InfoSection)
@@ -595,10 +285,10 @@ export type Page = {
       } & ContactSection)
     | ({
         _key: string
-      } & BrandShowcase)
+      } & RichTextSection)
     | ({
         _key: string
-      } & RichTextSection)
+      } & CallToAction)
   >
 }
 
@@ -697,6 +387,375 @@ export type SiteSettings = {
     _key: string
   }>
   certificationsText?: string
+}
+
+export type ContactSection = {
+  _type: 'contactSection'
+  subtitle: string
+  heading: string
+  description?: string
+  addressHeading?: string
+  address?: string
+  mapEmbedUrl?: string
+  googleMapsLink?: string
+  mapImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  phoneHeading?: string
+  phones?: Array<string>
+  emailHeading?: string
+  email?: string
+  hoursHeading?: string
+  hours?: string
+  productCategories?: Array<string>
+}
+
+export type QualityEthics = {
+  _type: 'qualityEthics'
+  layout?: 'left' | 'right'
+  subtitle?: string
+  heading: string
+  description?: string
+  checklist?: Array<string>
+  image: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
+export type QualityStandards = {
+  _type: 'qualityStandards'
+  subtitle: string
+  heading: string
+  description?: string
+  features?: Array<{
+    title: string
+    description?: string
+    icon?: 'shield' | 'refresh' | 'clipboard' | 'scale' | 'zap'
+    _key: string
+  }>
+}
+
+export type ProductShowcase = {
+  _type: 'productShowcase'
+  subtitle: string
+  heading: string
+  description?: string
+  products?: Array<{
+    number: string
+    title: string
+    description: string
+    moq?: string
+    leadTime?: string
+    features?: Array<string>
+    image: ProductsObjectImage
+    buttonText?: string
+    buttonLink?: string
+    _key: string
+  }>
+}
+
+export type ProductCategoryReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'productCategory'
+}
+
+export type ProductLookbook = {
+  _type: 'productLookbook'
+  heading?: string
+  products?: Array<
+    {
+      _key: string
+    } & ProductCategoryReference
+  >
+}
+
+export type ProductCategory = {
+  _id: string
+  _type: 'productCategory'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  description?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  features?: Array<string>
+}
+
+export type InfrastructureSection = {
+  _type: 'infrastructureSection'
+  subtitle?: string
+  heading?: string
+  description?: string
+  cards?: Array<{
+    icon?: 'design' | 'precision' | 'testing'
+    title?: string
+    description?: string
+    _key: string
+  }>
+}
+
+export type Services = {
+  _type: 'services'
+  heading?: string
+  subheading?: string
+  description?: string
+  serviceItems?: Array<{
+    title?: string
+    description?: string
+    icon?: 'PenTool' | 'Factory' | 'ShieldCheck' | 'Truck'
+    _key: string
+  }>
+}
+
+export type WorkflowSection = {
+  _type: 'workflowSection'
+  subtitle: string
+  heading: string
+  description?: string
+  steps?: Array<{
+    number: string
+    title: string
+    description?: string
+    _key: string
+  }>
+}
+
+export type GallerySection = {
+  _type: 'gallerySection'
+  subtitle: string
+  heading: string
+  items?: Array<{
+    image: GalleryItemImage
+    title?: string
+    description?: string
+    link?: string
+    _type: 'galleryItem'
+    _key: string
+  }>
+}
+
+export type LocationSection = {
+  _type: 'locationSection'
+  locations?: Array<{
+    label: string
+    city: string
+    description?: string
+    image?: LocationsObjectImage
+    features?: Array<string>
+    _key: string
+  }>
+}
+
+export type RichTextSection = {
+  _type: 'richTextSection'
+  title?: string
+  lastUpdated?: string
+  introduction?: string
+  legalSections?: Array<{
+    heading?: string
+    content?: Array<{
+      children?: Array<{
+        marks?: Array<string>
+        text?: string
+        _type: 'span'
+        _key: string
+      }>
+      style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+      listItem?: 'bullet' | 'number'
+      markDefs?: Array<{
+        href?: string
+        _type: 'link'
+        _key: string
+      }>
+      level?: number
+      _type: 'block'
+      _key: string
+    }>
+    _key: string
+  }>
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+    listItem?: 'bullet' | 'number'
+    markDefs?: Array<{
+      href?: string
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+}
+
+export type AboutHero = {
+  _type: 'aboutHero'
+  layout?: 'left' | 'right'
+  subtitle: string
+  heading: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: Array<
+      | {
+          value?: string
+          _type: 'textColor'
+          _key: string
+        }
+      | {
+          size?:
+            | 'text-5xl md:text-7xl lg:text-[5rem] leading-[0.9]'
+            | 'text-4xl md:text-5xl lg:text-6xl leading-[1]'
+            | 'text-3xl md:text-4xl lg:text-5xl leading-[1.1]'
+            | 'text-2xl md:text-3xl lg:text-3xl'
+          _type: 'textSize'
+          _key: string
+        }
+    >
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  description?: string
+  quote?: string
+  quoteAuthor?: string
+  image: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  statNumber?: string
+  statLabel?: string
+}
+
+export type CtaSection = {
+  _type: 'ctaSection'
+  subtitle: string
+  heading: string
+  description?: string
+  primaryButtonText?: string
+  primaryButtonLink?: string
+  secondaryButtonText?: string
+  secondaryButtonLink?: string
+}
+
+export type Philosophy = {
+  _type: 'philosophy'
+  heading?: string
+  subheading?: string
+  description?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  features?: Array<string>
+  ctaText?: string
+  ctaLink?: string
+}
+
+export type BrandShowcase = {
+  _type: 'brandShowcase'
+  subtitle: string
+  heading: string
+  description?: string
+  brands?: Array<{
+    name: string
+    logo: Logo
+    image: ObjectImage
+    description?: string
+    website?: string
+    color?: string
+    _key: string
+  }>
+}
+
+export type Stats = {
+  _type: 'stats'
+  items?: Array<{
+    value?: string
+    label?: string
+    icon?: 'Globe' | 'Award' | 'Factory' | 'Users' | 'Leaf' | 'ShieldCheck'
+    _key: string
+  }>
+}
+
+export type Hero = {
+  _type: 'hero'
+  heading: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: Array<
+      | {
+          value?: string
+          _type: 'textColor'
+          _key: string
+        }
+      | {
+          size?:
+            | 'text-5xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-[9rem] leading-[0.9]'
+            | 'text-4xl sm:text-6xl md:text-7xl lg:text-[7rem] leading-[0.9]'
+            | 'text-3xl sm:text-5xl md:text-6xl lg:text-[5rem] leading-[1]'
+            | 'text-2xl sm:text-4xl md:text-5xl lg:text-5xl leading-[1.1]'
+            | 'text-xl sm:text-2xl md:text-3xl lg:text-4xl'
+          _type: 'textSize'
+          _key: string
+        }
+    >
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  subheading?: string
+  backgroundImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  buttonText?: string
+  buttonLink?: string
+  secondaryButtonText?: string
+  secondaryButtonLink?: string
 }
 
 export type SanityAssistInstructionTask = {
@@ -927,40 +986,21 @@ export type SanityImageAsset = {
 
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
+  | Logo
   | ObjectImage
+  | LocationsObjectImage
   | GalleryItemImage
   | ProductsObjectImage
-  | Logo
-  | BrandsObjectImage
   | Seo
   | Location
   | Geopoint
   | SanityImageCrop
   | SanityImageHotspot
-  | RichTextSection
-  | BrandShowcase
-  | ContactSection
-  | QualityEthics
-  | QualityStandards
-  | ProductShowcase
-  | InfrastructureSection
-  | WorkflowSection
-  | GallerySection
-  | LocationSection
-  | AboutHero
-  | CtaSection
-  | Services
-  | ProductCategoryReference
-  | ProductLookbook
-  | ProductCategory
-  | Philosophy
-  | Stats
+  | InfoSection
   | PageReference
   | PostReference
   | Link
-  | Hero
   | CallToAction
-  | InfoSection
   | BlockContentTextOnly
   | BlockContent
   | Button
@@ -971,6 +1011,25 @@ export type AllSanitySchemaTypes =
   | Slug
   | SanityFileAssetReference
   | SiteSettings
+  | ContactSection
+  | QualityEthics
+  | QualityStandards
+  | ProductShowcase
+  | ProductCategoryReference
+  | ProductLookbook
+  | ProductCategory
+  | InfrastructureSection
+  | Services
+  | WorkflowSection
+  | GallerySection
+  | LocationSection
+  | RichTextSection
+  | AboutHero
+  | CtaSection
+  | Philosophy
+  | BrandShowcase
+  | Stats
+  | Hero
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations

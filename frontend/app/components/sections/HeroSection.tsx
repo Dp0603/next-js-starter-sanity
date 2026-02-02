@@ -46,6 +46,7 @@ const HeroSection: React.FC<HeroProps> = ({ block }) => {
                         alt={block.backgroundImage.alt || "Background"}
                         fill // 👈 Automatically fills parent container
                         priority // 👈 CRITICAL: Loads immediately for speed score
+                        quality={90} // 👈 Better quality for hero but optimized
                         className="object-cover opacity-50 mix-blend-overlay"
                         sizes="100vw" // Tells browser it takes full width
                     />

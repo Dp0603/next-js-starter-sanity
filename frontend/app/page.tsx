@@ -2,7 +2,14 @@ import { type Metadata } from 'next'
 import { sanityFetch } from '@/sanity/lib/live'
 import { getPageQuery } from '@/sanity/lib/queries'
 import BlockRenderer from '@/app/components/BlockRenderer'
-import LogisticsGlobe from './components/sections/LogisticsGlobe'
+import dynamic from 'next/dynamic'
+
+// 🚀 OPTIMIZATION: Lazy load the heavy 3D Globe component
+// This reduces the initial bundle size significantly (~500KB+ depending on the library)
+const LogisticsGlobe = dynamic(() => import('./components/sections/LogisticsGlobe'), {
+  ssr: false, // 3D libraries often need window access, and SSRing them is heavy/useless
+  loading: () => <div className="h-[800px] bg-[#0f1b2d] border-y border-white/10 animate-pulse" />
+})
 
 const HOME_SLUG = '/';
 
