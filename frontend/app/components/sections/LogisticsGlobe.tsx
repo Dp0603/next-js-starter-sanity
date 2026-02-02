@@ -147,6 +147,29 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
   if (!locations || locations.length === 0) return null;
   const bgImage = getBackgroundImage(activeHub);
 
+  const [bgOpacity, setBgOpacity] = useState(0);
+
+  useEffect(() => {
+    if (isTransitioning) {
+      setBgOpacity(0);
+    }
+  }, [isTransitioning]);
+
+  const handleImageLoad = () => {
+    // Only fade in if we have an active hub and aren't moving
+    if (activeHub && !isTransitioning) {
+      setBgOpacity(0.6); // 👈 Increased visibility from 0.4 to 0.6
+    }
+  };
+
+  useEffect(() => {
+    if (activeHub && !isTransitioning) {
+      // If image is already cached/loaded, this might need a trigger, 
+      // but Next.js Image onLoad handles it well. 
+      // We initialize opacity to 0 on hub change via isTransitioning
+    }
+  }, [activeHub]);
+
   return (
     <section className="py-24 bg-[#0f1b2d] overflow-hidden relative border-y border-white/10 min-h-[800px] flex items-center">
 
@@ -160,9 +183,11 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
             src={bgImage}
             alt="Hub Background"
             fill
-            className={`object-cover transition-opacity duration-1000 ${!isTransitioning && activeHub ? 'opacity-40' : 'opacity-0'}`}
+            className="object-cover transition-opacity duration-1000"
+            style={{ opacity: isTransitioning ? 0 : bgOpacity }}
             sizes="100vw"
-            priority={false} // Lazy load since it's background
+            priority={false}
+            onLoad={handleImageLoad}
           />
         )}
       </div>
