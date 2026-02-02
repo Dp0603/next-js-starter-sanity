@@ -49,7 +49,7 @@ const AboutHero: React.FC<AboutHeroProps> = ({ block }) => {
                                 <Image
                                     src={urlForImage(block.image).url()}
                                     alt={block.subtitle || "About Image"}
-                                    fill // 👈 Uses optimized Next.js Image
+                                    fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                     sizes="(max-width: 768px) 100vw, 50vw" // 👈 Helps mobile load smaller versions
                                 />
