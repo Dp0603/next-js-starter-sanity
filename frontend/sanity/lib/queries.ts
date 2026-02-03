@@ -346,19 +346,29 @@ export const SETTINGS_QUERY = defineQuery(`
     logo {
       useCustomUrl,
       logoUrl,
-      logoImage,
+      logoImage { asset->{url, metadata} }, // Added metadata for blur-up loading
       logoMobileUrl,
-      logoMobileImage,
+      logoMobileImage { asset->{url, metadata} }, 
       alt
     },
     headerMenu,
     footerDescription,
     contactEmail,
-    locations,
-    socialLinks[]{ platform, url },
+    locations[]{
+      city,
+      address
+    },
+    socialLinks[]{ 
+      platform, 
+      url 
+    },
+    // Updated to match the "file" type asset fetch
     "profileUrl": companyProfile.asset->url,
     copyrightText,
-    legalLinks,
+    legalLinks[]{
+      label,
+      url
+    },
     certificationsText 
   }
 `)

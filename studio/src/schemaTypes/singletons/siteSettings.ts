@@ -4,12 +4,19 @@ export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site Settings',
   type: 'document',
+  // Groups help organize the long list of fields in the Studio
+  groups: [
+    {name: 'brand', title: 'Branding'},
+    {name: 'navigation', title: 'Navigation'},
+    {name: 'contact', title: 'Contact & Legal'},
+  ],
   fields: [
     defineField({
       name: 'logo',
       title: 'Company Logo',
       type: 'object',
-      description: 'Manage how your logo appears in the header.',
+      group: 'brand',
+      description: 'Manage how your logo appears in the header and footer.',
       fields: [
         {
           name: 'useCustomUrl',
@@ -32,7 +39,7 @@ export const siteSettings = defineType({
         },
         {
           name: 'logoMobileImage',
-          title: 'Mobile Logo (Icon Only)',
+          title: 'Mobile/Footer Logo (Icon Only)',
           type: 'image',
           options: {hotspot: true},
           hidden: ({parent}) => parent?.useCustomUrl === true,
@@ -51,9 +58,11 @@ export const siteSettings = defineType({
         },
       ],
     }),
+
     defineField({
       name: 'headerMenu',
       title: 'Header Navigation',
+      group: 'navigation',
       type: 'array',
       of: [
         {
@@ -65,46 +74,83 @@ export const siteSettings = defineType({
         },
       ],
     }),
-    defineField({name: 'footerDescription', title: 'Footer Bio', type: 'text'}),
-    defineField({name: 'contactEmail', title: 'Contact Email', type: 'string'}),
+
+    defineField({
+      name: 'footerDescription',
+      title: 'Footer Bio',
+      type: 'text',
+      group: 'brand',
+      rows: 3,
+    }),
+
+    defineField({
+      name: 'contactEmail',
+      title: 'Contact Email',
+      type: 'string',
+      group: 'contact',
+      validation: (Rule) => Rule.email(),
+    }),
+
     defineField({
       name: 'locations',
       title: 'Office Locations',
+      group: 'contact',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
             {name: 'city', type: 'string'},
-            {name: 'address', type: 'text'},
+            {name: 'address', type: 'text', rows: 3},
           ],
         },
       ],
     }),
+
     defineField({
       name: 'socialLinks',
       title: 'Social Media',
+      group: 'contact',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
-            {name: 'platform', type: 'string'},
-            {name: 'url', type: 'url'},
+            {
+              name: 'platform',
+              title: 'Platform Name',
+              type: 'string',
+              description: 'e.g. LinkedIn, Instagram, Facebook',
+            },
+            {name: 'url', title: 'Profile URL', type: 'url'},
           ],
         },
       ],
     }),
-    defineField({name: 'companyProfile', title: 'Company Profile PDF', type: 'file'}),
+
+    // Optimized for the "Download" button in the footer
+    defineField({
+      name: 'companyProfile',
+      title: 'Company Profile PDF',
+      group: 'brand',
+      type: 'file',
+      options: {
+        accept: '.pdf',
+      },
+    }),
+
     defineField({
       name: 'copyrightText',
       title: 'Copyright Text',
+      group: 'contact',
       type: 'string',
       initialValue: 'Akaame Exports Pvt. Ltd. All rights reserved.',
     }),
+
     defineField({
       name: 'legalLinks',
       title: 'Bottom Legal Links',
+      group: 'navigation',
       type: 'array',
       of: [
         {
@@ -116,6 +162,12 @@ export const siteSettings = defineType({
         },
       ],
     }),
-    defineField({name: 'certificationsText', title: 'Certifications Text', type: 'string'}),
+
+    defineField({
+      name: 'certificationsText',
+      title: 'Certifications Text',
+      group: 'contact',
+      type: 'string',
+    }),
   ],
 })
