@@ -1815,25 +1815,23 @@ export type PagesSlugsResult = Array<{
 
 // Source: sanity\lib\queries.ts
 // Variable: SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0] {    logo {      useCustomUrl,      logoUrl,      logoImage,      logoMobileUrl,      logoMobileImage,      alt    },    headerMenu,    footerDescription,    contactEmail,    locations,    socialLinks[]{ platform, url },    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
+// Query: *[_type == "siteSettings"][0] {    logo {      useCustomUrl,      logoUrl,      logoImage { asset->{url, metadata} }, // Added metadata for blur-up loading      logoMobileUrl,      logoMobileImage { asset->{url, metadata} },       alt    },    headerMenu,    footerDescription,    contactEmail,    locations[]{      city,      address    },    socialLinks[]{       platform,       url     },    // Updated to match the "file" type asset fetch    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks[]{      label,      url    },    certificationsText   }
 export type SETTINGS_QUERY_RESULT = {
   logo: {
     useCustomUrl: boolean | null
     logoUrl: string | null
     logoImage: {
-      asset?: SanityImageAssetReference
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      _type: 'image'
+      asset: {
+        url: string | null
+        metadata: SanityImageMetadata | null
+      } | null
     } | null
     logoMobileUrl: string | null
     logoMobileImage: {
-      asset?: SanityImageAssetReference
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      _type: 'image'
+      asset: {
+        url: string | null
+        metadata: SanityImageMetadata | null
+      } | null
     } | null
     alt: string | null
   } | null
@@ -1845,9 +1843,8 @@ export type SETTINGS_QUERY_RESULT = {
   footerDescription: string | null
   contactEmail: string | null
   locations: Array<{
-    city?: string
-    address?: string
-    _key: string
+    city: string | null
+    address: string | null
   }> | null
   socialLinks: Array<{
     platform: string | null
@@ -1856,9 +1853,8 @@ export type SETTINGS_QUERY_RESULT = {
   profileUrl: string | null
   copyrightText: string | null
   legalLinks: Array<{
-    label?: string
-    url?: string
-    _key: string
+    label: string | null
+    url: string | null
   }> | null
   certificationsText: string | null
 } | null
@@ -1874,6 +1870,6 @@ declare module '@sanity/client' {
     '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
-    '\n  *[_type == "siteSettings"][0] {\n    logo {\n      useCustomUrl,\n      logoUrl,\n      logoImage,\n      logoMobileUrl,\n      logoMobileImage,\n      alt\n    },\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    socialLinks[]{ platform, url },\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
+    '\n  *[_type == "siteSettings"][0] {\n    logo {\n      useCustomUrl,\n      logoUrl,\n      logoImage { asset->{url, metadata} }, // Added metadata for blur-up loading\n      logoMobileUrl,\n      logoMobileImage { asset->{url, metadata} }, \n      alt\n    },\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations[]{\n      city,\n      address\n    },\n    socialLinks[]{ \n      platform, \n      url \n    },\n    // Updated to match the "file" type asset fetch\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks[]{\n      label,\n      url\n    },\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
   }
 }

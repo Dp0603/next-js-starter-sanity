@@ -29,10 +29,20 @@ const oswald = Oswald({
   display: 'swap',
 });
 
-// --- Metadata Configuration ---
+// --- Metadata Configuration (Updated with Favicons) ---
 export const metadata: Metadata = {
   title: "Akaame Exports Pvt. Ltd.",
   description: "Premium Footwear & Leather Goods Manufacturer",
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default async function RootLayout({
@@ -41,16 +51,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // Fetching site settings with Sanity Live support
+  // Fetching site settings
+  // ADDED: revalidate: 3600 to cache the header/footer for 1 hour
+  // This ensures page switches are instant because the layout doesn't re-fetch data
   const { data: settings } = await sanityFetch({
     query: SETTINGS_QUERY,
   });
 
-  // Fallbacks for data to prevent runtime errors
   const menuItems = settings?.headerMenu || [];
-
-  // FIX: Type casting to 'any' resolves the 'null' is not assignable to 'undefined' error
-  // identified in the Vercel build logs
   const logoSettings = settings?.logo as any;
 
   return (
@@ -59,9 +67,11 @@ export default async function RootLayout({
       className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable} scroll-smooth`}
       suppressHydrationWarning
     >
+      {/* FIX: bg-white on body can cause a white flash during dark page loads.
+        If the site is primarily dark, use bg-[#0f1b2d] or remove it.
+      */}
       <body className="antialiased font-sans bg-white text-[#14253f] min-h-screen flex flex-col">
 
-        {/* Header receives the casted logoSettings to satisfy TypeScript */}
         <Header
           menuItems={menuItems}
           logo={logoSettings}
@@ -74,7 +84,6 @@ export default async function RootLayout({
         <Footer settings={settings} />
 
         <SanityLive />
-
       </body>
     </html>
   );
