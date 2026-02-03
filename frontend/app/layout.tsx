@@ -8,6 +8,7 @@ import Footer from "@/app/components/Footer";
 
 import { SETTINGS_QUERY } from "@/sanity/lib/queries";
 import { SanityLive, sanityFetch } from "@/sanity/lib/live";
+import ScrollToTop from "./components/ui/ScrollToTop";
 
 // --- Font Configuration ---
 const inter = Inter({
@@ -72,11 +73,14 @@ export default async function RootLayout({
           logo={logoSettings}
         />
 
+
         <main className="flex-grow">
           {children}
         </main>
 
         <Footer settings={settings} />
+
+        <ScrollToTop />
 
         <SanityLive />
       </body>
