@@ -76,8 +76,8 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out border-b ${isScrolled || isMobileOpen
-            ? "bg-white/95 backdrop-blur-md shadow-sm py-4 border-neutral-200/50"
-            : "bg-transparent py-6 border-transparent"
+          ? "bg-white/95 backdrop-blur-md shadow-sm py-4 border-neutral-200/50"
+          : "bg-transparent py-6 border-transparent"
           }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
@@ -110,6 +110,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
               <Link
                 key={link._key || idx}
                 href={link.link || "/"}
+                prefetch={true}
                 className={`text-xs font-bold tracking-widest uppercase transition-colors duration-300 hover:text-[#cd7d51] ${pathname === (link.link || "/") ? "text-[#cd7d51]" : textColor
                   }`}
               >
@@ -123,8 +124,8 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
             <Link
               href="/contact"
               className={`group inline-flex items-center gap-2 px-6 py-3 text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${isTransparent
-                  ? "border-white text-white hover:bg-white hover:text-[#14253f]"
-                  : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
+                ? "border-white text-white hover:bg-white hover:text-[#14253f]"
+                : "border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white"
                 }`}
             >
               Partner With Us

@@ -48,41 +48,31 @@ export default async function RootLayout({
 
   // Fallbacks for data to prevent runtime errors
   const menuItems = settings?.headerMenu || [];
-  const logoSettings = settings?.logo || undefined;
+
+  // FIX: Type casting to 'any' resolves the 'null' is not assignable to 'undefined' error
+  // identified in the Vercel build logs
+  const logoSettings = settings?.logo as any;
 
   return (
     <html
       lang="en"
       className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable} scroll-smooth`}
+      suppressHydrationWarning
     >
       <body className="antialiased font-sans bg-white text-[#14253f] min-h-screen flex flex-col">
 
-        {/* UPDATED: Header now receives both the menu array 
-          and the logo object fetched from SETTINGS_QUERY 
-        */}
+        {/* Header receives the casted logoSettings to satisfy TypeScript */}
         <Header
           menuItems={menuItems}
           logo={logoSettings}
         />
 
-        {/* MAIN CONTENT AREA 
-          'flex-grow' ensures that the footer is pushed to the bottom 
-          of the screen even on pages with very little content.
-        */}
         <main className="flex-grow">
           {children}
         </main>
 
-        {/* FOOTER
-          Passes the full settings object for dynamic contact info,
-          social links, and legal text.
-        */}
         <Footer settings={settings} />
 
-        {/* SANITY LIVE
-          Enables real-time visual editing and content updates
-          without requiring a manual browser refresh.
-        */}
         <SanityLive />
 
       </body>

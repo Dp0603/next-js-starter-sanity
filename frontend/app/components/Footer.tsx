@@ -20,6 +20,15 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
   const currentYear = new Date().getFullYear();
   const safeSettings = settings || {};
 
+  // Helper to ensure internal links start with "/"
+  const resolveHref = (href: string | undefined): string => {
+    if (!href) return "/";
+    if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:")) {
+      return href;
+    }
+    return href.startsWith("/") ? href : `/${href}`;
+  };
+
   return (
     <footer className="bg-[#14253f] text-white pt-24 pb-12 border-t border-white/10">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
@@ -70,7 +79,7 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
                 { title: "Contact", link: "/contact" }
               ]).map((link: any, idx: number) => (
                 <li key={idx}>
-                  <Link href={link.link || "/"} className="hover:text-white transition-colors">
+                  <Link href={resolveHref(link.link)} className="hover:text-white transition-colors">
                     {link.title}
                   </Link>
                 </li>
@@ -143,7 +152,7 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
 
           <div className="flex gap-8 mt-4 md:mt-0 items-center">
             {safeSettings.legalLinks?.map((link: any, idx: number) => (
-              <Link key={idx} href={link.url || "#"} className="hover:text-gray-300 transition-colors">
+              <Link key={idx} href={resolveHref(link.url)} className="hover:text-gray-300 transition-colors">
                 {link.label}
               </Link>
             ))}
