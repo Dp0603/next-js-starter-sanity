@@ -49,8 +49,7 @@ const ProductLookbook: React.FC<ProductLookbookProps> = ({ block }) => {
                                         alt={product.title || "Category Image"}
                                         fill // 👈 Fills the container (h-[500px])
                                         sizes="(max-width: 768px) 100vw, 25vw" // 👈 CRITICAL SPEED FIX: Downloads small image on mobile, 1/4 width on desktop
-                                        className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
-                                    />
+                                        className="object-cover transition-transform duration-1000 group-hover:scale-110" />
                                     <div className="absolute inset-0 bg-[#14253f]/20 group-hover:bg-transparent transition-colors duration-500" />
                                 </div>
                             )}

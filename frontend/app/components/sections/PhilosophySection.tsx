@@ -65,7 +65,7 @@ const PhilosophySection: React.FC<PhilosophyProps> = ({ block }) => {
                                     src={urlForImage(block.image).url()}
                                     alt={block.heading}
                                     fill // 👈 Uses optimized Next.js Image
-                                    className="object-cover transition-transform duration-1000 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                     sizes="(max-width: 1024px) 100vw, 50vw" // 👈 Helps mobile load smaller versions
                                 />
                             )}
