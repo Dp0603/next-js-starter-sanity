@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, defineArrayMember} from 'sanity'
 import {BlockContentIcon} from '@sanity/icons'
 
 export const richTextSection = defineType({
@@ -7,7 +7,24 @@ export const richTextSection = defineType({
   type: 'object',
   icon: BlockContentIcon,
   fields: [
-    // Header Info
+    // --- 1. NEW: Layout Control (Safe Addition) ---
+    // Defaults to 'max-w-3xl' so old pages look exactly the same.
+    defineField({
+      name: 'containerWidth',
+      title: 'Container Width',
+      type: 'string',
+      description: 'Choose "Wide" for Size Charts/Tables. Choose "Standard" for Blogs/Legal.',
+      options: {
+        list: [
+          {title: 'Standard (Blog/Legal)', value: 'max-w-3xl'},
+          {title: 'Wide (Tables/Charts)', value: 'max-w-6xl'},
+          {title: 'Full Width', value: 'max-w-full'},
+        ],
+      },
+      initialValue: 'max-w-3xl',
+    }),
+
+    // --- 2. EXISTING HEADER INFO (Unchanged) ---
     defineField({
       name: 'title',
       title: 'Page Title',
@@ -25,10 +42,10 @@ export const richTextSection = defineType({
       title: 'Intro Paragraph',
       type: 'text',
       rows: 3,
-      description: 'A short summary before the list starts.'
+      description: 'A short summary before the list starts.',
     }),
 
-    // 👇 THE NEW STRUCTURE: Array of Foldable Sections
+    // --- 3. EXISTING LEGAL ACCORDIONS (Strictly Preserved) ---
     defineField({
       name: 'legalSections',
       title: 'Interactive Sections (Accordion)',
@@ -39,28 +56,48 @@ export const richTextSection = defineType({
           fields: [
             defineField({name: 'heading', type: 'string', title: 'Section Heading'}),
             defineField({name: 'content', type: 'array', of: [{type: 'block'}], title: 'Content'}),
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     }),
 
-    // Keep legacy field just in case
+    // --- 4. LEGACY CONTENT UPGRADE (Backward Compatible) ---
+    // Old pages only had 'block' (text). New pages can use 'block', 'image', or 'table'.
     defineField({
       name: 'content',
-      title: 'Legacy Content (Standard Text)',
+      title: 'Main Content (Blog / Size Charts)',
       type: 'array',
-      of: [{type: 'block'}], 
-      hidden: ({parent}) => !!parent?.legalSections // Hide if using new sections
+      of: [
+        // Standard Text (Existing)
+        defineArrayMember({type: 'block'}),
+
+        // Images (New Addition)
+        defineArrayMember({
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({name: 'alt', title: 'Alt Text', type: 'string'}),
+            defineField({name: 'caption', title: 'Caption', type: 'string'}),
+          ],
+        }),
+
+        // Tables (New Addition - Requires @sanity/table plugin)
+        defineArrayMember({type: 'table'}),
+      ],
+      // Same hidden logic as before: Hide this if legalSections are being used
+      hidden: ({parent}) => !!parent?.legalSections && parent.legalSections.length > 0,
     }),
   ],
   preview: {
     select: {
       title: 'title',
+      width: 'containerWidth',
     },
-    prepare({title}) {
+    prepare({title, width}) {
       return {
-        title: title || 'Legal Section',
-        media: BlockContentIcon
+        title: title || 'Rich Text / Legal Section',
+        subtitle: width === 'max-w-6xl' ? 'Wide Layout' : 'Standard Layout',
+        media: BlockContentIcon,
       }
     },
   },

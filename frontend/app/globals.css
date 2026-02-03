@@ -70,14 +70,30 @@ body {
 }
 
 /* =========================
+   Layout Guardrail (CRITICAL FIX)
+   ========================= */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden; /* Prevents horizontal scroll on mobile */
+}
+
+/* =========================
    Utilities
    ========================= */
-.hide-scrollbar::-webkit-scrollbar {
+/* Unified Scrollbar Hiding Class */
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Horizontal Scroll Fade Mask */
+.mask-gradient-right {
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
 /* =========================
@@ -94,32 +110,6 @@ body {
   opacity: 0;
   transform: translateY(20px);
   animation: reveal 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-}
-
-/* =========================
-   Layout Guardrail
-   ========================= */
-html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* =========================
-   Magic UI Utilities
-   ========================= */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-/* Horizontal Scroll Fade Mask */
-.mask-gradient-right {
-  mask-image: linear-gradient(to right, black 85%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
 /* Globe Scanner Animation */
@@ -154,7 +144,6 @@ body {
     transform: translateY(0);
   }
 }
-/* Simulating tailwindcss-animate class */
 .animate-in.slide-in-from-bottom-10 {
   animation: slideInBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

@@ -11,6 +11,7 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
+import {table} from '@sanity/table' // 👈 1. IMPORT ADDED HERE
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
@@ -130,6 +131,7 @@ export default defineConfig({
     unsplashImageAsset(),
     assist(),
     visionTool(),
+    table(),
   ],
 
   schema: {

@@ -60,6 +60,19 @@ export type ProductsObjectImage = {
   _type: 'image'
 }
 
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type ResourceItemFile = {
+  asset?: SanityFileAssetReference
+  media?: unknown // Unable to locate the referenced type "file.media" in schema
+  _type: 'file'
+}
+
 export type Seo = {
   _type: 'seo'
   metaTitle?: string
@@ -289,6 +302,9 @@ export type Page = {
     | ({
         _key: string
       } & CallToAction)
+    | ({
+        _key: string
+      } & ResourceSection)
   >
 }
 
@@ -345,11 +361,25 @@ export type Slug = {
   source?: string
 }
 
-export type SanityFileAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+export type ResourceSection = {
+  _type: 'resourceSection'
+  eyebrow?: string
+  heading: string
+  description?: string
+  formTitle?: string
+  formDescription?: string
+  formButtonText?: string
+  successTitle?: string
+  successMessage?: string
+  resources?: Array<{
+    title: string
+    description?: string
+    file: ResourceItemFile
+    type?: 'PDF' | 'PPT' | 'XLS'
+    isGated?: boolean
+    _type: 'resourceItem'
+    _key: string
+  }>
 }
 
 export type SiteSettings = {
@@ -358,6 +388,26 @@ export type SiteSettings = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  logo?: {
+    useCustomUrl?: boolean
+    logoImage?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    logoUrl?: string
+    logoMobileImage?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    logoMobileUrl?: string
+    alt?: string
+  }
   headerMenu?: Array<{
     title?: string
     link?: string
@@ -564,6 +614,7 @@ export type LocationSection = {
 
 export type RichTextSection = {
   _type: 'richTextSection'
+  containerWidth?: 'max-w-3xl' | 'max-w-6xl' | 'max-w-full'
   title?: string
   lastUpdated?: string
   introduction?: string
@@ -589,24 +640,39 @@ export type RichTextSection = {
     }>
     _key: string
   }>
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-    listItem?: 'bullet' | 'number'
-    markDefs?: Array<{
-      href?: string
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+        listItem?: 'bullet' | 'number'
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }
+    | {
+        asset?: SanityImageAssetReference
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt?: string
+        caption?: string
+        _type: 'image'
+        _key: string
+      }
+    | ({
+        _key: string
+      } & Table)
+  >
 }
 
 export type AboutHero = {
@@ -756,6 +822,20 @@ export type Hero = {
   buttonLink?: string
   secondaryButtonText?: string
   secondaryButtonLink?: string
+}
+
+export type Table = {
+  _type: 'table'
+  rows?: Array<
+    {
+      _key: string
+    } & TableRow
+  >
+}
+
+export type TableRow = {
+  _type: 'tableRow'
+  cells?: Array<string>
 }
 
 export type SanityAssistInstructionTask = {
@@ -991,6 +1071,8 @@ export type AllSanitySchemaTypes =
   | LocationsObjectImage
   | GalleryItemImage
   | ProductsObjectImage
+  | SanityFileAssetReference
+  | ResourceItemFile
   | Seo
   | Location
   | Geopoint
@@ -1009,7 +1091,7 @@ export type AllSanitySchemaTypes =
   | Post
   | Person
   | Slug
-  | SanityFileAssetReference
+  | ResourceSection
   | SiteSettings
   | ContactSection
   | QualityEthics
@@ -1030,6 +1112,8 @@ export type AllSanitySchemaTypes =
   | BrandShowcase
   | Stats
   | Hero
+  | Table
+  | TableRow
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations

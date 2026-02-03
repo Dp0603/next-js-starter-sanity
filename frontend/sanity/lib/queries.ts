@@ -1,5 +1,6 @@
 import {defineQuery} from 'next-sanity'
 
+// --- 1. Helper Fragments ---
 const postFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -25,6 +26,7 @@ const linkFields = /* groq */ `
   }
 `
 
+// --- 2. Main Page Query ---
 export const getPageQuery = defineQuery(`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
@@ -47,6 +49,8 @@ export const getPageQuery = defineQuery(`
 
     "pageBuilder": pageBuilder[]{
       ...,
+      
+      // Call to Action
       _type == "callToAction" => {
         ...,
         button {
@@ -54,6 +58,8 @@ export const getPageQuery = defineQuery(`
           ${linkFields}
         }
       },
+
+      // Rich Text Info
       _type == "infoSection" => {
         content[]{
           ...,
@@ -63,6 +69,8 @@ export const getPageQuery = defineQuery(`
           }
         }
       },
+
+      // Product Categories (Lookbook)
       _type == "productLookbook" => {
         ...,
         products[]->{
@@ -73,7 +81,67 @@ export const getPageQuery = defineQuery(`
           features
         }
       },
+
+      // Product Detailed List (Showcase)
+      _type == "productShowcase" => {
+        ...,
+        products[]{
+          _id,
+          title,
+          description,
+          image,
+          features,
+          moq,
+          leadTime,
+          buttonText,
+          buttonLink
+        }
+      },
+
+      // Product Grid (3-Col)
+      _type == "productGrid" => {
+        _type,
+        heading,
+        description,
+        products[]->{
+          _id,
+          title,
+          description,
+          image,
+          moq,
+          leadTime,
+          features
+        }
+      },
       
+      // 1. Quality Standards (Grid)
+      _type == "qualityStandards" => {
+        _type,
+        subtitle,
+        heading,
+        description,
+        features[]{
+          title,
+          description,
+          icon
+        }
+      },
+
+      // 2. Quality Ethics (Split Section)
+      _type == "qualityEthics" => {
+        _type,
+        layout,
+        subtitle,
+        heading,
+        description,
+        checklist,
+        image {
+          asset->{url},
+          alt
+        }
+      },
+
+      // Locations / Map Data
       _type == "locationSection" => {
         ...,
         locations[]{
@@ -84,6 +152,7 @@ export const getPageQuery = defineQuery(`
         }
       },
 
+      // Brand Case Studies
       _type == "brandShowcase" => { 
         ...,
         brands[]{
@@ -97,13 +166,137 @@ export const getPageQuery = defineQuery(`
         }
       },
 
+      // Client Logo Cloud
+      _type == "clientLogoSection" => {
+        _type,
+        heading,
+        logos[]{
+          name,
+          asset->{url}
+        }
+      },
+
+      // Contact Form Map
       _type == "contactSection" => { 
         ...,
         mapEmbedUrl 
       },
-    },
+
+      // --- ABOUT PAGE SECTIONS (NEW) ---
+
+      // About Hero (Split with Rich Text)
+      _type == "aboutHero" => {
+        _type,
+        layout,
+        subtitle,
+        heading,   // Fetches the Rich Text Array
+        description,
+        quote,
+        quoteAuthor,
+        statNumber,
+        statLabel,
+        image {
+          asset->{url},
+          alt
+        }
+      },
+
+      // Founder Note
+      _type == "founderNote" => {
+        _type,
+        heading,
+        quote,
+        author,
+        role,
+        image { asset->{url} }
+      },
+
+// Philosophy Section (Split)
+      _type == "philosophySection" => {
+        _type,
+        heading,
+        subheading,
+        description,
+        features,   // 👈 Array of strings
+        ctaText,
+        ctaLink,
+        image {
+          asset->{url},
+          alt
+        }
+      },
+      
+      // Gallery Section
+      _type == "gallerySection" => {
+        _type,
+        heading,
+        subtitle,
+        items[]{
+            title,
+            description,
+            link,
+            image { asset->{url} }
+        }
+      },
+
+      // Workflow Section
+      _type == "workflowSection" => {
+        _type,
+        heading,
+        description,
+        steps[]{
+          stepNumber,
+          title,
+          description,
+          image { asset->{url} }
+        }
+      },
+
+      // --------------------------------
+
+      // Rich Text / Blog / Legal Section (Fetches Tables & Images)
+      _type == "richTextSection" => {
+        _type,
+        title,
+        lastUpdated,
+        introduction,
+        containerWidth, // Important for Size Charts
+        legalType,
+        legalSections,
+        content[]{
+          ...,
+          _type == "image" => {
+            ...,
+            asset-> // Fetches image URL and metadata
+          }
+        }
+      },
+
+      // Resource Section (Downloads)
+      _type == "resourceSection" => {
+        _type,
+        heading,
+        eyebrow,          
+        description,
+        formTitle,        
+        formDescription,  
+        formButtonText,   
+        successTitle,     
+        successMessage,   
+        resources[] {
+          title,
+          description,
+          type,
+          "size": file.asset->size,
+          isGated,
+          "fileUrl": file.asset->url 
+        }
+      }
+    }
   }
 `)
+
+// --- 3. Other Queries ---
 
 export const sitemapData = defineQuery(`
   *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {
@@ -147,7 +340,6 @@ export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
 `)
-
 
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {

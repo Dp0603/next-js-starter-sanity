@@ -60,6 +60,19 @@ export type ProductsObjectImage = {
   _type: 'image'
 }
 
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type ResourceItemFile = {
+  asset?: SanityFileAssetReference
+  media?: unknown // Unable to locate the referenced type "file.media" in schema
+  _type: 'file'
+}
+
 export type Seo = {
   _type: 'seo'
   metaTitle?: string
@@ -289,6 +302,9 @@ export type Page = {
     | ({
         _key: string
       } & CallToAction)
+    | ({
+        _key: string
+      } & ResourceSection)
   >
 }
 
@@ -345,11 +361,25 @@ export type Slug = {
   source?: string
 }
 
-export type SanityFileAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+export type ResourceSection = {
+  _type: 'resourceSection'
+  eyebrow?: string
+  heading: string
+  description?: string
+  formTitle?: string
+  formDescription?: string
+  formButtonText?: string
+  successTitle?: string
+  successMessage?: string
+  resources?: Array<{
+    title: string
+    description?: string
+    file: ResourceItemFile
+    type?: 'PDF' | 'PPT' | 'XLS'
+    isGated?: boolean
+    _type: 'resourceItem'
+    _key: string
+  }>
 }
 
 export type SiteSettings = {
@@ -358,6 +388,26 @@ export type SiteSettings = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  logo?: {
+    useCustomUrl?: boolean
+    logoImage?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    logoUrl?: string
+    logoMobileImage?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    logoMobileUrl?: string
+    alt?: string
+  }
   headerMenu?: Array<{
     title?: string
     link?: string
@@ -564,6 +614,7 @@ export type LocationSection = {
 
 export type RichTextSection = {
   _type: 'richTextSection'
+  containerWidth?: 'max-w-3xl' | 'max-w-6xl' | 'max-w-full'
   title?: string
   lastUpdated?: string
   introduction?: string
@@ -589,24 +640,39 @@ export type RichTextSection = {
     }>
     _key: string
   }>
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-    listItem?: 'bullet' | 'number'
-    markDefs?: Array<{
-      href?: string
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
+        listItem?: 'bullet' | 'number'
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }
+    | {
+        asset?: SanityImageAssetReference
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt?: string
+        caption?: string
+        _type: 'image'
+        _key: string
+      }
+    | ({
+        _key: string
+      } & Table)
+  >
 }
 
 export type AboutHero = {
@@ -756,6 +822,20 @@ export type Hero = {
   buttonLink?: string
   secondaryButtonText?: string
   secondaryButtonLink?: string
+}
+
+export type Table = {
+  _type: 'table'
+  rows?: Array<
+    {
+      _key: string
+    } & TableRow
+  >
+}
+
+export type TableRow = {
+  _type: 'tableRow'
+  cells?: Array<string>
 }
 
 export type SanityAssistInstructionTask = {
@@ -991,6 +1071,8 @@ export type AllSanitySchemaTypes =
   | LocationsObjectImage
   | GalleryItemImage
   | ProductsObjectImage
+  | SanityFileAssetReference
+  | ResourceItemFile
   | Seo
   | Location
   | Geopoint
@@ -1009,7 +1091,7 @@ export type AllSanitySchemaTypes =
   | Post
   | Person
   | Slug
-  | SanityFileAssetReference
+  | ResourceSection
   | SiteSettings
   | ContactSection
   | QualityEthics
@@ -1030,6 +1112,8 @@ export type AllSanitySchemaTypes =
   | BrandShowcase
   | Stats
   | Hero
+  | Table
+  | TableRow
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -1055,7 +1139,7 @@ export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity\lib\queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    legalType,        seo {      metaTitle,      metaDescription,      openGraphImage {        asset->{          url        }      }    },    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },            _type == "locationSection" => {        ...,        locations[]{          ...,          image {            asset->{url}           }        }      },      _type == "brandShowcase" => {         ...,        brands[]{          _id,          name,          description,          website,          color,          image { asset->{url} },          logo { asset->{url} }        }      },      _type == "contactSection" => {         ...,        mapEmbedUrl       },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    legalType,        seo {      metaTitle,      metaDescription,      openGraphImage {        asset->{          url        }      }    },    "pageBuilder": pageBuilder[]{      ...,            // Call to Action      _type == "callToAction" => {        ...,        button {          ...,            link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }  }        }      },      // Rich Text Info      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      // Product Categories (Lookbook)      _type == "productLookbook" => {        ...,        products[]->{          _id,          title,          description,          image,          features        }      },      // Product Detailed List (Showcase)      _type == "productShowcase" => {        ...,        products[]->{          _id,          title,          description,          image,          features,          moq,          leadTime,          buttonText,          buttonLink        }      },            // Locations / Map Data      _type == "locationSection" => {        ...,        locations[]{          ...,          image {            asset->{url}           }        }      },      // Brand Case Studies      _type == "brandShowcase" => {         ...,        brands[]{          _id,          name,          description,          website,          color,          image { asset->{url} },          logo { asset->{url} }        }      },      // Contact Form Map      _type == "contactSection" => {         ...,        mapEmbedUrl       },      // 👇 NEW: Rich Text / Blog / Legal Section (Fetches Tables & Images)      _type == "richTextSection" => {        _type,        title,        lastUpdated,        introduction,        containerWidth, // Important for Size Charts        legalType,        legalSections,        content[]{          ...,          _type == "image" => {            ...,            asset-> // Fetches image URL and metadata          }        }      },      // 👇 NEW: Resource Section (Downloads)      _type == "resourceSection" => {        _type,        heading,        eyebrow,                  description,        formTitle,                formDescription,          formButtonText,           successTitle,             successMessage,           resources[] {          title,          description,          type,          "size": file.asset->size,          isGated,          "fileUrl": file.asset->url         }      }    }  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -1380,18 +1464,7 @@ export type GetPageQueryResult = {
         subtitle: string
         heading: string
         description?: string
-        products?: Array<{
-          number: string
-          title: string
-          description: string
-          moq?: string
-          leadTime?: string
-          features?: Array<string>
-          image: ProductsObjectImage
-          buttonText?: string
-          buttonLink?: string
-          _key: string
-        }>
+        products: Array<null> | null
       }
     | {
         _key: string
@@ -1424,11 +1497,32 @@ export type GetPageQueryResult = {
       }
     | {
         _key: string
+        _type: 'resourceSection'
+        eyebrow: string | null
+        heading: string
+        description: string | null
+        formTitle: string | null
+        formDescription: string | null
+        formButtonText: string | null
+        successTitle: string | null
+        successMessage: string | null
+        resources: Array<{
+          title: string
+          description: string | null
+          type: 'PDF' | 'PPT' | 'XLS' | null
+          size: number | null
+          isGated: boolean | null
+          fileUrl: string | null
+        }> | null
+      }
+    | {
+        _key: string
         _type: 'richTextSection'
-        title?: string
-        lastUpdated?: string
-        introduction?: string
-        legalSections?: Array<{
+        containerWidth: 'max-w-3xl' | 'max-w-6xl' | 'max-w-full' | null
+        title: string | null
+        lastUpdated: string | null
+        introduction: string | null
+        legalSections: Array<{
           heading?: string
           content?: Array<{
             children?: Array<{
@@ -1449,25 +1543,68 @@ export type GetPageQueryResult = {
             _key: string
           }>
           _key: string
-        }>
-        content?: Array<{
-          children?: Array<{
-            marks?: Array<string>
-            text?: string
-            _type: 'span'
-            _key: string
-          }>
-          style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
-          listItem?: 'bullet' | 'number'
-          markDefs?: Array<{
-            href?: string
-            _type: 'link'
-            _key: string
-          }>
-          level?: number
-          _type: 'block'
-          _key: string
-        }>
+        }> | null
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              asset: {
+                _id: string
+                _type: 'sanity.imageAsset'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                originalFilename?: string
+                label?: string
+                title?: string
+                description?: string
+                altText?: string
+                sha1hash?: string
+                extension?: string
+                mimeType?: string
+                size?: number
+                assetId?: string
+                uploadId?: string
+                path?: string
+                url?: string
+                metadata?: SanityImageMetadata
+                source?: SanityAssetSourceData
+              } | null
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              alt?: string
+              caption?: string
+              _type: 'image'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'table'
+              rows?: Array<
+                {
+                  _key: string
+                } & TableRow
+              >
+            }
+        > | null
+        legalType: null
       }
     | {
         _key: string
@@ -1669,9 +1806,28 @@ export type PagesSlugsResult = Array<{
 
 // Source: sanity\lib\queries.ts
 // Variable: SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0] {    // 1. Fetching the new Logo Object    logo {      useCustomUrl,      logoUrl,      logoImage,      alt    },    headerMenu,    footerDescription,    contactEmail,    locations,    socialLinks[]{      platform,      url    },    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
+// Query: *[_type == "siteSettings"][0] {    logo {      useCustomUrl,      logoUrl,      logoImage,      logoMobileUrl,      logoMobileImage,      alt    },    headerMenu,    footerDescription,    contactEmail,    locations,    socialLinks[]{ platform, url },    "profileUrl": companyProfile.asset->url,    copyrightText,    legalLinks,    certificationsText   }
 export type SETTINGS_QUERY_RESULT = {
-  logo: null
+  logo: {
+    useCustomUrl: boolean | null
+    logoUrl: string | null
+    logoImage: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    } | null
+    logoMobileUrl: string | null
+    logoMobileImage: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    } | null
+    alt: string | null
+  } | null
   headerMenu: Array<{
     title?: string
     link?: string
@@ -1702,13 +1858,13 @@ export type SETTINGS_QUERY_RESULT = {
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    legalType,\n    \n    seo {\n      metaTitle,\n      metaDescription,\n      openGraphImage {\n        asset->{\n          url\n        }\n      }\n    },\n\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n      \n      _type == "locationSection" => {\n        ...,\n        locations[]{\n          ...,\n          image {\n            asset->{url} \n          }\n        }\n      },\n\n      _type == "brandShowcase" => { \n        ...,\n        brands[]{\n          _id,\n          name,\n          description,\n          website,\n          color,\n          image { asset->{url} },\n          logo { asset->{url} }\n        }\n      },\n\n      _type == "contactSection" => { \n        ...,\n        mapEmbedUrl \n      },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    legalType,\n    \n    seo {\n      metaTitle,\n      metaDescription,\n      openGraphImage {\n        asset->{\n          url\n        }\n      }\n    },\n\n    "pageBuilder": pageBuilder[]{\n      ...,\n      \n      // Call to Action\n      _type == "callToAction" => {\n        ...,\n        button {\n          ...,\n          \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n  }\n\n        }\n      },\n\n      // Rich Text Info\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n\n      // Product Categories (Lookbook)\n      _type == "productLookbook" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features\n        }\n      },\n\n      // Product Detailed List (Showcase)\n      _type == "productShowcase" => {\n        ...,\n        products[]->{\n          _id,\n          title,\n          description,\n          image,\n          features,\n          moq,\n          leadTime,\n          buttonText,\n          buttonLink\n        }\n      },\n      \n      // Locations / Map Data\n      _type == "locationSection" => {\n        ...,\n        locations[]{\n          ...,\n          image {\n            asset->{url} \n          }\n        }\n      },\n\n      // Brand Case Studies\n      _type == "brandShowcase" => { \n        ...,\n        brands[]{\n          _id,\n          name,\n          description,\n          website,\n          color,\n          image { asset->{url} },\n          logo { asset->{url} }\n        }\n      },\n\n      // Contact Form Map\n      _type == "contactSection" => { \n        ...,\n        mapEmbedUrl \n      },\n\n      // \uD83D\uDC47 NEW: Rich Text / Blog / Legal Section (Fetches Tables & Images)\n      _type == "richTextSection" => {\n        _type,\n        title,\n        lastUpdated,\n        introduction,\n        containerWidth, // Important for Size Charts\n        legalType,\n        legalSections,\n        content[]{\n          ...,\n          _type == "image" => {\n            ...,\n            asset-> // Fetches image URL and metadata\n          }\n        }\n      },\n\n      // \uD83D\uDC47 NEW: Resource Section (Downloads)\n      _type == "resourceSection" => {\n        _type,\n        heading,\n        eyebrow,          \n        description,\n        formTitle,        \n        formDescription,  \n        formButtonText,   \n        successTitle,     \n        successMessage,   \n        resources[] {\n          title,\n          description,\n          type,\n          "size": file.asset->size,\n          isGated,\n          "fileUrl": file.asset->url \n        }\n      }\n    }\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
     '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
-    '\n  *[_type == "siteSettings"][0] {\n    // 1. Fetching the new Logo Object\n    logo {\n      useCustomUrl,\n      logoUrl,\n      logoImage,\n      alt\n    },\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    socialLinks[]{\n      platform,\n      url\n    },\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
+    '\n  *[_type == "siteSettings"][0] {\n    logo {\n      useCustomUrl,\n      logoUrl,\n      logoImage,\n      logoMobileUrl,\n      logoMobileImage,\n      alt\n    },\n    headerMenu,\n    footerDescription,\n    contactEmail,\n    locations,\n    socialLinks[]{ platform, url },\n    "profileUrl": companyProfile.asset->url,\n    copyrightText,\n    legalLinks,\n    certificationsText \n  }\n': SETTINGS_QUERY_RESULT
   }
 }

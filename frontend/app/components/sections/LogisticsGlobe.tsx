@@ -193,11 +193,11 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
 
       {/* IMAGE LAYER */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* 👇 FIXED: Seamless Multi-stop Gradient (No Blur) */}
+        {/* FIXED: Extended gradient stops to melt the "box" edge into the globe atmosphere */}
         <div
           className="absolute inset-0 z-10"
           style={{
-            background: 'linear-gradient(90deg, #0f1b2d 0%, rgba(15, 27, 45, 0.98) 15%, rgba(15, 27, 45, 0.85) 35%, rgba(15, 27, 45, 0.4) 60%, transparent 95%)'
+            background: 'linear-gradient(90deg, #0f1b2d 0%, #0f1b2d 20%, rgba(15, 27, 45, 0.9) 45%, rgba(15, 27, 45, 0.6) 75%, transparent 100%)'
           }}
         />
 
@@ -216,12 +216,11 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
         )}
       </div>
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 w-full h-full pointer-events-none lg:pointer-events-auto flex flex-col justify-end pb-32 lg:pb-0 lg:block">
-
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-24 xl:px-32 w-full h-full pointer-events-none lg:pointer-events-auto flex flex-col justify-end pb-32 lg:pb-20 lg:block">
         {/* LEFT: Content */}
         <div className="relative z-10 lg:absolute lg:inset-0 lg:flex lg:items-center pointer-events-none">
-          <div className="lg:w-1/2 pointer-events-auto">
-
+          {/* Narrowed the width slightly to give the globe more breathing room on the right */}
+          <div className="lg:w-5/12 xl:w-2/5 pointer-events-auto">
             {/* Mobile: Seamless Fade - Reduced Opacity for Map Visibility */}
             <div className="bg-gradient-to-t from-black/30 via-transparent to-transparent p-6 lg:p-0 lg:bg-transparent animate-in slide-in-from-bottom-10 duration-700 -mx-6 lg:mx-0 pt-10 lg:pt-0">
 

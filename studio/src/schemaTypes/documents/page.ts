@@ -60,7 +60,7 @@ export const page = defineType({
       },
       hidden: ({document}) => {
         const slug = (document?.slug as any)?.current
-        if (!slug) return true 
+        if (!slug) return true
         return !['privacy', 'privacy-policy', 'terms', 'terms-of-service'].includes(slug)
       },
     }),
@@ -81,32 +81,41 @@ export const page = defineType({
         // Home page
         {type: 'hero'},
         {type: 'stats'},
-        {type: 'brandShowcase'},
-        {type: 'philosophy'},
         {type: 'services'},
         {type: 'ctaSection'},
         {type: 'productLookbook'},
-        
         {type: 'infoSection'},
         
         // About page
         {type: 'aboutHero'},
+        {type: 'brandShowcase'},
+        {type: 'philosophySection'},
         {type: 'locationSection'},
         {type: 'gallerySection'},
-        
-        
+        {type: 'founderNote'},
+
         // Capabilities page
         {type: 'workflowSection'},
         {type: 'infrastructureSection'},
-        
-        
+
         // Products page
         {type: 'productShowcase'},
+        {type: 'productGrid'},
+        {type: 'callToAction'},
+
+        //Brands page
+        {type: 'clientLogoSection'},
+
+        // Quality page
         {type: 'qualityStandards'},
         {type: 'qualityEthics'},
-        {type: 'contactSection'},
+
+        // Resource Section
         {type: 'richTextSection'},
-        {type: 'callToAction'},
+        {type: 'resourceSection'},
+
+        // Contact page
+        {type: 'contactSection'},
       ],
       options: {
         insertMenu: {

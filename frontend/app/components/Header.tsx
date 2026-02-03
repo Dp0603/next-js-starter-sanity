@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
-import { urlFor } from "@/sanity/lib/image";
+import Image from "next/image";
+import { urlForImage } from "@/sanity/lib/utils";
+import AkaameLogo from "@/app/components/ui/AkaameLogo";
 
 interface HeaderProps {
   menuItems: {
@@ -31,25 +33,20 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
   const isTransparent = isHome && !isScrolled && !isMobileOpen;
   const textColor = isTransparent ? "text-white" : "text-[#14253f]";
 
-  const getLogoSources = () => {
-    if (!logo) return { desktop: null, mobile: null };
-
-    let desktop = null;
-    let mobile = null;
-
+  // --- LOGO LOGIC ---
+  const getMobileLogoUrl = () => {
+    if (!logo) return null;
     if (logo.useCustomUrl) {
-      desktop = logo.logoUrl || null;
-      mobile = logo.logoMobileUrl || desktop;
+      return logo.logoMobileUrl || logo.logoUrl;
     } else {
-      desktop = logo.logoImage?.asset ? urlFor(logo.logoImage).url() : null;
-      mobile = logo.logoMobileImage?.asset ? urlFor(logo.logoMobileImage).url() : desktop;
+      const imageSource = logo.logoMobileImage || logo.logoImage;
+      return imageSource ? urlForImage(imageSource)?.url() : null;
     }
-    return { desktop, mobile };
   };
 
-  const { desktop: desktopSrc, mobile: mobileSrc } = getLogoSources();
-  const logoAlt = logo?.alt || "Akaame Exports Logo";
+  const mobileLogoSrc = getMobileLogoUrl();
 
+  // Scroll Listener
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     handleScroll();
@@ -57,8 +54,22 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
+  // --- FIX: SCROLL LOCK LOGIC ---
   useEffect(() => {
-    document.body.style.overflow = isMobileOpen ? "hidden" : "unset";
+    if (isMobileOpen) {
+      // Lock BOTH body and html to stop all mobile scrolling
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset";
+    };
   }, [isMobileOpen]);
 
   return (
@@ -71,35 +82,29 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
       >
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
 
-          <Link href="/" className="z-[100]" onClick={() => setIsMobileOpen(false)}>
-            {desktopSrc || mobileSrc ? (
-              <div className="relative h-10 flex items-center">
-                {/* DESKTOP LOGO - Filter Removed */}
-                {desktopSrc && (
-                  <img
-                    src={desktopSrc}
-                    alt={logoAlt}
-                    className="h-full w-auto object-contain hidden lg:block transition-all duration-500"
-                  />
-                )}
-                {/* MOBILE LOGO - Filter Removed */}
-                {mobileSrc && (
-                  <img
-                    src={mobileSrc}
-                    alt={logoAlt}
-                    className="h-full w-auto object-contain lg:hidden transition-all duration-500"
-                  />
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col leading-none">
-                <span className={`text-2xl font-black tracking-tighter transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}>
-                  AKAAME<span className="text-[#cd7d51]">.</span>
+          {/* LOGO */}
+          <Link href="/" className="relative z-[100]" onClick={() => setIsMobileOpen(false)}>
+            <div className="hidden lg:block">
+              <AkaameLogo className="w-40 h-auto" isTransparent={isTransparent} />
+            </div>
+            <div className="block lg:hidden relative h-10 w-32">
+              {mobileLogoSrc ? (
+                <Image
+                  src={mobileLogoSrc}
+                  alt={logo?.alt || "Akaame"}
+                  fill
+                  className="object-contain object-left"
+                  priority
+                />
+              ) : (
+                <span className={`text-2xl font-black ${isMobileOpen ? 'text-[#14253f]' : textColor}`}>
+                  AKAAME.
                 </span>
-              </div>
-            )}
+              )}
+            </div>
           </Link>
 
+          {/* DESKTOP NAV */}
           <nav className="hidden lg:flex items-center gap-8">
             {menuItems?.map((link, idx) => (
               <Link
@@ -113,6 +118,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
             ))}
           </nav>
 
+          {/* DESKTOP CTA */}
           <div className="hidden lg:block">
             <Link
               href="/contact"
@@ -126,6 +132,7 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
             </Link>
           </div>
 
+          {/* MOBILE TOGGLE */}
           <button
             type="button"
             className={`lg:hidden z-[100] transition-colors duration-500 ${isMobileOpen ? "text-[#14253f]" : textColor}`}
@@ -136,8 +143,14 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
         </div>
       </header>
 
-      <div className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center transition-all duration-500 ease-in-out lg:hidden ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
-        <nav className="flex flex-col items-center gap-8 text-center">
+      {/* --- MOBILE MENU OVERLAY (FIXED) --- */}
+      <div
+        className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center transition-all duration-500 ease-in-out lg:hidden 
+        ${isMobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}
+        overflow-hidden touch-none`}
+      // 👆 'touch-none' disables scroll gestures entirely on this div
+      >
+        <nav className="flex flex-col items-center gap-8 text-center px-6 w-full">
           {menuItems?.map((link, idx) => (
             <Link
               key={idx}
@@ -148,6 +161,15 @@ const Header: React.FC<HeaderProps> = ({ menuItems, logo }) => {
               {link.title}
             </Link>
           ))}
+
+          <Link
+            href="/contact"
+            onClick={() => setIsMobileOpen(false)}
+            className="mt-8 inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest border border-[#14253f] text-[#14253f] hover:bg-[#14253f] hover:text-white transition-all"
+          >
+            Partner With Us
+            <ArrowRight size={16} />
+          </Link>
         </nav>
       </div>
     </>
