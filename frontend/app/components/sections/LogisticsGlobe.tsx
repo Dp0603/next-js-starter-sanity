@@ -193,11 +193,11 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
 
       {/* IMAGE LAYER */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* FIXED: Extended gradient stops to melt the "box" edge into the globe atmosphere */}
+        {/* FIXED: We use a multi-stop radial-like linear gradient to prevent the "box" edge */}
         <div
           className="absolute inset-0 z-10"
           style={{
-            background: 'linear-gradient(90deg, #0f1b2d 0%, #0f1b2d 20%, rgba(15, 27, 45, 0.9) 45%, rgba(15, 27, 45, 0.6) 75%, transparent 100%)'
+            background: 'linear-gradient(90deg, #0f1b2d 0%, #0f1b2d 15%, rgba(15, 27, 45, 0.8) 40%, rgba(15, 27, 45, 0) 70%)'
           }}
         />
 
@@ -208,7 +208,11 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
             alt="Hub Background"
             fill
             className="object-cover transition-opacity duration-1000"
-            style={{ opacity: isTransitioning ? 0 : bgOpacity }}
+            style={{
+              opacity: isTransitioning ? 0 : bgOpacity,
+              // Adding a blur to the background image helps it merge with the globe atmosphere
+              filter: 'blur(4px) brightness(0.5)'
+            }}
             sizes="100vw"
             priority={false}
             onLoad={handleImageLoad}
@@ -216,13 +220,13 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
         )}
       </div>
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-24 xl:px-32 w-full h-full pointer-events-none lg:pointer-events-auto flex flex-col justify-end pb-32 lg:pb-20 lg:block">
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-24 xl:px-32 w-full h-full pointer-events-none lg:pointer-events-auto flex flex-col justify-end pb-32 lg:pb-20 lg:block">{/* LEFT: Content */}
         {/* LEFT: Content */}
         <div className="relative z-10 lg:absolute lg:inset-0 lg:flex lg:items-center pointer-events-none">
-          {/* Narrowed the width slightly to give the globe more breathing room on the right */}
           <div className="lg:w-5/12 xl:w-2/5 pointer-events-auto">
-            {/* Mobile: Seamless Fade - Reduced Opacity for Map Visibility */}
-            <div className="bg-gradient-to-t from-black/30 via-transparent to-transparent p-6 lg:p-0 lg:bg-transparent animate-in slide-in-from-bottom-10 duration-700 -mx-6 lg:mx-0 pt-10 lg:pt-0">
+            {/* REMOVED: bg-gradient-to-t and p-6 on mobile to keep it floating */}
+            <div className="p-0 lg:p-0 bg-transparent animate-in slide-in-from-bottom-10 duration-700 mx-0 pt-10 lg:pt-0">
+              {/* Rest of your content stays same */}
 
               <div className="px-6 lg:px-0">
                 {/* MOVED TITLE ABOVE IMAGE */}
@@ -307,9 +311,6 @@ const LogisticsGlobe: React.FC<LogisticsGlobeProps> = ({ locations = [] }) => {
 
         {/* RIGHT: Globe */}
         <div ref={containerRef} className="absolute inset-0 flex items-center justify-center z-0 lg:static lg:w-1/2 lg:ml-auto h-full lg:h-[700px]">
-          {/* Scanner Line Effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#cd7d51]/10 to-transparent z-10 animate-scan pointer-events-none hidden lg:block" />
-
           <div className="absolute inset-0 bg-[#cd7d51]/20 blur-[120px] rounded-full opacity-30 pointer-events-none" />
 
           <Globe
