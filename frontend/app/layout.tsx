@@ -29,20 +29,21 @@ const oswald = Oswald({
   display: 'swap',
 });
 
-// --- Metadata Configuration (Updated with Favicons) ---
+// --- Metadata Configuration (Updated with Cache Busting) ---
 export const metadata: Metadata = {
   title: "Akaame Exports Pvt. Ltd.",
   description: "Premium Footwear & Leather Goods Manufacturer",
   icons: {
     icon: [
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png?v=1', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png?v=1', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.ico?v=1' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png' },
+      { url: '/apple-touch-icon.png?v=1', sizes: '180x180', type: 'image/png' },
     ],
   },
-  manifest: '/site.webmanifest',
+  manifest: '/manifest.json',
 };
 
 export default async function RootLayout({
@@ -51,9 +52,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // Fetching site settings
-  // ADDED: revalidate: 3600 to cache the header/footer for 1 hour
-  // This ensures page switches are instant because the layout doesn't re-fetch data
   const { data: settings } = await sanityFetch({
     query: SETTINGS_QUERY,
   });
@@ -67,9 +65,6 @@ export default async function RootLayout({
       className={`${inter.variable} ${ibmPlexMono.variable} ${oswald.variable} scroll-smooth`}
       suppressHydrationWarning
     >
-      {/* FIX: bg-white on body can cause a white flash during dark page loads.
-        If the site is primarily dark, use bg-[#0f1b2d] or remove it.
-      */}
       <body className="antialiased font-sans bg-white text-[#14253f] min-h-screen flex flex-col">
 
         <Header

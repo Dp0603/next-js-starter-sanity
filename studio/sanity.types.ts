@@ -30,7 +30,7 @@ export type Logo = {
 
 export type ObjectImage = {
   asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "image.media" in schema
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   _type: 'image'
@@ -38,7 +38,7 @@ export type ObjectImage = {
 
 export type LocationsObjectImage = {
   asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  media?: unknown // Unable to locate the referenced type "locations.object.image.media" in schema
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   _type: 'image'
@@ -232,6 +232,34 @@ export type Button = {
   link?: Link
 }
 
+export type Product = {
+  _id: string
+  _type: 'product'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  image: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  description?: string
+  moq?: string
+  leadTime?: string
+  features?: Array<string>
+  category: 'footwear' | 'bags' | 'accessories'
+}
+
+export type Slug = {
+  _type: 'slug'
+  current: string
+  source?: string
+}
+
 export type Page = {
   _id: string
   _type: 'page'
@@ -253,12 +281,6 @@ export type Page = {
       } & Stats)
     | ({
         _key: string
-      } & BrandShowcase)
-    | ({
-        _key: string
-      } & Philosophy)
-    | ({
-        _key: string
       } & Services)
     | ({
         _key: string
@@ -274,10 +296,19 @@ export type Page = {
       } & AboutHero)
     | ({
         _key: string
+      } & BrandShowcase)
+    | ({
+        _key: string
+      } & PhilosophySection)
+    | ({
+        _key: string
       } & LocationSection)
     | ({
         _key: string
       } & GallerySection)
+    | ({
+        _key: string
+      } & FounderNote)
     | ({
         _key: string
       } & WorkflowSection)
@@ -289,22 +320,28 @@ export type Page = {
       } & ProductShowcase)
     | ({
         _key: string
+      } & ProductGrid)
+    | ({
+        _key: string
+      } & CallToAction)
+    | ({
+        _key: string
+      } & ClientLogoSection)
+    | ({
+        _key: string
       } & QualityStandards)
     | ({
         _key: string
       } & QualityEthics)
     | ({
         _key: string
-      } & ContactSection)
-    | ({
-        _key: string
       } & RichTextSection)
     | ({
         _key: string
-      } & CallToAction)
+      } & ResourceSection)
     | ({
         _key: string
-      } & ResourceSection)
+      } & ContactSection)
   >
 }
 
@@ -353,12 +390,6 @@ export type Person = {
     alt?: string
     _type: 'image'
   }
-}
-
-export type Slug = {
-  _type: 'slug'
-  current: string
-  source?: string
 }
 
 export type ResourceSection = {
@@ -493,6 +524,38 @@ export type QualityStandards = {
   }>
 }
 
+export type ClientLogoSection = {
+  _type: 'clientLogoSection'
+  heading?: string
+  logos?: Array<{
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    name?: string
+    _type: 'image'
+    _key: string
+  }>
+}
+
+export type ProductReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'product'
+}
+
+export type ProductGrid = {
+  _type: 'productGrid'
+  heading?: string
+  description?: string
+  products?: Array<
+    {
+      _key: string
+    } & ProductReference
+  >
+}
+
 export type ProductShowcase = {
   _type: 'productShowcase'
   subtitle: string
@@ -586,6 +649,21 @@ export type WorkflowSection = {
   }>
 }
 
+export type FounderNote = {
+  _type: 'founderNote'
+  heading?: string
+  quote?: string
+  author?: string
+  role?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
 export type GallerySection = {
   _type: 'gallerySection'
   subtitle: string
@@ -610,6 +688,87 @@ export type LocationSection = {
     features?: Array<string>
     _key: string
   }>
+}
+
+export type BrandShowcase = {
+  _type: 'brandShowcase'
+  subtitle: string
+  heading: string
+  description?: string
+  brands?: Array<{
+    name: string
+    logo: Logo
+    image: ObjectImage
+    description?: string
+    website?: string
+    color?: string
+    _key: string
+  }>
+}
+
+export type PhilosophySection = {
+  _type: 'philosophySection'
+  subheading?: string
+  heading?: string
+  description?: string
+  features?: Array<string>
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  ctaText?: string
+  ctaLink?: string
+}
+
+export type AboutHero = {
+  _type: 'aboutHero'
+  layout?: 'left' | 'right'
+  subtitle: string
+  heading: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: Array<
+      | {
+          value?: string
+          _type: 'textColor'
+          _key: string
+        }
+      | {
+          size?:
+            | 'text-5xl md:text-7xl lg:text-[5rem] leading-[0.9]'
+            | 'text-4xl md:text-5xl lg:text-6xl leading-[1]'
+            | 'text-3xl md:text-4xl lg:text-5xl leading-[1.1]'
+            | 'text-2xl md:text-3xl lg:text-3xl'
+          _type: 'textSize'
+          _key: string
+        }
+    >
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  description?: string
+  quote?: string
+  quoteAuthor?: string
+  image: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  statNumber?: string
+  statLabel?: string
 }
 
 export type RichTextSection = {
@@ -675,53 +834,6 @@ export type RichTextSection = {
   >
 }
 
-export type AboutHero = {
-  _type: 'aboutHero'
-  layout?: 'left' | 'right'
-  subtitle: string
-  heading: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<
-      | {
-          value?: string
-          _type: 'textColor'
-          _key: string
-        }
-      | {
-          size?:
-            | 'text-5xl md:text-7xl lg:text-[5rem] leading-[0.9]'
-            | 'text-4xl md:text-5xl lg:text-6xl leading-[1]'
-            | 'text-3xl md:text-4xl lg:text-5xl leading-[1.1]'
-            | 'text-2xl md:text-3xl lg:text-3xl'
-          _type: 'textSize'
-          _key: string
-        }
-    >
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  description?: string
-  quote?: string
-  quoteAuthor?: string
-  image: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  statNumber?: string
-  statLabel?: string
-}
-
 export type CtaSection = {
   _type: 'ctaSection'
   subtitle: string
@@ -731,40 +843,6 @@ export type CtaSection = {
   primaryButtonLink?: string
   secondaryButtonText?: string
   secondaryButtonLink?: string
-}
-
-export type Philosophy = {
-  _type: 'philosophy'
-  heading?: string
-  subheading?: string
-  description?: string
-  image?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
-  }
-  features?: Array<string>
-  ctaText?: string
-  ctaLink?: string
-}
-
-export type BrandShowcase = {
-  _type: 'brandShowcase'
-  subtitle: string
-  heading: string
-  description?: string
-  brands?: Array<{
-    name: string
-    logo: Logo
-    image: ObjectImage
-    description?: string
-    website?: string
-    color?: string
-    _key: string
-  }>
 }
 
 export type Stats = {
@@ -1086,16 +1164,20 @@ export type AllSanitySchemaTypes =
   | BlockContentTextOnly
   | BlockContent
   | Button
+  | Product
+  | Slug
   | Page
   | PersonReference
   | Post
   | Person
-  | Slug
   | ResourceSection
   | SiteSettings
   | ContactSection
   | QualityEthics
   | QualityStandards
+  | ClientLogoSection
+  | ProductReference
+  | ProductGrid
   | ProductShowcase
   | ProductCategoryReference
   | ProductLookbook
@@ -1103,13 +1185,14 @@ export type AllSanitySchemaTypes =
   | InfrastructureSection
   | Services
   | WorkflowSection
+  | FounderNote
   | GallerySection
   | LocationSection
-  | RichTextSection
-  | AboutHero
-  | CtaSection
-  | Philosophy
   | BrandShowcase
+  | PhilosophySection
+  | AboutHero
+  | RichTextSection
+  | CtaSection
   | Stats
   | Hero
   | Table
