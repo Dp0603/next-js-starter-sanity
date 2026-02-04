@@ -158,7 +158,7 @@ const Footer: React.FC<FooterProps> = ({ settings }) => {
 
         {/* BOTTOM BAR */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-          <p>© {currentYear} {safeSettings.copyrightText || "Akaame Exports Pvt. Ltd. All rights reserved."}</p>
+          <p>© {currentYear} {safeSettings.copyrightText || "Akaame Export Pvt. Ltd. All rights reserved."}</p>
 
           <div className="flex gap-8 mt-4 md:mt-0 items-center">
             {safeSettings.legalLinks?.map((link: any, idx: number) => (

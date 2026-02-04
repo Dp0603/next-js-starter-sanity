@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     stega: false,
   })
 
-  const title = data?.seo?.metaTitle || "Home | Akaame Exports Pvt. Ltd.";
+  const title = data?.seo?.metaTitle || "Home | Akaame Export Pvt. Ltd.";
   const description = data?.seo?.metaDescription || data?.heading || "Global leaders in premium export quality products.";
 
   return {

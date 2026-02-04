@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!data) return { title: 'Page Not Found' }
 
-  const title = data.seo?.metaTitle || `${data.name} | Akaame Exports`;
+  const title = data.seo?.metaTitle || `${data.name} | Akaame Export`;
 
   const description = data.seo?.metaDescription || data.heading || "Global leaders in premium export quality products.";
 

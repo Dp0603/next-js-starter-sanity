@@ -32,7 +32,7 @@ const oswald = Oswald({
 
 // --- Metadata Configuration (Updated with Cache Busting) ---
 export const metadata: Metadata = {
-  title: "Akaame Exports Pvt. Ltd.",
+  title: "Akaame Export Pvt. Ltd.",
   description: "Premium Footwear & Leather Goods Manufacturer",
   icons: {
     icon: [

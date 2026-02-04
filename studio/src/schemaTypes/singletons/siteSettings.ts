@@ -54,7 +54,7 @@ export const siteSettings = defineType({
           name: 'alt',
           title: 'Alt Text',
           type: 'string',
-          initialValue: 'Akaame Exports Logo',
+          initialValue: 'Akaame Export Logo',
         },
       ],
     }),
@@ -144,7 +144,7 @@ export const siteSettings = defineType({
       title: 'Copyright Text',
       group: 'contact',
       type: 'string',
-      initialValue: 'Akaame Exports Pvt. Ltd. All rights reserved.',
+      initialValue: 'Akaame Export Pvt. Ltd. All rights reserved.',
     }),
 
     defineField({

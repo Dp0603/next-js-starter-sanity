@@ -176,20 +176,17 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // Contact Form Map
+      // --- CONTACT SECTION FIX ---
       _type == "contactSection" => { 
-        ...,
-        mapEmbedUrl 
+        ...
       },
 
-      // --- ABOUT PAGE SECTIONS (NEW) ---
-
-      // About Hero (Split with Rich Text)
+      // --- ABOUT PAGE SECTIONS ---
       _type == "aboutHero" => {
         _type,
         layout,
         subtitle,
-        heading,   // Fetches the Rich Text Array
+        heading,
         description,
         quote,
         quoteAuthor,
@@ -201,7 +198,6 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // Founder Note
       _type == "founderNote" => {
         _type,
         heading,
@@ -211,13 +207,12 @@ export const getPageQuery = defineQuery(`
         image { asset->{url} }
       },
 
-// Philosophy Section (Split)
       _type == "philosophySection" => {
         _type,
         heading,
         subheading,
         description,
-        features,   // 👈 Array of strings
+        features,
         ctaText,
         ctaLink,
         image {
@@ -226,7 +221,6 @@ export const getPageQuery = defineQuery(`
         }
       },
       
-      // Gallery Section
       _type == "gallerySection" => {
         _type,
         heading,
@@ -239,7 +233,6 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // Workflow Section
       _type == "workflowSection" => {
         _type,
         heading,
@@ -252,27 +245,23 @@ export const getPageQuery = defineQuery(`
         }
       },
 
-      // --------------------------------
-
-      // Rich Text / Blog / Legal Section (Fetches Tables & Images)
       _type == "richTextSection" => {
         _type,
         title,
         lastUpdated,
         introduction,
-        containerWidth, // Important for Size Charts
+        containerWidth,
         legalType,
         legalSections,
         content[]{
           ...,
           _type == "image" => {
             ...,
-            asset-> // Fetches image URL and metadata
+            asset->
           }
         }
       },
 
-      // Resource Section (Downloads)
       _type == "resourceSection" => {
         _type,
         heading,
@@ -346,7 +335,7 @@ export const SETTINGS_QUERY = defineQuery(`
     logo {
       useCustomUrl,
       logoUrl,
-      logoImage { asset->{url, metadata} }, // Added metadata for blur-up loading
+      logoImage { asset->{url, metadata} },
       logoMobileUrl,
       logoMobileImage { asset->{url, metadata} }, 
       alt
@@ -362,7 +351,6 @@ export const SETTINGS_QUERY = defineQuery(`
       platform, 
       url 
     },
-    // Updated to match the "file" type asset fetch
     "profileUrl": companyProfile.asset->url,
     copyrightText,
     legalLinks[]{

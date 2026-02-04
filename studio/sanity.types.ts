@@ -260,6 +260,42 @@ export type Slug = {
   source?: string
 }
 
+export type Inquiry = {
+  _id: string
+  _type: 'inquiry'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  status?: 'new' | 'contacted' | 'confirmed' | 'closed'
+  fullName?: string
+  email?: string
+  company?: string
+  productCategory?: string
+  targetMarket?: string
+  quantity?: string
+  timeline?: string
+  priceRange?: string
+  details?: string
+  techPacks?: Array<
+    | {
+        asset?: SanityImageAssetReference
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt?: string
+        _type: 'image'
+        _key: string
+      }
+    | {
+        asset?: SanityFileAssetReference
+        media?: unknown
+        _type: 'file'
+        _key: string
+      }
+  >
+  submittedAt?: string
+}
+
 export type Page = {
   _id: string
   _type: 'page'
@@ -1166,6 +1202,7 @@ export type AllSanitySchemaTypes =
   | Button
   | Product
   | Slug
+  | Inquiry
   | Page
   | PersonReference
   | Post

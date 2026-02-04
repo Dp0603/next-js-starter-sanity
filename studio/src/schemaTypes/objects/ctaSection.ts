@@ -51,7 +51,7 @@ export const ctaSection = defineType({
         name: 'secondaryButtonLink',
         title: 'Secondary Button Link',
         type: 'string',
-        initialValue: 'mailto:exports@akaame.com'
+        initialValue: 'mailto:export@akaame.com'
     }),
   ],
   preview: {

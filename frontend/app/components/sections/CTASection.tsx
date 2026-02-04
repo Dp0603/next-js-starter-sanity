@@ -50,7 +50,7 @@ const CTASection: React.FC<CTAProps> = ({ block }) => {
 
                     {/* Secondary Button (Outline) */}
                     <Link
-                        href={block.secondaryButtonLink || 'mailto:exports@akaame.com'}
+                        href={block.secondaryButtonLink || 'mailto:export@akaame.com'}
                         className="group inline-flex items-center justify-center gap-3 bg-transparent border border-[#14253f]/20 text-[#14253f] px-10 py-5 text-xs font-bold uppercase tracking-widest hover:border-[#cd7d51] hover:text-[#cd7d51] transition-all duration-300 rounded-sm"
                     >
                         <Mail size={16} />
