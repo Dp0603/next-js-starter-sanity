@@ -1,3 +1,238 @@
+// "use client";
+// import React, { useState, useRef, useEffect, useMemo, memo } from "react";
+// import {
+//     MapPin, Phone, Mail, Send, ChevronDown, Clock,
+//     X, FileText, Plus, CheckCircle2, Globe
+// } from "lucide-react";
+
+// import { useContactForm } from "@/app/hooks/useContactForm";
+// import { FormInput } from "../ui/FormInput";
+// import { MarketSelector } from "../ui/MarketSelector";
+// import { FileUploader } from "../ui/FileUploader";
+
+
+
+// /**
+//  * 3. File Uploader
+//  * Handles validation and preview logic internally
+//  */
+
+
+// /**
+//  * 4. Static Contact Info (Left Column)
+//  * Memoized to prevent re-renders when form state changes
+//  */
+// const ContactInfo = memo(({ block }: { block: any }) => (
+//     <div className="w-full lg:w-4/12 flex flex-col justify-between h-full order-2 lg:order-1">
+//         <div className="mb-10 lg:mb-16">
+//             <h4 className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs mb-4 lg:mb-6 flex items-center gap-2">
+//                 <span className="w-8 h-[1px] bg-[#cd7d51]"></span>
+//                 {block.subtitle}
+//             </h4>
+//             <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-[#14253f] mb-6 lg:mb-8 tracking-tighter uppercase leading-[0.9]">
+//                 {block.heading}
+//             </h1>
+//             <p className="text-base lg:text-lg text-gray-500 font-light leading-relaxed border-l-2 border-[#cd7d51] pl-6">
+//                 {block.description}
+//             </p>
+//         </div>
+
+//         <div className="space-y-8 lg:space-y-10 mb-10 lg:mb-16">
+//             {/* Map Section */}
+//             <div className="group">
+//                 <div className="flex gap-4 mb-4">
+//                     <div className="text-[#cd7d51] mt-1 shrink-0"><MapPin size={22} strokeWidth={1.5} /></div>
+//                     <div>
+//                         <h5 className="text-[#14253f] font-bold uppercase tracking-widest text-xs mb-2">{block.addressHeading}</h5>
+//                         <p className="text-gray-500 font-light text-sm whitespace-pre-line leading-relaxed">{block.address}</p>
+//                     </div>
+//                 </div>
+//                 <div className="ml-0 lg:ml-10 w-full h-52 bg-gray-200 rounded-sm overflow-hidden relative shadow-md border border-gray-200">
+//                     {block.mapEmbedUrl ? (
+//                         <iframe src={block.mapEmbedUrl} width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full" title="Google Map Location" />
+//                     ) : (
+//                         <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-center p-4">
+//                             <MapPin size={24} className="mb-3 text-[#cd7d51]" />
+//                             <p className="text-gray-500 text-xs mb-3 whitespace-pre-line">{block.address}</p>
+//                         </div>
+//                     )}
+//                 </div>
+//             </div>
+
+//             {/* Info Grid */}
+//             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8">
+//                 <div className="flex gap-4 group">
+//                     <div className="text-[#cd7d51] mt-1 shrink-0"><Phone size={22} strokeWidth={1.5} /></div>
+//                     <div>
+//                         <h5 className="text-[#14253f] font-bold uppercase tracking-widest text-xs mb-2">{block.phoneHeading}</h5>
+//                         <div className="space-y-1">
+//                             {block.phones?.map((phone: string, idx: number) => (
+//                                 <a key={idx} href={`tel:${phone.replace(/\s+/g, '')}`} className="block text-gray-500 font-light hover:text-[#cd7d51] transition-colors duration-300 text-sm">{phone}</a>
+//                             ))}
+//                         </div>
+//                     </div>
+//                 </div>
+//                 <div className="flex gap-4 group">
+//                     <div className="text-[#cd7d51] mt-1 shrink-0"><Mail size={22} strokeWidth={1.5} /></div>
+//                     <div>
+//                         <h5 className="text-[#14253f] font-bold uppercase tracking-widest text-xs mb-2">{block.emailHeading}</h5>
+//                         <a href={`mailto:${block.email}`} className="text-gray-500 font-light hover:text-[#cd7d51] transition-colors duration-300 text-sm block">{block.email}</a>
+//                     </div>
+//                 </div>
+//                 <div className="flex gap-4 group">
+//                     <div className="text-[#cd7d51] mt-1 shrink-0"><Clock size={22} strokeWidth={1.5} /></div>
+//                     <div>
+//                         <h5 className="text-[#14253f] font-bold uppercase tracking-widest text-xs mb-2">{block.hoursHeading}</h5>
+//                         <p className="text-gray-500 font-light text-sm truncate">{block.hours}</p>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     </div>
+// ));
+// ContactInfo.displayName = "ContactInfo";
+
+// // --- MAIN COMPONENT ---
+
+// interface ContactProps {
+//     block: any;
+// }
+
+// const ContactSection: React.FC<ContactProps> = ({ block }) => {
+//     const {
+//         values, errors, touched, status, isSubmitting, files, errorMessage,
+//         setFiles, setFieldValue, handleBlur, handleSubmit, resetForm
+//     } = useContactForm();
+
+//     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+//     const categoryRef = useRef<HTMLDivElement>(null);
+
+//     // Close category dropdown on click outside
+//     useEffect(() => {
+//         const handleClick = (e: MouseEvent) => {
+//             if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) setShowCategoryDropdown(false);
+//         };
+//         document.addEventListener("mousedown", handleClick);
+//         return () => document.removeEventListener("mousedown", handleClick);
+//     }, []);
+
+//     if (!block) return null;
+
+//     return (
+//         <section className="pt-32 pb-16 md:py-24 lg:py-32 bg-[#fafafa] min-h-screen relative overflow-hidden">
+//             <div className="absolute top-0 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gray-200/40 rounded-full blur-[80px] md:blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
+
+//             <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
+//                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 item-stretch">
+
+//                     <ContactInfo block={block} />
+
+//                     {/* RIGHT COLUMN: Form */}
+//                     <div className="w-full lg:w-8/12 order-1 lg:order-2">
+//                         <div className="bg-white p-6 md:p-8 lg:p-12 rounded-sm border border-gray-100 shadow-[0_20px_40px_rgba(0,0,0,0.06)] relative overflow-hidden min-h-[500px] flex flex-col justify-center">
+//                             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#14253f] via-[#cd7d51] to-transparent"></div>
+
+//                             {status === 'success' ? (
+//                                 <div className="text-center space-y-6 animate-in fade-in zoom-in duration-500">
+//                                     <div className="flex justify-center"><CheckCircle2 size={80} className="text-green-500 stroke-[1px]" /></div>
+//                                     <h3 className="text-3xl font-black text-[#14253f] uppercase tracking-tighter">Inquiry Sent</h3>
+//                                     <p className="text-gray-500 max-w-sm mx-auto font-light">Thank you for reaching out. We will contact you shortly.</p>
+//                                     <button onClick={resetForm} className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs hover:underline pt-4">Send another inquiry</button>
+//                                 </div>
+//                             ) : (
+//                                 <>
+//                                     <h3 className="text-xl lg:text-2xl font-bold text-[#14253f] mb-6 lg:mb-8">Request a Quote</h3>
+//                                     <form className="space-y-6 lg:space-y-8" onSubmit={handleSubmit} noValidate>
+
+//                                         {/* Row 1 */}
+//                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+//                                             <FormInput name="fullName" label="Full Name *" placeholder="e.g. John Doe" value={values.fullName}
+//                                                 onChange={(e) => setFieldValue('fullName', e.target.value)} onBlur={() => handleBlur('fullName')} error={touched.fullName ? errors.fullName : undefined} />
+
+//                                             <FormInput name="email" label="Business Email *" type="email" placeholder="name@company.com" value={values.email}
+//                                                 onChange={(e) => setFieldValue('email', e.target.value)} onBlur={() => handleBlur('email')} error={touched.email ? errors.email : undefined} />
+//                                         </div>
+
+//                                         {/* Row 2 */}
+//                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+//                                             <FormInput name="company" label="Company / Brand *" placeholder="Company Name" value={values.company}
+//                                                 onChange={(e) => setFieldValue('company', e.target.value)} onBlur={() => handleBlur('company')} error={touched.company ? errors.company : undefined} />
+
+//                                             <MarketSelector selected={values.targetMarket} onChange={(markets) => setFieldValue('targetMarket', markets)} error={touched.targetMarket ? errors.targetMarket : undefined} />
+//                                         </div>
+
+//                                         {/* Row 3 */}
+//                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+//                                             {/* Custom Category Dropdown */}
+//                                             <div className="group relative" ref={categoryRef}>
+//                                                 <label className={`text-[10px] font-bold uppercase tracking-widest mb-2 block transition-colors ${errors.productCategory && touched.productCategory ? 'text-red-500' : 'text-[#cd7d51]'}`}>Product Category *</label>
+//                                                 <button type="button" onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+//                                                     className={`w-full h-14 !bg-transparent !border-0 !border-b !rounded-none text-left flex items-center justify-between transition-colors ${errors.productCategory && touched.productCategory ? '!border-red-300' : '!border-gray-200 hover:!border-[#cd7d51]'}`}>
+//                                                     <span className={`text-base font-medium ${values.productCategory ? 'text-[#14253f]' : 'text-gray-300'}`}>{values.productCategory || "Select Category"}</span>
+//                                                     <ChevronDown size={16} className={`text-[#cd7d51] transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+//                                                 </button>
+//                                                 {showCategoryDropdown && (
+//                                                     <div className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl z-50 rounded-b-sm animate-in fade-in slide-in-from-top-2 duration-200 max-h-56 overflow-y-auto">
+//                                                         {block.productCategories?.map((cat: string, idx: number) => (
+//                                                             <button key={idx} type="button" onClick={() => { setFieldValue('productCategory', cat); setShowCategoryDropdown(false); }}
+//                                                                 className="block w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-[#fafafa] hover:text-[#cd7d51] border-l-2 border-transparent hover:border-[#cd7d51] transition-all">
+//                                                                 {cat}
+//                                                             </button>
+//                                                         ))}
+//                                                     </div>
+//                                                 )}
+//                                                 {touched.productCategory && errors.productCategory && <p className="absolute right-0 -bottom-4 text-red-500 text-[9px] font-bold uppercase tracking-widest">{errors.productCategory}</p>}
+//                                             </div>
+
+//                                             <FormInput name="quantity" type="number" label="Approx Quantity" placeholder="e.g. 500" value={values.quantity}
+//                                                 onChange={(e) => setFieldValue('quantity', e.target.value)} onBlur={() => handleBlur('quantity')} error={touched.quantity ? errors.quantity : undefined} />
+
+//                                             <FormInput name="timeline" label="Required Timeline" placeholder="e.g. 8-10 weeks" value={values.timeline}
+//                                                 onChange={(e) => setFieldValue('timeline', e.target.value)} onBlur={() => handleBlur('timeline')} error={touched.timeline ? errors.timeline : undefined} />
+//                                         </div>
+
+//                                         {/* Row 4 */}
+//                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+//                                             <FormInput name="priceRange" label="Target Price Range" placeholder="e.g. $15 - $25 USD" value={values.priceRange}
+//                                                 onChange={(e) => setFieldValue('priceRange', e.target.value)} onBlur={() => handleBlur('priceRange')} error={touched.priceRange ? errors.priceRange : undefined} />
+
+//                                             <FileUploader files={files} onFilesChange={setFiles} />
+//                                         </div>
+
+//                                         <FormInput name="details" asTextArea label="Additional Details" placeholder="Tell us more about your requirements..." rows={3} value={values.details}
+//                                             onChange={(e) => setFieldValue('details', e.target.value)} />
+
+//                                         {/* Error Alert Box */}
+//                                         {status === 'error' && (
+//                                             <div className="bg-red-50 border border-red-100 p-4 rounded-sm flex items-start gap-3">
+//                                                 <div className="text-red-500 mt-0.5"><X size={16} /></div>
+//                                                 <div>
+//                                                     <h4 className="text-red-800 font-bold text-xs uppercase tracking-wider mb-1">Submission Failed</h4>
+//                                                     <p className="text-red-600 text-xs">{errorMessage || "Please check your internet connection and try again."}</p>
+//                                                 </div>
+//                                             </div>
+//                                         )}
+
+//                                         <button type="submit" disabled={isSubmitting}
+//                                             className="group w-full bg-[#14253f] text-white font-bold uppercase tracking-widest text-xs py-4 lg:py-5 hover:bg-[#cd7d51] transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl rounded-sm disabled:opacity-70 disabled:cursor-not-allowed">
+//                                             {isSubmitting ? "Processing Request..." : "Submit Inquiry"}
+//                                             {!isSubmitting && <Send size={16} className="group-hover:translate-x-1 transition-transform duration-300" />}
+//                                         </button>
+//                                     </form>
+//                                 </>
+//                             )}
+//                         </div>
+//                         <p className="text-center text-gray-400 text-[10px] mt-6 uppercase tracking-wider px-4">We respect your privacy. All technical data is kept confidential.</p>
+//                     </div>
+//                 </div>
+//             </div>
+//         </section>
+//     );
+// };
+
+// export default ContactSection;
+
+
 "use client";
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
@@ -16,6 +251,8 @@ interface ContactProps {
 const ContactSection: React.FC<ContactProps> = ({ block }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
+    const [activeMarketIndex, setActiveMarketIndex] = useState(0);
 
     // Multiple Files State
     const [files, setFiles] = useState<File[]>([]);
@@ -34,6 +271,75 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
         details: "",
         productCategory: ""
     });
+    const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
+        if (!block.productCategories?.length) return;
+
+        // 🔥 ArrowDown opens dropdown if closed
+        if (!showCategoryDropdown && e.key === 'ArrowDown') {
+            e.preventDefault();
+            setShowCategoryDropdown(true);
+            setActiveCategoryIndex(0);
+            return;
+        }
+
+        if (!showCategoryDropdown) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveCategoryIndex((prev) =>
+                Math.min(prev + 1, block.productCategories.length - 1)
+            );
+        }
+
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveCategoryIndex((prev) => Math.max(prev - 1, 0));
+        }
+
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCategorySelect(block.productCategories[activeCategoryIndex]);
+        }
+
+        if (e.key === 'Escape') {
+            setShowCategoryDropdown(false);
+        }
+    };
+    const handleMarketKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!filteredCountries.length) return;
+
+        // 🔥 Open dropdown on ArrowDown
+        if (!showMarketDropdown && e.key === 'ArrowDown') {
+            e.preventDefault();
+            setShowMarketDropdown(true);
+            setActiveMarketIndex(0);
+            return;
+        }
+
+        if (!showMarketDropdown) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveMarketIndex((prev) =>
+                Math.min(prev + 1, filteredCountries.length - 1)
+            );
+        }
+
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveMarketIndex((prev) => Math.max(prev - 1, 0));
+        }
+
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCountryAdd(filteredCountries[activeMarketIndex]);
+        }
+
+        if (e.key === 'Escape') {
+            setShowMarketDropdown(false);
+        }
+    };
+
 
     // Country Select State
     const [selectedMarkets, setSelectedMarkets] = useState<string[]>([]);
@@ -44,6 +350,8 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
     const marketDropdownRef = useRef<HTMLDivElement>(null);
     const categoryDropdownRef = useRef<HTMLDivElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+    const fieldRefs = useRef<Record<string, HTMLElement | null>>({});
 
     // Product Category State
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -154,6 +462,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
     const handleCategorySelect = (category: string) => {
         setFormData(prev => ({ ...prev, productCategory: category }));
         setErrors(prev => ({ ...prev, productCategory: "" }));
+        setActiveCategoryIndex(0);
         setShowCategoryDropdown(false);
     };
 
@@ -163,6 +472,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
             setErrors(prev => ({ ...prev, targetMarket: "" }));
         }
         setMarketQuery("");
+        setActiveMarketIndex(0);
         setShowMarketDropdown(false);
     };
 
@@ -237,7 +547,16 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
             timeline: true, priceRange: true, details: true, productCategory: true
         });
 
-        if (Object.values(newErrors).some(err => err) || fileError) return;
+        if (Object.values(newErrors).some(err => err) || fileError) {
+            const firstErrorField = Object.keys(newErrors)[0];
+            const el = fieldRefs.current[firstErrorField];
+
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "center" });
+                el.focus({ preventScroll: true });
+            }
+            return;
+        }
 
         setIsSubmitting(true);
         setStatus('idle');
@@ -263,7 +582,8 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
 
             // ✅ SUCCESS
             setStatus('success');
-            e.currentTarget.reset();
+            // e.currentTarget.reset();
+            formRef.current?.reset();
             setFormData({
                 fullName: "",
                 email: "",
@@ -365,7 +685,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
 
                             {status === 'success' ? (
                                 <div className="text-center space-y-6 animate-in fade-in zoom-in duration-500">
-                                    <div className="flex justify-center"><CheckCircle2 size={80} className="text-green-500 stroke-[1px]" /></div>
+                                    <div className="flex justify-center"><CheckCircle2 size={80} className="text-#14253f stroke-[1px]" /></div>
                                     <h3 className="text-3xl font-black text-[#14253f] uppercase tracking-tighter">Inquiry Sent</h3>
                                     <p className="text-gray-500 max-w-sm mx-auto font-light">Thank you for reaching out. We will contact you shortly.</p>
                                     <button onClick={() => setStatus('idle')} className="text-[#cd7d51] font-bold uppercase tracking-widest text-xs hover:underline pt-4">Send another inquiry</button>
@@ -373,19 +693,19 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                             ) : (
                                 <>
                                     <h3 className="text-xl lg:text-2xl font-bold text-[#14253f] mb-6 lg:mb-8">Request a Quote</h3>
-                                    <form className="space-y-6 lg:space-y-8" onSubmit={handleSubmit} noValidate>
+                                    <form ref={formRef} className="space-y-6 lg:space-y-8" onSubmit={handleSubmit} noValidate>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                             <div className="group relative">
                                                 <label htmlFor="fullName" className={`text-[10px] font-bold uppercase tracking-widest mb-2 block transition-colors ${errors.fullName ? 'text-red-500' : 'text-gray-400 group-focus-within:text-[#cd7d51]'}`}>Full Name *</label>
                                                 {/* FORCE TRANSPARENT BACKGROUND AND NO BORDERS */}
-                                                <input id="fullName" name="fullName" type="text" value={formData.fullName} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. John Doe"
+                                                <input ref={(el) => (fieldRefs.current.fullName = el)} id="fullName" name="fullName" type="text" value={formData.fullName} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. John Doe"
                                                     className={`!bg-transparent !border-0 !border-b !rounded-none !ring-0 !shadow-none w-full py-4 px-0 text-[#14253f] font-medium placeholder-gray-300 focus:outline-none transition-colors ${errors.fullName ? '!border-red-300' : '!border-gray-200 focus:!border-[#cd7d51]'}`} />
                                                 {errors.fullName && <p className="absolute right-0 -bottom-4 text-red-500 text-[9px] font-bold uppercase tracking-widest">{errors.fullName}</p>}
                                             </div>
                                             <div className="group relative">
                                                 <label htmlFor="email" className={`text-[10px] font-bold uppercase tracking-widest mb-2 block transition-colors ${errors.email ? 'text-red-500' : 'text-gray-400 group-focus-within:text-[#cd7d51]'}`}>Business Email *</label>
-                                                <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} placeholder="name@company.com"
+                                                <input ref={(el) => (fieldRefs.current.email = el)} id="email" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} placeholder="name@company.com"
                                                     className={`!bg-transparent !border-0 !border-b !rounded-none !ring-0 !shadow-none w-full py-4 px-0 text-[#14253f] font-medium placeholder-gray-300 focus:outline-none transition-colors ${errors.email ? '!border-red-300' : '!border-gray-200 focus:!border-[#cd7d51]'}`} />
                                                 {errors.email && <p className="absolute right-0 -bottom-4 text-red-500 text-[9px] font-bold uppercase tracking-widest">{errors.email}</p>}
                                             </div>
@@ -394,7 +714,7 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                             <div className="group relative">
                                                 <label htmlFor="company" className={`text-[10px] font-bold uppercase tracking-widest mb-2 block transition-colors ${errors.company ? 'text-red-500' : 'text-gray-400 group-focus-within:text-[#cd7d51]'}`}>Company / Brand *</label>
-                                                <input id="company" name="company" type="text" value={formData.company} onChange={handleChange} onBlur={handleBlur} placeholder="Company Name"
+                                                <input ref={(el) => (fieldRefs.current.company = el)} id="company" name="company" type="text" value={formData.company} onChange={handleChange} onBlur={handleBlur} placeholder="Company Name"
                                                     className={`!bg-transparent !border-0 !border-b !rounded-none !ring-0 !shadow-none w-full py-4 px-0 text-[#14253f] font-medium placeholder-gray-300 focus:outline-none transition-colors ${errors.company ? '!border-red-300' : '!border-gray-200 focus:!border-[#cd7d51]'}`} />
                                                 {errors.company && <p className="absolute right-0 -bottom-4 text-red-500 text-[9px] font-bold uppercase tracking-widest">{errors.company}</p>}
                                             </div>
@@ -413,17 +733,46 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                                         ))}
 
                                                         {/* Input with bg-transparent to avoid "box" look */}
-                                                        <input type="text" value={marketQuery} onChange={(e) => { setMarketQuery(e.target.value); setShowMarketDropdown(true); }} onFocus={() => setShowMarketDropdown(true)} placeholder={selectedMarkets.length === 0 ? "e.g. UAE, UK, USA" : ""}
+                                                        <input type="text" value={marketQuery} onChange={(e) => {
+                                                            setMarketQuery(e.target.value);
+                                                            setShowMarketDropdown(true);
+                                                            setActiveMarketIndex(0);
+                                                        }} onFocus={() => setShowMarketDropdown(true)}
+                                                            onKeyDown={handleMarketKeyDown}
+                                                            aria-haspopup="listbox"
+                                                            aria-expanded={showMarketDropdown}
+                                                            placeholder={selectedMarkets.length === 0 ? "e.g. UAE, UK, USA" : ""}
                                                             className="shrink-0 min-w-[120px] !bg-transparent !border-0 !ring-0 !shadow-none outline-none text-[#14253f] font-medium text-sm placeholder-gray-300 h-full px-0" autoComplete="off" />
                                                     </div>
                                                     <Globe size={16} className={`absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${errors.targetMarket ? 'text-red-500' : 'text-gray-300 group-focus-within:text-[#cd7d51]'}`} />
                                                 </div>
 
                                                 {showMarketDropdown && marketQuery.length > 0 && (
-                                                    <div className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl max-h-48 overflow-y-auto z-50 rounded-b-sm animate-in fade-in slide-in-from-top-2 duration-200">
-                                                        {filteredCountries.length > 0 ? filteredCountries.map(country => (
-                                                            <button key={country} type="button" className="block w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-[#fafafa] hover:text-[#cd7d51] transition-all" onClick={() => handleCountryAdd(country)}>{country}</button>
-                                                        )) : <div className="px-4 py-3 text-xs text-gray-400 italic">No matches found</div>}
+                                                    <div className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl max-h-48 overflow-y-auto z-50 rounded-b-sm animate-in fade-in slide-in-from-top-2 duration-200" role="listbox">
+                                                        {filteredCountries.length > 0 ? (
+                                                            filteredCountries.map((country, idx) => (
+                                                                <button
+                                                                    key={country}
+                                                                    type="button"
+                                                                    role="option"
+                                                                    aria-selected={idx === activeMarketIndex}
+                                                                    onMouseEnter={() => setActiveMarketIndex(idx)}
+                                                                    onClick={() => handleCountryAdd(country)}
+                                                                    className={`block w-full text-left px-4 py-3 text-sm transition-all
+                                                                    ${idx === activeMarketIndex
+                                                                            ? 'bg-[#fafafa] text-[#cd7d51]'
+                                                                            : 'text-gray-600 hover:bg-[#fafafa] hover:text-[#cd7d51]'
+                                                                        }`}
+                                                                >
+                                                                    {country}
+                                                                </button>
+                                                            ))
+                                                        ) : (
+                                                            <div className="px-4 py-3 text-xs text-gray-400 italic">
+                                                                No matches found
+                                                            </div>
+                                                        )}
+
                                                     </div>
                                                 )}
                                                 {errors.targetMarket && <p className="absolute right-0 -bottom-4 text-red-500 text-[9px] font-bold uppercase tracking-widest">{errors.targetMarket}</p>}
@@ -434,15 +783,43 @@ const ContactSection: React.FC<ContactProps> = ({ block }) => {
                                             {/* PRODUCT CATEGORY */}
                                             <div className="group relative" ref={categoryDropdownRef}>
                                                 <label className={`text-[10px] font-bold uppercase tracking-widest mb-2 block transition-colors ${errors.productCategory ? 'text-red-500' : 'text-[#cd7d51]'}`}>Product Category *</label>
-                                                <button type="button" onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                                                    className={`w-full h-14 !bg-transparent !border-0 !border-b !rounded-none text-left flex items-center justify-between transition-colors ${errors.productCategory ? '!border-red-300' : '!border-gray-200 hover:!border-[#cd7d51]'}`}>
+                                                <button
+                                                    ref={(el) => (fieldRefs.current.productCategory = el)}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setShowCategoryDropdown(prev => !prev);
+                                                        setActiveCategoryIndex(0);
+                                                    }}
+                                                    onKeyDown={handleCategoryKeyDown}
+                                                    aria-haspopup="listbox"
+                                                    aria-expanded={showCategoryDropdown}
+                                                    className={`w-full h-14 !bg-transparent !border-0 !border-b !rounded-none text-left flex items-center justify-between transition-colors ${errors.productCategory ? '!border-red-300' : '!border-gray-200 hover:!border-[#cd7d51]'}`}
+                                                >
+
                                                     <span className={`text-base font-medium ${formData.productCategory ? 'text-[#14253f]' : 'text-gray-300'}`}>{formData.productCategory || "Select Category"}</span>
                                                     <ChevronDown size={16} className={`text-[#cd7d51] transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180' : ''}`} />
                                                 </button>
                                                 {showCategoryDropdown && (
-                                                    <div className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl z-50 rounded-b-sm animate-in fade-in slide-in-from-top-2 duration-200 max-h-56 overflow-y-auto">
+                                                    <div
+                                                        className="absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl z-50 rounded-b-sm animate-in fade-in slide-in-from-top-2 duration-200 max-h-56 overflow-y-auto"
+                                                        role="listbox"
+                                                    >
                                                         {block.productCategories?.map((cat: string, idx: number) => (
-                                                            <button key={idx} type="button" onClick={() => handleCategorySelect(cat)} className="block w-full text-left px-4 py-3 text-sm text-gray-600 hover:bg-[#fafafa] hover:text-[#cd7d51] border-l-2 border-transparent hover:border-[#cd7d51] transition-all">{cat}</button>
+                                                            <button
+                                                                key={idx}
+                                                                type="button"
+                                                                role="option"
+                                                                aria-selected={idx === activeCategoryIndex}
+                                                                onMouseEnter={() => setActiveCategoryIndex(idx)}
+                                                                onClick={() => handleCategorySelect(cat)}
+                                                                className={`block w-full text-left px-4 py-3 text-sm transition-all
+          ${idx === activeCategoryIndex
+                                                                        ? 'bg-[#fafafa] text-[#cd7d51]'
+                                                                        : 'text-gray-600 hover:bg-[#fafafa] hover:text-[#cd7d51]'
+                                                                    }`}
+                                                            >
+                                                                {cat}
+                                                            </button>
                                                         ))}
                                                     </div>
                                                 )}
